@@ -29,7 +29,7 @@ function localParse(text) {
     let yr = m[3] ? +m[3] : today.getFullYear()
     let d = new Date(yr, mo, +m[2])
     if (!m[3] && d < today) d = new Date(yr + 1, mo, +m[2])
-    const iso = d.toISOString().slice(0, 10)
+    const iso = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`
     const before = text.slice(0, m.index).split(/[.;\n]/).pop().trim().split(/\s+/).slice(-4).join(' ')
     out.push({ date: iso, label: (before || 'Important date').replace(/^\w/, c => c.toUpperCase()).slice(0, 40) })
   }

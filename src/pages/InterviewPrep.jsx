@@ -91,7 +91,7 @@ export default function InterviewPrep() {
     setQCount(0)
     setLastQ('')
     setActive(true)
-    addMsg({ type: 'officer', content: `Hello, and thank you for coming in today. This is a practice interview for your <b>${caseType}</b>. Answer naturally — I'll give you feedback after each response. Let's begin.` })
+    addMsg({ type: 'officer', html: true, content: `Hello, and thank you for coming in today. This is a practice interview for your <b>${caseType}</b>. Answer naturally — I'll give you feedback after each response. Let's begin.` })
     await askNext('')
   }
 
@@ -162,7 +162,7 @@ export default function InterviewPrep() {
               if (msg.type === 'officer') return (
                 <div key={i} className="bubble officer">
                   <span className="who">Interviewer</span>
-                  <span dangerouslySetInnerHTML={{ __html: msg.content }} />
+                  {msg.html ? <span dangerouslySetInnerHTML={{ __html: msg.content }} /> : <span>{msg.content}</span>}
                 </div>
               )
               if (msg.type === 'me') return (

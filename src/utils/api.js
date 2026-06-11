@@ -12,6 +12,7 @@ Rules: resolve relative dates against today. If a medical exam (I-693) is mentio
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ max_tokens: 1000, messages: [{ role: 'user', content: prompt }] }),
   })
+  if (!res.ok) throw new Error('api ' + res.status)
   const data = await res.json()
   let txt = (data.content || []).filter(b => b.type === 'text').map(b => b.text).join('').trim()
   txt = txt.replace(/```json|```/g, '').trim()
