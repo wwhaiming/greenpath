@@ -1598,7 +1598,7 @@
   ];
 
   function pathwayResult(a){
-    if(a[0]==='Asylum or refugee situation'||a[5]==='Asylum or refugee situation')
+    if(a[2]==='Temporary protected / humanitarian status'||a[5]==='Asylum or refugee situation')
       return ['Humanitarian pathway','Your answers point toward a humanitarian (asylum or refugee) pathway. These cases are highly individual : GreenPath would connect you with an authorized support organization.'];
     if(a[5]==='Survivor of abuse or a serious crime')
       return ['Protective pathway','Your situation may qualify for special protections. This is a sensitive area best handled directly with an authorized advocate, which GreenPath would help you find.'];
@@ -1665,8 +1665,13 @@
   const PALETTE=['c-terra','c-amber','c-slate','c-green'];
   const DATEPILL={'c-terra':'d-terra','c-amber':'d-amber','c-slate':'d-slate','c-green':'d-green'};
   // timeline starts empty : it is populated by the AI extractor or manual add
-  let reminders=[];
-  let nextId=1;
+  let reminders=(function(){
+    try{ const v=JSON.parse(localStorage.getItem('gp-reminders'));
+      if(Array.isArray(v)) return v.filter(r=>r&&r.id&&/^\d{4}-\d{2}-\d{2}$/.test(r.date)); }catch(_){}
+    return [];
+  })();
+  let nextId=reminders.reduce((m,r)=>Math.max(m,r.id),0)+1;
+  function saveReminders(){ try{ localStorage.setItem('gp-reminders',JSON.stringify(reminders)); }catch(_){} }
   const MON=['JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC'];
   const today=new Date();
   const tlEl=document.getElementById('timeline'),
@@ -1686,6 +1691,7 @@
     return n+' days away';
   }
   function renderTimeline(){
+    saveReminders();
     const filter=setFilter.value;
     let list=[...reminders].sort((a,b)=>a.date.localeCompare(b.date));
     if(filter!=='all') list=list.filter(r=>{const n=daysAway(r.date);return n>=0&&n<=+filter;});
@@ -2651,6 +2657,12 @@ Set "done":true and provide a short "summary" only when the interview should end
       {name:'Decision', checkpoint:'Track final decision', tasks:['Receipt account checked','Mailing address current','Approval notice saved','Green card delivery tracked'], done:[false,false,false,false]}
     ];
     let activeStage=1;
+    try{ const s=JSON.parse(localStorage.getItem('gp-roadmap'));
+      if(s&&Array.isArray(s.done)&&s.done.length===stages.length){
+        stages.forEach((st,i)=>{ if(Array.isArray(s.done[i])&&s.done[i].length===st.done.length) st.done=s.done[i].map(Boolean); });
+        if(Number.isInteger(s.active)&&s.active>=0&&s.active<stages.length) activeStage=s.active;
+      } }catch(_){}
+    function saveRoadmap(){ try{ localStorage.setItem('gp-roadmap',JSON.stringify({active:activeStage,done:stages.map(s=>s.done)})); }catch(_){} }
 
     function doneCount(stage){ return stage.done.filter(Boolean).length; }
     function stageComplete(stage){ return doneCount(stage)===stage.done.length; }
@@ -2684,6 +2696,7 @@ Set "done":true and provide a short "summary" only when the interview should end
       }).join('');
     }
     function renderRoadmap(){
+      saveRoadmap();
       const value=progressValue();
       pct.textContent=value+'% complete';
       fill.style.width=value+'%';
