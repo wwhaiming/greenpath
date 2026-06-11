@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="description" content="GreenPath organizes the U.S. green card journey into clear, human-sized steps with grounded AI guidance, deadline tracking, and multilingual support.">
-<meta name="theme-color" content="#1d5238">
+<meta name="theme-color" content="#236346">
 <title>GreenPath : AI Navigator</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -17,25 +17,25 @@
      ================================================================== */
   :root{
     /* surfaces */
-    --paper:#fdfbf4;          /* page background */
-    --card:#fffefb;           /* primary card */
-    --cream-panel:#fcfaf2;    /* secondary card */
+    --paper:#fefdf8;          /* page background */
+    --card:#ffffff;           /* primary card */
+    --cream-panel:#fdfcf6;    /* secondary card */
     --soft-green:#e4efe5;     /* tinted panel */
     --pill-green:#d6e9d9;     /* status pill bg */
     --rail:#e4dcc6;           /* progress track */
     --rail-fill:#1e7a52;      /* progress fill */
     /* ink */
-    --ink:#33503e;            /* primary text */
-    --ink-h:#338059;          /* headline green (brighter) */
-    --ink-soft:#54685a;       /* secondary text */
+    --ink:#3c5a47;            /* primary text */
+    --ink-h:#389165;          /* headline green (brighter) */
+    --ink-soft:#5f7466;       /* secondary text */
     --muted:#65705f;          /* tertiary text */
     --line:rgba(25,39,30,.16);
     --line-strong:rgba(25,39,30,.30);
     /* brand */
-    --green:#249260;          /* primary accent */
+    --green:#28a06a;          /* primary accent */
     --green-mid:#15714a;      /* accessible green text */
-    --green-deep:#206e50;     /* deep evergreen */
-    --green-ink:#1d5238;      /* header / dark card */
+    --green-deep:#257d5b;     /* deep evergreen */
+    --green-ink:#236346;      /* header / dark card */
     --gold:#9a6b10;           /* gold text (AA on cream) */
     --gold-leaf:#c9952c;      /* gold ornament */
     --gold-bright:#e8be62;    /* gold text on dark surfaces (AA) */
@@ -93,7 +93,7 @@
   /* ---------- HEADER ---------- */
   header{
     position:sticky;top:0;z-index:50;color:#f1ecdc;
-    background:linear-gradient(180deg,rgba(12,43,29,.97),rgba(10,36,24,.94));
+    background:linear-gradient(180deg,rgba(35,99,70,.97),rgba(28,80,55,.94));
     backdrop-filter:blur(14px) saturate(1.2);-webkit-backdrop-filter:blur(14px) saturate(1.2);
     border-bottom:1px solid rgba(201,149,44,.35);
     box-shadow:0 14px 40px -22px rgba(12,43,29,.65);
@@ -121,7 +121,7 @@
     display:flex;flex-direction:column;gap:3px;
     position:absolute;top:calc(100% + 12px);left:40px;z-index:60;
     min-width:260px;padding:10px;
-    background:linear-gradient(180deg,rgba(12,43,29,.98),rgba(9,32,22,.98));
+    background:linear-gradient(180deg,rgba(35,99,70,.98),rgba(28,80,55,.98));
     border:1px solid rgba(201,149,44,.4);border-radius:14px;
     box-shadow:0 30px 70px -24px rgba(8,28,19,.8);
     backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);
@@ -186,7 +186,7 @@
   @keyframes heroUp{from{opacity:0;transform:translateY(26px)}to{opacity:1;transform:none}}
   /* the dark "passport" card */
   .hero-preview{position:relative;z-index:2;align-self:center;border-radius:20px;padding:24px 26px;
-    background:linear-gradient(170deg,#23593d,#1a452e);
+    background:linear-gradient(170deg,#2a6a4a,#205437);
     border:1px solid rgba(201,149,44,.4);color:#e9efe4;
     box-shadow:var(--shadow-lift),inset 0 1px 0 rgba(246,241,226,.12)}
   .hero-preview::before{content:"";position:absolute;inset:10px;border:1px solid rgba(201,149,44,.22);
@@ -242,7 +242,7 @@
     display:inline-flex;align-items:center;justify-content:center;gap:10px;
     transition:transform .18s,box-shadow .18s,background .18s,border-color .18s;text-decoration:none}
   .btn-primary{position:relative;overflow:hidden;color:#f6f1e2;
-    background:linear-gradient(135deg,#239059,#1a6647 60%,#14503a);
+    background:linear-gradient(135deg,#28a062,#1e7350 60%,#1a5c43);
     box-shadow:0 18px 38px -18px rgba(14,61,41,.7),inset 0 1px 0 rgba(255,255,255,.18)}
   .btn-primary:hover{transform:translateY(-2px);box-shadow:0 26px 50px -20px rgba(14,61,41,.75),inset 0 1px 0 rgba(255,255,255,.18)}
   .btn-primary::before{content:"";position:absolute;top:0;left:0;width:55%;height:100%;pointer-events:none;
