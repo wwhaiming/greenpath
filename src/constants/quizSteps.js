@@ -66,7 +66,7 @@ export const STEPS = [
 ]
 
 export function pathwayResult(answers) {
-  if (answers[0] === 'Asylum or refugee situation' || answers[5] === 'Asylum or refugee situation')
+  if (answers[2] === 'Temporary protected / humanitarian status' || answers[5] === 'Asylum or refugee situation')
     return ['Humanitarian pathway', 'Your answers point toward a humanitarian (asylum or refugee) pathway. These cases are highly individual — GreenPath would connect you with an authorized support organization.']
   if (answers[5] === 'Survivor of abuse or a serious crime')
     return ['Protective pathway', 'Your situation may qualify for special protections. This is a sensitive area best handled directly with an authorized advocate, which GreenPath would help you find.']

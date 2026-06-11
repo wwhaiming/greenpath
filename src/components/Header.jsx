@@ -9,6 +9,7 @@ const NAV = [
   { id: 'language',  label: 'Language Tools' },
   { id: 'pathway',   label: 'Pathway Finder' },
   { id: 'qa',        label: 'Stage Q&A' },
+  { id: 'bulletin',  label: 'Visa Bulletin' },
   { id: 'review',    label: 'Document Review' },
   { id: 'interview', label: 'Interview Prep' },
 ]

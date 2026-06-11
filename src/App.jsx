@@ -10,6 +10,7 @@ import DocumentReview from './pages/DocumentReview.jsx'
 import InterviewPrep from './pages/InterviewPrep.jsx'
 import PathwayFinder from './pages/PathwayFinder.jsx'
 import StageQA from './pages/StageQA.jsx'
+import VisaBulletin from './pages/VisaBulletin.jsx'
 import { setSiteLanguage } from './utils/translate.js'
 
 const PAGES = {
@@ -23,6 +24,7 @@ const PAGES = {
   interview: InterviewPrep,
   pathway: PathwayFinder,
   qa: StageQA,
+  bulletin: VisaBulletin,
 }
 
 export default function App() {

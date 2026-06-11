@@ -1,4 +1,4 @@
-import { useState, useRef } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import { extractWithAI } from '../utils/api.js'
 import LegalDisclaimer from '../components/LegalDisclaimer.jsx'
 
@@ -36,10 +36,24 @@ function localParse(text) {
   return out
 }
 
-let nextId = 1
+const STORE_KEY = 'gp-reminders'
+
+function loadReminders() {
+  try {
+    const v = JSON.parse(localStorage.getItem(STORE_KEY))
+    if (Array.isArray(v)) return v.filter(r => r && r.id && /^\d{4}-\d{2}-\d{2}$/.test(r.date))
+  } catch (_) { /* corrupted or unavailable — start fresh */ }
+  return []
+}
+
+let nextId = loadReminders().reduce((m, r) => Math.max(m, r.id), 0) + 1
 
 export default function DeadlineAlerts() {
-  const [reminders, setReminders] = useState([])
+  const [reminders, setReminders] = useState(loadReminders)
+
+  useEffect(() => {
+    try { localStorage.setItem(STORE_KEY, JSON.stringify(reminders)) } catch (_) { /* private mode */ }
+  }, [reminders])
   const [channel, setChannel] = useState('In-browser reminders')
   const [timing, setTiming] = useState('7')
   const [filter, setFilter] = useState('all')
