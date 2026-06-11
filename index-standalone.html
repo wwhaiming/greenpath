@@ -1769,16 +1769,17 @@
     }finally{ aiExtract.disabled=false; }
   });
 
-  // ===== AI via server-side proxy =====
-  // The OpenAI key lives in the Netlify function (OPENAI_API_KEY) and never reaches
-  // the browser. The client only ever posts {model, messages, ...} to /api/chat.
-  const AI_ENDPOINT='/api/chat';
-  const AI_MODEL='gpt-4o-mini';   // server allowlists this + 'gpt-4o'
+  // ===== AI direct to OpenAI =====
+  // Standalone build: key embedded so the file works opened directly (file://).
+  // Key is browser-visible by design — rotate it after the event.
+  const AI_ENDPOINT='https://api.openai.com/v1/chat/completions';
+  const AI_KEY='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';
+  const AI_MODEL='gpt-4o-mini';
 
   async function aiChatMessages(messages, opts={}){
     const res=await fetch(AI_ENDPOINT,{
       method:'POST',
-      headers:{'Content-Type':'application/json'},
+      headers:{'Content-Type':'application/json','Authorization':'Bearer '+AI_KEY},
       body:JSON.stringify({model:opts.model||AI_MODEL,messages,
         temperature:opts.temperature??0.4, max_tokens:opts.max_tokens??900})
     });
