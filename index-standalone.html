@@ -1638,7 +1638,7 @@
     qSelect.innerHTML = '<option value="">Select an answer</option>' +
       s.options.map(o=>'<option value="'+esc(o)+'"'+(gw.answers[gw.i]===o?' selected':'')+'>'+esc(o)+'</option>').join('');
     qBack.disabled = gw.i===0;
-    qNext.textContent = gw.i===5 ? 'See Pathway' — 'Continue';
+    qNext.textContent = gw.i===5 ? 'See Pathway' : 'Continue';
     qNext.disabled = !gw.answers[gw.i];
     renderIntake();
   }
@@ -1745,7 +1745,7 @@
     const open=srcPanel.hidden;
     srcPanel.hidden=!open;
     srcToggle.setAttribute('aria-expanded', String(open));
-    srcToggle.style.background = open ? '#dfeae0' — '';
+    srcToggle.style.background = open ? '#dfeae0' : '';
   });
 
   /* ---- AI extraction ---- */
@@ -1852,7 +1852,7 @@
     const offline=/proxy 5\d\d|Failed to fetch|NetworkError|proxy error/i.test(String(err&&err.message||err));
     const msg=offline
       ? 'The AI service is not reachable right now. Your information is safe — try again in a moment, or continue using the offline tools.'
-      — 'Something went wrong generating that response. Please try again.';
+      : 'Something went wrong generating that response. Please try again.';
     return `<div class="ai-error" role="alert"><b>Couldn’t complete that</b><span>${msg}</span></div>`;
   }
 
@@ -1913,7 +1913,7 @@
           '<p style="margin:6px 0 0">Added '+added+' date'+(added!==1?'s':'')+' to your timeline below.</p>'
         ].join('');
         result.insertAdjacentHTML('beforeend','<div class="ai-assist ai-pop" style="margin-top:18px">'+head+rows+'</div>'+citationsHTML((d.caseType||'')+' '+(d.documentType||'')));
-        aiStatus.textContent = added ? 'Done — '+added+' date'+(added!==1?'s':'')+' added to your timeline.' — 'Read the notice — no clear dates found.';
+        aiStatus.textContent = added ? 'Done — '+added+' date'+(added!==1?'s':'')+' added to your timeline.' : 'Read the notice — no clear dates found.';
       }catch(e){
         result.insertAdjacentHTML('beforeend', aiErrorHTML(e));
         aiStatus.textContent='';
@@ -2075,14 +2075,14 @@ Rules: resolve relative dates against today. If a year is missing, choose the ne
   });
 
   async function translateAI(text, from, to){
-    const fromTxt = from==='auto' ? 'the detected source language' — from;
+    const fromTxt = from==='auto' ? 'the detected source language' : from;
     const prompt=`Translate the text below from ${fromTxt} into ${to}. Return ONLY the translation — no notes, no quotes, no language labels.\n\nText:\n${text}`;
     return await claudeChat(prompt);
   }
 
   // Keyless, CORS-enabled translation (Google's public endpoint). Real translations, ~100+ languages.
   async function translateFree(text, from, to){
-    const sl = from==='auto' ? 'auto' — (ISO[from]||'auto');
+    const sl = from==='auto' ? 'auto' : (ISO[from]||'auto');
     const tl = ISO[to]||'en';
     const url='https://translate.googleapis.com/translate_a/single?client=gtx&sl='+sl+
               '&tl='+tl+'&dt=t&q='+encodeURIComponent(text);
@@ -2152,7 +2152,7 @@ Rules: resolve relative dates against today. If a year is missing, choose the ne
         ltStatus.textContent='Unsupported file type. Use an image, PDF, or .txt file.';
       }
     }catch(err){
-      ltStatus.textContent='Could not read that file: '+(err && err.message ? err.message — 'unknown error')+'.';
+      ltStatus.textContent='Could not read that file: '+(err && err.message ? err.message : 'unknown error')+'.';
     }finally{
       ltScan.disabled=false; ltFile.value='';
     }
@@ -2377,7 +2377,7 @@ ${text}`;
   function bubble(role, html){
     const d=document.createElement('div');
     d.className='bubble '+(role==='officer'?'officer':'me');
-    d.innerHTML = role==='officer' ? '<span class="who">Interviewer</span>'+html — html;
+    d.innerHTML = role==='officer' ? '<span class="who">Interviewer</span>'+html : html;
     ipChat.appendChild(d); ipChat.scrollTop=ipChat.scrollHeight; return d;
   }
   function coachCard(level, note){
@@ -2589,7 +2589,7 @@ Set "done":true and provide a short "summary" only when the interview should end
         const alts=(d.alternativePathways||[]).length
           ? '<div class="dr-summary" style="margin-top:16px">Other options to explore:</div>'+
             (d.alternativePathways||[]).map(a=>`<div class="issue amb ai-pop"><div class="idot"></div><div><p>${esc(a)}</p></div></div>`).join('')
-          — '';
+          : '';
         pwResult.innerHTML=
           `<div class="dr-summary ai-pop"><b>${esc(d.primaryPathway||'Pathway')}</b>${d.subcategory?' — '+esc(d.subcategory):''} · ${esc(CONF[d.confidence]||d.confidence||'')}</div>`+
           `<div class="issue blu ai-pop"><div class="idot"></div><div><p>${esc(d.reasoning||'')}</p></div></div>`+
@@ -2717,7 +2717,7 @@ Set "done":true and provide a short "summary" only when the interview should end
     }
     function dotClassFor(i){
       if(i<activeStage && stageComplete(stages[i])) return 'sdot c-green';
-      if(i===activeStage) return stageComplete(stages[i]) ? 'sdot c-green' — 'sdot c-amber';
+      if(i===activeStage) return stageComplete(stages[i]) ? 'sdot c-green' : 'sdot c-amber';
       if(i===activeStage+1) return 'sdot c-slate';
       return 'sdot muted';
     }
