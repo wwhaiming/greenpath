@@ -703,6 +703,25 @@
   .reveal{opacity:0;transform:translateY(26px);
     transition:opacity .7s cubic-bezier(.22,.61,.36,1),transform .7s cubic-bezier(.22,.61,.36,1)}
   .reveal.in{opacity:1;transform:none}
+  /* directional reveal variants — left/right panels slide in from their own side */
+  .dr-left.reveal,.ip-left.reveal,.timeline-card.reveal{transform:translateX(-34px)}
+  .dr-right.reveal,.ip-chat-wrap.reveal,.settings-card.reveal{transform:translateX(34px)}
+  .lt-toolbar.reveal{transform:translateY(-22px) scale(.985)}
+  .reveal.in{transform:none}
+  /* staggered children once parent reveals */
+  .stagerow.reveal .stage,.clarity-row.reveal>*,.badge-row.reveal>*{opacity:0;transform:translateY(18px);
+    transition:opacity .55s cubic-bezier(.22,.61,.36,1),transform .55s cubic-bezier(.22,.61,.36,1)}
+  .stagerow.reveal.in .stage,.clarity-row.reveal.in>*,.badge-row.reveal.in>*{opacity:1;transform:none}
+  .stagerow.reveal.in .stage:nth-child(2){transition-delay:.07s}
+  .stagerow.reveal.in .stage:nth-child(3){transition-delay:.14s}
+  .stagerow.reveal.in .stage:nth-child(4){transition-delay:.21s}
+  .stagerow.reveal.in .stage:nth-child(5){transition-delay:.28s}
+  .stagerow.reveal.in .stage:nth-child(6){transition-delay:.35s}
+  .clarity-row.reveal.in>*:nth-child(2),.badge-row.reveal.in>*:nth-child(2){transition-delay:.08s}
+  .clarity-row.reveal.in>*:nth-child(3),.badge-row.reveal.in>*:nth-child(3){transition-delay:.16s}
+  .clarity-row.reveal.in>*:nth-child(4),.badge-row.reveal.in>*:nth-child(4){transition-delay:.24s}
+  /* scroll parallax for section emblems (JS sets --par) */
+  .sv svg{transform:translateY(calc(var(--par,0)*1px));transition:transform .15s linear;will-change:transform}
   .tilt{transform-style:preserve-3d;transition:transform .25s cubic-bezier(.22,.61,.36,1)}
   .zoomable{transition:transform .12s ease;will-change:transform;transform-origin:var(--zx,50%) var(--zy,50%)}
   .zoomable.zoomable-ready{cursor:zoom-in}
@@ -2859,17 +2878,18 @@ Set "done":true and provide a short "summary" only when the interview should end
     const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
     const ramp=(p,a,b)=>Math.min(1,Math.max(0,(p-a)/(b-a)));
     function apply(t,p){
-      t.style.setProperty('--p1',ramp(p,0,.30).toFixed(4));
-      t.style.setProperty('--p2',ramp(p,.24,.54).toFixed(4));
-      t.style.setProperty('--p3',ramp(p,.48,.78).toFixed(4));
-      t.style.setProperty('--p4',ramp(p,.74,.97).toFixed(4));
+      t.style.setProperty('--p1',ramp(p,0,.24).toFixed(4));
+      t.style.setProperty('--p2',ramp(p,.20,.46).toFixed(4));
+      t.style.setProperty('--p3',ramp(p,.42,.68).toFixed(4));
+      t.style.setProperty('--p4',ramp(p,.64,.86).toFixed(4));
       const pctEl=t.querySelector('.scrolly-pct');
       if(pctEl) pctEl.textContent=Math.round(p*100)+'%';
-      const idx=p<.28?0:p<.52?1:p<.76?2:3;
+      const idx=p<.22?0:p<.44?1:p<.66?2:3;
       t.querySelectorAll('.s-step').forEach((s,i)=>s.classList.toggle('on',i<=idx&&p>.02));
     }
     if(reduce){ tracks.forEach(t=>apply(t,1)); return; }   // show finished art, no scrubbing
     let ticking=false;
+    const emblems=[...document.querySelectorAll('.sv')];
     function update(){
       ticking=false;
       tracks.forEach(t=>{
@@ -2877,6 +2897,13 @@ Set "done":true and provide a short "summary" only when the interview should end
         const r=t.getBoundingClientRect();
         const total=r.height-innerHeight;
         apply(t,total>0?Math.min(1,Math.max(0,-r.top/total)):1);
+      });
+      // emblem parallax: drift each section emblem against the scroll
+      emblems.forEach(s=>{
+        if(s.offsetParent===null) return;
+        const r=s.getBoundingClientRect();
+        const mid=r.top+r.height/2-innerHeight/2;
+        s.style.setProperty('--par',(mid/innerHeight*-22).toFixed(1));
       });
     }
     function onScroll(){ if(!ticking){ ticking=true; requestAnimationFrame(update); } }
