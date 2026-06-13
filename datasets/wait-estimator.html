@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>GreenPath - Green Card Wait Estimator</title>
+<style>
+  :root{--bg:#0f1c2e;--card:#16263d;--ink:#eaf1fb;--muted:#9fb3cc;--line:#27405e;
+        --accent:#4ea1ff;--good:#39c08a;--warn:#e8b24a;--bad:#e07a5f;--radius:16px}
+  *{box-sizing:border-box}
+  body{margin:0;background:radial-gradient(900px 500px at 80% -10%,#1c3a5e 0,transparent 60%),var(--bg);
+       color:var(--ink);font:16px/1.5 -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,Roboto,Arial,sans-serif}
+  .wrap{max-width:760px;margin:0 auto;padding:40px 20px}
+  h1{font-size:28px;letter-spacing:-.02em;margin:0 0 4px}
+  .sub{color:var(--muted);margin:0 0 24px}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:22px;box-shadow:0 12px 40px rgba(0,0,0,.25)}
+  .controls{display:flex;gap:12px;flex-wrap:wrap}
+  .field{flex:1;min-width:180px}
+  label{display:block;font-size:12px;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);margin-bottom:6px}
+  select{width:100%;padding:11px 12px;border-radius:10px;border:1px solid var(--line);background:#0e1b2c;color:var(--ink);font-size:15px}
+  select:focus{outline:none;border-color:var(--accent)}
+  .result{margin-top:22px;display:flex;gap:24px;flex-wrap:wrap;align-items:flex-end;min-height:64px}
+  .big{font-size:52px;font-weight:800;letter-spacing:-.03em;line-height:1}
+  .big small{font-size:18px;font-weight:600;color:var(--muted)}
+  .pd{font-size:14px;color:var(--muted)}
+  .pd b{color:var(--ink)}
+  .tag{display:inline-block;font-size:12px;font-weight:700;padding:4px 10px;border-radius:999px;margin-top:6px}
+  .trend{margin-top:22px}
+  .trend h3{font-size:12px;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);margin:0 0 8px}
+  svg{width:100%;height:120px;overflow:visible}
+  .foot{color:var(--muted);font-size:12px;margin-top:18px;border-top:1px solid var(--line);padding-top:12px}
+  .err{color:var(--bad);font-weight:600}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Green Card Wait Estimator</h1>
+  <p class="sub">Estimated employment-based wait from real Visa Bulletin history. Pick your situation.</p>
+  <div class="card">
+    <div class="controls">
+      <div class="field">
+        <label for="country">Country of chargeability</label>
+        <select id="country"></select>
+      </div>
+      <div class="field">
+        <label for="eb">Employment-based category</label>
+        <select id="eb">
+          <option value="EB1">EB-1 (extraordinary ability / multinational mgr)</option>
+          <option value="EB2" selected>EB-2 (advanced degree / NIW)</option>
+          <option value="EB3">EB-3 (skilled / professional)</option>
+          <option value="EB4">EB-4 (special immigrants)</option>
+        </select>
+      </div>
+    </div>
+    <div class="result" id="result"><span class="err" id="err">Loading data...</span></div>
+    <div class="trend" id="trendBox" style="display:none">
+      <h3>Estimated wait over time (this category)</h3>
+      <svg id="trend" viewBox="0 0 600 120" preserveAspectRatio="none"></svg>
+    </div>
+    <div class="foot" id="foot"></div>
+  </div>
+</div>
+<script>
+const App = {
+  data:null,
+  async init(){
+    try{
+      this.data = await (await fetch("./visa_waits.json")).json();
+    }catch(e){
+      document.getElementById("err").textContent = "Could not load visa_waits.json ("+e+")";
+      return;
+    }
+    const csel=document.getElementById("country");
+    Object.keys(this.data.countries).sort().forEach(c=>{
+      const o=document.createElement("option"); o.value=c; o.textContent=c; csel.appendChild(o);
+    });
+    if(this.data.countries["India"]) csel.value="India"; // most illustrative backlog
+    csel.onchange=()=>this.render();
+    document.getElementById("eb").onchange=()=>this.render();
+    document.getElementById("foot").textContent =
+      "Source: U.S. Dept. of State Visa Bulletin (public domain) via datasets/. Latest bulletin used per country. Educational estimate, not legal advice.";
+    this.render();
+  },
+  band(y){
+    if(y===0) return ["Current - no wait","var(--good)"];
+    if(y<2)   return ["Short","var(--good)"];
+    if(y<5)   return ["Moderate","var(--warn)"];
+    return ["Long backlog","var(--bad)"];
+  },
+  render(){
+    const c=document.getElementById("country").value;
+    const eb=document.getElementById("eb").value;
+    const rec=this.data.countries[c];
+    const lvl=rec.levels[eb];
+    const res=document.getElementById("result");
+    if(!lvl || lvl.wait_years===null){
+      res.innerHTML='<span class="pd">No backlog data for '+c+' '+eb+' in the latest bulletin (often means it is current).</span>';
+      document.getElementById("trendBox").style.display="none";
+      return;
+    }
+    const [label,color]=this.band(lvl.wait_years);
+    res.innerHTML =
+      '<div><div class="big">'+lvl.wait_years.toFixed(1)+' <small>years</small></div>'+
+      '<span class="tag" style="background:'+color+'22;color:'+color+'">'+label+'</span></div>'+
+      '<div class="pd">Current priority date<br><b>'+(lvl.priority_date||"-")+'</b>'+
+      '<br><span style="font-size:12px">as of bulletin '+rec.bulletin_date+'</span></div>';
+    this.drawTrend(rec.trend[eb]||[]);
+  },
+  drawTrend(points){
+    const box=document.getElementById("trendBox"), svg=document.getElementById("trend");
+    if(!points.length){box.style.display="none";return;}
+    box.style.display="block";
+    const W=600,H=120,pad=8;
+    const xs=points.map(p=>+p[0]), ys=points.map(p=>p[1]);
+    const minx=Math.min(...xs),maxx=Math.max(...xs),maxy=Math.max(...ys,1);
+    const X=x=>pad+(maxx===minx?0.5:(x-minx)/(maxx-minx))*(W-2*pad);
+    const Y=y=>H-pad-(y/maxy)*(H-2*pad);
+    let d=points.map((p,i)=>(i?"L":"M")+X(+p[0]).toFixed(1)+" "+Y(p[1]).toFixed(1)).join(" ");
+    const last=points[points.length-1];
+    svg.innerHTML=
+      '<path d="'+d+'" fill="none" stroke="var(--accent)" stroke-width="2.5"/>'+
+      '<circle cx="'+X(+last[0])+'" cy="'+Y(last[1])+'" r="4" fill="var(--accent)"/>'+
+      '<text x="'+(X(minx)+2)+'" y="'+(H-2)+'" fill="var(--muted)" font-size="11">'+minx+'</text>'+
+      '<text x="'+(W-pad)+'" y="'+(H-2)+'" fill="var(--muted)" font-size="11" text-anchor="end">'+maxx+'</text>'+
+      '<text x="'+(W-pad)+'" y="14" fill="var(--accent)" font-size="12" text-anchor="end" font-weight="700">'+last[1].toFixed(1)+' yr</text>';
+  }
+};
+window.addEventListener("load",()=>App.init());
+</script>
+</body>
+</html>

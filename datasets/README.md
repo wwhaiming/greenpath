@@ -30,3 +30,15 @@ Relevant government datasets (large / non-CSV; linked rather than vendored here)
 
 All are U.S. government works (public domain). Predictions/guidance built on them are educational, not legal advice.
 
+
+## Derived: live wait estimator
+
+Generated from the Visa Bulletin CSVs by `load.py`:
+
+- **`visa_waits.json`** — latest estimated wait (years) + current priority date per country and EB level, plus a yearly EB-2/EB-3 trend. Regenerate after `download.sh` with the snippet in `load.py`.
+- **`wait-estimator.html`** — a self-contained widget that reads `visa_waits.json`: pick country + EB category, see the estimated wait, current priority date, and a trend chart. Open it directly or embed it in the app.
+
+## Large / linked-only sources
+
+- **DOL OFLC PERM disclosure data** is ~76 MB per quarter (xlsx) — not vendored here. Download: https://www.dol.gov/agencies/eta/foreign-labor/performance
+- **DHS OHSS Yearbook** tables are xlsx behind the yearbook pages: https://ohss.dhs.gov/topics/immigration/yearbook
