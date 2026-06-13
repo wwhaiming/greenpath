@@ -16,6 +16,18 @@ client = OpenAI(api_key=os.environ.get('OPENAI_API_KEY'))
 CHAT_MODEL    = 'gpt-4o-mini'
 QUALITY_MODEL = 'gpt-4o-mini'
 
+# Real Visa Bulletin data grounding (datasets/visa_waits.json) injected into the
+# Q&A and pathway prompts so answers use actual wait times / priority dates / trends.
+try:
+    from visa_data import build_brief
+    VISA_BRIEF = build_brief()
+except Exception:
+    VISA_BRIEF = ''
+
+
+def _ground(system_prompt):
+    return system_prompt + ('\n\n' + VISA_BRIEF if VISA_BRIEF else '')
+
 
 # ── STATIC ──────────────────────────────────────────────────────────────────
 
@@ -260,7 +272,7 @@ def api_pathway():
         resp = client.chat.completions.create(
             model=QUALITY_MODEL,
             max_tokens=1000,
-            messages=[{'role': 'system', 'content': PW_SYSTEM}, {'role': 'user', 'content': intake}],
+            messages=[{'role': 'system', 'content': _ground(PW_SYSTEM)}, {'role': 'user', 'content': intake}],
         )
         raw = resp.choices[0].message.content.strip().lstrip('`').rstrip('`')
         if raw.startswith('json'):
@@ -303,7 +315,7 @@ def api_stage_qa():
         resp = client.chat.completions.create(
             model=QUALITY_MODEL,
             max_tokens=900,
-            messages=[{'role': 'system', 'content': QA_SYSTEM}, {'role': 'user', 'content': context}],
+            messages=[{'role': 'system', 'content': _ground(QA_SYSTEM)}, {'role': 'user', 'content': context}],
         )
         answer = resp.choices[0].message.content.strip()
         return jsonify({'answer': answer})
