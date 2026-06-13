@@ -1,0 +1,260 @@
+{
+  "_meta": {
+    "source": "DOS Visa Bulletin history (datasets/visa_bulletin/)",
+    "method": "linear fit of final-action-date vs bulletin-date over the last 4 years",
+    "latest_bulletin": "2025-12-01",
+    "caveat": "Rough trend extrapolation. Visa Bulletin movement is erratic; non-positive slope or low R^2 means no reliable forecast. Educational, not legal advice."
+  },
+  "countries": {
+    "China": {
+      "EB1": {
+        "slope_per_day": 0.2133,
+        "advance_days_per_year": 77.9,
+        "r2": 0.52,
+        "latest_pd": "2023-01-22",
+        "latest_bulletin": "2025-12-01",
+        "status": "advancing slowly (backlog growing)",
+        "sample_projection": {
+          "for_priority_date": "2020-12-01",
+          "est_years_to_current": 0.0
+        }
+      },
+      "EB2": {
+        "slope_per_day": 0.5366,
+        "advance_days_per_year": 196.0,
+        "r2": 0.93,
+        "latest_pd": "2021-06-01",
+        "latest_bulletin": "2025-12-01",
+        "status": "advancing slowly (backlog growing)",
+        "sample_projection": {
+          "for_priority_date": "2020-12-01",
+          "est_years_to_current": 0.0
+        }
+      },
+      "EB3": {
+        "slope_per_day": 0.872,
+        "advance_days_per_year": 318.5,
+        "r2": 0.9,
+        "latest_pd": "2021-04-01",
+        "latest_bulletin": "2025-12-01",
+        "status": "advancing slowly (backlog growing)",
+        "sample_projection": {
+          "for_priority_date": "2020-12-01",
+          "est_years_to_current": 0.0
+        }
+      },
+      "EB4": {
+        "slope_per_day": -0.5555,
+        "advance_days_per_year": -202.9,
+        "r2": 0.19,
+        "latest_pd": "2020-09-01",
+        "latest_bulletin": "2025-12-01",
+        "status": "stalled or retrogressing (no reliable forecast)",
+        "sample_projection": {
+          "for_priority_date": "2020-12-01",
+          "est_years_to_current": null
+        }
+      }
+    },
+    "India": {
+      "EB1": {
+        "slope_per_day": 0.0131,
+        "advance_days_per_year": 4.8,
+        "r2": 0.0,
+        "latest_pd": "2022-03-15",
+        "latest_bulletin": "2025-12-01",
+        "status": "stalled or retrogressing (no reliable forecast)",
+        "sample_projection": {
+          "for_priority_date": "2020-12-01",
+          "est_years_to_current": null
+        }
+      },
+      "EB2": {
+        "slope_per_day": -0.016,
+        "advance_days_per_year": -5.8,
+        "r2": 0.0,
+        "latest_pd": "2013-05-15",
+        "latest_bulletin": "2025-12-01",
+        "status": "stalled or retrogressing (no reliable forecast)",
+        "sample_projection": {
+          "for_priority_date": "2020-12-01",
+          "est_years_to_current": null
+        }
+      },
+      "EB3": {
+        "slope_per_day": 0.4311,
+        "advance_days_per_year": 157.4,
+        "r2": 0.26,
+        "latest_pd": "2013-09-22",
+        "latest_bulletin": "2025-12-01",
+        "status": "advancing slowly (backlog growing)",
+        "sample_projection": {
+          "for_priority_date": "2020-12-01",
+          "est_years_to_current": 16.7
+        }
+      },
+      "EB4": {
+        "slope_per_day": -0.5459,
+        "advance_days_per_year": -199.4,
+        "r2": 0.19,
+        "latest_pd": "2020-09-01",
+        "latest_bulletin": "2025-12-01",
+        "status": "stalled or retrogressing (no reliable forecast)",
+        "sample_projection": {
+          "for_priority_date": "2020-12-01",
+          "est_years_to_current": null
+        }
+      }
+    },
+    "Mexico": {
+      "EB1": {
+        "slope_per_day": 1.0003,
+        "advance_days_per_year": 365.4,
+        "r2": 1.0,
+        "latest_pd": "2025-12-01",
+        "latest_bulletin": "2025-12-01",
+        "status": "keeping pace (queue clears about as fast as time passes)",
+        "sample_projection": {
+          "for_priority_date": "2020-12-01",
+          "est_years_to_current": 0.0
+        }
+      },
+      "EB2": {
+        "slope_per_day": 0.4239,
+        "advance_days_per_year": 154.8,
+        "r2": 0.8,
+        "latest_pd": "2024-02-01",
+        "latest_bulletin": "2025-12-01",
+        "status": "advancing slowly (backlog growing)",
+        "sample_projection": {
+          "for_priority_date": "2020-12-01",
+          "est_years_to_current": 0.0
+        }
+      },
+      "EB3": {
+        "slope_per_day": 0.2081,
+        "advance_days_per_year": 76.0,
+        "r2": 0.13,
+        "latest_pd": "2023-04-15",
+        "latest_bulletin": "2025-12-01",
+        "status": "advancing slowly (backlog growing)",
+        "sample_projection": {
+          "for_priority_date": "2020-12-01",
+          "est_years_to_current": 0.0
+        }
+      },
+      "EB4": {
+        "slope_per_day": 0.1505,
+        "advance_days_per_year": 55.0,
+        "r2": 0.04,
+        "latest_pd": "2020-09-01",
+        "latest_bulletin": "2025-12-01",
+        "status": "advancing slowly (backlog growing)",
+        "sample_projection": {
+          "for_priority_date": "2020-12-01",
+          "est_years_to_current": 1.7
+        }
+      }
+    },
+    "Philippines": {
+      "EB1": {
+        "slope_per_day": 1.0003,
+        "advance_days_per_year": 365.4,
+        "r2": 1.0,
+        "latest_pd": "2025-12-01",
+        "latest_bulletin": "2025-12-01",
+        "status": "keeping pace (queue clears about as fast as time passes)",
+        "sample_projection": {
+          "for_priority_date": "2020-12-01",
+          "est_years_to_current": 0.0
+        }
+      },
+      "EB2": {
+        "slope_per_day": 0.4239,
+        "advance_days_per_year": 154.8,
+        "r2": 0.8,
+        "latest_pd": "2024-02-01",
+        "latest_bulletin": "2025-12-01",
+        "status": "advancing slowly (backlog growing)",
+        "sample_projection": {
+          "for_priority_date": "2020-12-01",
+          "est_years_to_current": 0.0
+        }
+      },
+      "EB3": {
+        "slope_per_day": 0.1976,
+        "advance_days_per_year": 72.2,
+        "r2": 0.12,
+        "latest_pd": "2023-04-15",
+        "latest_bulletin": "2025-12-01",
+        "status": "advancing slowly (backlog growing)",
+        "sample_projection": {
+          "for_priority_date": "2020-12-01",
+          "est_years_to_current": 0.0
+        }
+      },
+      "EB4": {
+        "slope_per_day": -0.5555,
+        "advance_days_per_year": -202.9,
+        "r2": 0.19,
+        "latest_pd": "2020-09-01",
+        "latest_bulletin": "2025-12-01",
+        "status": "stalled or retrogressing (no reliable forecast)",
+        "sample_projection": {
+          "for_priority_date": "2020-12-01",
+          "est_years_to_current": null
+        }
+      }
+    },
+    "Rest of world": {
+      "EB1": {
+        "slope_per_day": 1.0003,
+        "advance_days_per_year": 365.4,
+        "r2": 1.0,
+        "latest_pd": "2025-12-01",
+        "latest_bulletin": "2025-12-01",
+        "status": "keeping pace (queue clears about as fast as time passes)",
+        "sample_projection": {
+          "for_priority_date": "2020-12-01",
+          "est_years_to_current": 0.0
+        }
+      },
+      "EB2": {
+        "slope_per_day": 0.4239,
+        "advance_days_per_year": 154.8,
+        "r2": 0.8,
+        "latest_pd": "2024-02-01",
+        "latest_bulletin": "2025-12-01",
+        "status": "advancing slowly (backlog growing)",
+        "sample_projection": {
+          "for_priority_date": "2020-12-01",
+          "est_years_to_current": 0.0
+        }
+      },
+      "EB3": {
+        "slope_per_day": 0.2081,
+        "advance_days_per_year": 76.0,
+        "r2": 0.13,
+        "latest_pd": "2023-04-15",
+        "latest_bulletin": "2025-12-01",
+        "status": "advancing slowly (backlog growing)",
+        "sample_projection": {
+          "for_priority_date": "2020-12-01",
+          "est_years_to_current": 0.0
+        }
+      },
+      "EB4": {
+        "slope_per_day": -0.5555,
+        "advance_days_per_year": -202.9,
+        "r2": 0.19,
+        "latest_pd": "2020-09-01",
+        "latest_bulletin": "2025-12-01",
+        "status": "stalled or retrogressing (no reliable forecast)",
+        "sample_projection": {
+          "for_priority_date": "2020-12-01",
+          "est_years_to_current": null
+        }
+      }
+    }
+  }
+}
