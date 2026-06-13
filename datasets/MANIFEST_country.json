@@ -1,0 +1,77 @@
+{
+  "lpr_by_country": {
+    "description": "Lawful Permanent Residents (green cards) granted by country of birth and category, per fiscal year.",
+    "years": [
+      2005,
+      2006,
+      2007,
+      2008,
+      2009,
+      2010,
+      2011,
+      2012,
+      2013,
+      2014,
+      2015,
+      2016
+    ],
+    "columns": [
+      "ISO",
+      "countryName",
+      "immediateRelative",
+      "familySponsored",
+      "employmentBased",
+      "refugeeAsylee",
+      "diversityLottery",
+      "otherLPR",
+      "adoptedOrphans",
+      "total",
+      "countryNote"
+    ],
+    "rows_per_file": {
+      "lpr2005.csv": 189,
+      "lpr2006.csv": 191,
+      "lpr2007.csv": 190,
+      "lpr2008.csv": 190,
+      "lpr2009.csv": 196,
+      "lpr2010.csv": 195,
+      "lpr2011.csv": 189,
+      "lpr2012.csv": 193,
+      "lpr2013.csv": 188,
+      "lpr2014.csv": 193,
+      "lpr2015.csv": 194,
+      "lpr2016.csv": 198
+    },
+    "source": "DHS Yearbook of Immigration Statistics (public domain) via github.com/braxex/immigration-visualizer",
+    "citation": "DHS Office of Homeland Security Statistics, Yearbook of Immigration Statistics (LPR by country of birth)."
+  },
+  "ni_by_country": {
+    "description": "Nonimmigrant (temporary) admissions by country and visa class, per fiscal year.",
+    "years": [
+      2005,
+      2006,
+      2007,
+      2008,
+      2009,
+      2010,
+      2011,
+      2012,
+      2013,
+      2014,
+      2015,
+      2016
+    ],
+    "columns": [
+      "ISO",
+      "countryName",
+      "temporaryVisitor",
+      "studentExchange",
+      "temporaryWorker",
+      "diplomatRep",
+      "otherNI",
+      "total",
+      "countryNote"
+    ],
+    "source": "DHS Yearbook of Immigration Statistics via github.com/braxex/immigration-visualizer"
+  }
+}
