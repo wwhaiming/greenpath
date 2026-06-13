@@ -1591,6 +1591,7 @@
     mainnav.classList.remove('open');
     menuBtn?.setAttribute('aria-expanded','false');
     window.scrollTo({top:0,behavior:'smooth'});
+    document.dispatchEvent(new CustomEvent('sectionshown',{detail:id}));
   }
   menuBtn?.addEventListener('click',()=>{
     const open = mainnav.classList.toggle('open');
@@ -2827,8 +2828,30 @@ Set "done":true and provide a short "summary" only when the interview should end
     }
     addEventListener('scroll',scanReveal,{passive:true});
     addEventListener('resize',scanReveal);
-    document.addEventListener('click',e=>{ if(e.target.closest('[data-go]')) setTimeout(scanReveal,60); });
     setTimeout(scanReveal,80);
+    // Replay reveals each time a section is entered. Driven by the Web Animations
+    // API rather than a class transition: a freshly un-hidden element (display
+    // none -> block in the same show() call) will not transition its first style,
+    // so an explicit animation is the only reliable way to replay on every visit.
+    function startOffset(cls){
+      if(/dr-left|ip-left|timeline-card/.test(cls)) return 'translate(-34px,0)';
+      if(/dr-right|ip-chat-wrap|settings-card/.test(cls)) return 'translate(34px,0)';
+      if(/lt-toolbar/.test(cls)) return 'translate(0,-22px) scale(.985)';
+      return 'translate(0,26px)';
+    }
+    document.addEventListener('sectionshown',e=>{
+      const sec=document.getElementById(e.detail);
+      if(!sec) return;
+      const items=[...sec.querySelectorAll('.reveal')].filter(el=>el.offsetParent!==null);
+      items.forEach(el=>el.classList.add('in'));    // lock final resting state (opacity 1, no transform)
+      if(reduce) return;                            // reduced motion: snap to final, no slide
+      items.forEach((el,i)=>{
+        el.animate(
+          [{opacity:0,transform:startOffset(el.className)},{opacity:1,transform:'translate(0,0)'}],
+          {duration:580,easing:'cubic-bezier(.22,.61,.36,1)',delay:Math.min(i*45,260),fill:'backwards'}
+        );
+      });
+    });
 
     // ---- pinch / ctrl-scroll zoom on result + translation panels (works even with reduced motion) ----
     ['#ltOut','#qaAnswer','#pwResult','#drIssues'].forEach(sel=>{
