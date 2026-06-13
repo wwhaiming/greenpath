@@ -1,9 +1,10 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { reviewAI } from '../utils/api.js'
 import { DR_SAMPLES } from '../constants/drSamples.js'
 import IssueCard from '../components/IssueCard.jsx'
 import LoadingSpinner from '../components/LoadingSpinner.jsx'
 import LegalDisclaimer from '../components/LegalDisclaimer.jsx'
+import { saveDocumentReviewData, loadDocumentReviewData } from '../utils/storage.js'
 
 const STATUS_TEXT = {
   'looks-good': 'No obvious issues found. This is not a guarantee — always confirm against the official USCIS form instructions.',
@@ -26,12 +27,21 @@ function localReview(text, formType) {
   return out
 }
 
+const DEFAULT_INPUT = 'Address history: 2019–2021 (Chicago), 2022–present (Houston). Signature: left blank. Date of birth: 05/30/1996 on this form, 30/05/1996 on my passport. Employment: no end date listed for previous job.'
+
 export default function DocumentReview({ navigate }) {
-  const [formType, setFormType] = useState('I-485')
-  const [inputText, setInputText] = useState('Address history: 2019–2021 (Chicago), 2022–present (Houston). Signature: left blank. Date of birth: 05/30/1996 on this form, 30/05/1996 on my passport. Employment: no end date listed for previous job.')
+  const [formType, setFormType] = useState(() => loadDocumentReviewData().formType)
+  const [inputText, setInputText] = useState(() => {
+    const saved = loadDocumentReviewData()
+    return saved.inputText || DEFAULT_INPUT
+  })
   const [result, setResult] = useState(null)
   const [loading, setLoading] = useState(false)
   const [offlineNote, setOfflineNote] = useState('')
+
+  useEffect(() => {
+    saveDocumentReviewData({ formType, inputText })
+  }, [formType, inputText])
 
   async function handleReview() {
     const text = inputText.trim()

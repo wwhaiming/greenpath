@@ -1,16 +1,25 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { pathwayAI } from '../utils/api.js'
 import IssueCard from '../components/IssueCard.jsx'
 import LoadingSpinner from '../components/LoadingSpinner.jsx'
 import LegalDisclaimer from '../components/LegalDisclaimer.jsx'
+import { savePathwayData, loadPathwayData } from '../utils/storage.js'
 
 const CONF = { high: 'High confidence', medium: 'Medium confidence', low: 'Low confidence' }
+const DEFAULT_INTAKE = 'I am married to a U.S. citizen and we have lived together in the U.S. for 2 years. I entered on a tourist visa that has since expired. I have no criminal history. I do not have a U.S. job offer.'
 
 export default function PathwayFinder({ navigate }) {
-  const [intake, setIntake] = useState('I am married to a U.S. citizen and we have lived together in the U.S. for 2 years. I entered on a tourist visa that has since expired. I have no criminal history. I do not have a U.S. job offer.')
-  const [result, setResult] = useState(null)
+  const [intake, setIntake] = useState(() => {
+    const saved = loadPathwayData()
+    return saved.intake || DEFAULT_INTAKE
+  })
+  const [result, setResult] = useState(() => loadPathwayData().result)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
+
+  useEffect(() => {
+    savePathwayData({ intake, result })
+  }, [intake, result])
 
   async function handleFind() {
     const text = intake.trim()

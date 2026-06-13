@@ -12,6 +12,7 @@ import PathwayFinder from './pages/PathwayFinder.jsx'
 import StageQA from './pages/StageQA.jsx'
 import VisaBulletin from './pages/VisaBulletin.jsx'
 import { setSiteLanguage } from './utils/translate.js'
+import { saveLanguage, loadLanguage } from './utils/storage.js'
 
 const PAGES = {
   home: Home,
@@ -29,11 +30,16 @@ const PAGES = {
 
 export default function App() {
   const [page, setPage] = useState('home')
-  const [siteLang, setSiteLang] = useState('English')
+  const [siteLang, setSiteLang] = useState(() => loadLanguage())
 
   const navigate = (to) => {
     setPage(to)
     window.scrollTo({ top: 0, behavior: 'smooth' })
+  }
+
+  const handleSetSiteLang = (lang) => {
+    setSiteLang(lang)
+    saveLanguage(lang)
   }
 
   // Re-apply translation whenever the page or language changes
@@ -50,7 +56,7 @@ export default function App() {
   return (
     <>
       <div className="page-band" />
-      <Header currentPage={page} navigate={navigate} siteLang={siteLang} setSiteLang={setSiteLang} />
+      <Header currentPage={page} navigate={navigate} siteLang={siteLang} setSiteLang={handleSetSiteLang} />
       <main>
         <PageComponent navigate={navigate} />
       </main>
