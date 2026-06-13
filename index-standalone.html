@@ -59,7 +59,10 @@
     --shadow-lift:0 34px 80px -36px rgba(14,61,41,.45),0 4px 10px -4px rgba(14,61,41,.12);
   }
   *{box-sizing:border-box;margin:0;padding:0}
-  html{scroll-behavior:smooth;background:var(--paper);overflow-x:clip}
+  html{scroll-behavior:smooth;background:var(--paper)}
+  /* contain decorative bleed + slide-in motion without overflow on a sticky ancestor (which breaks position:sticky) */
+  .bg-ambient,.home-hero{overflow:clip}
+  .dr-grid,.ip-grid,.da-grid,.lt-body{overflow-x:clip}
   body{
     min-width:320px;
     font-family:var(--font-body);
@@ -67,7 +70,10 @@
     background:var(--paper);
     -webkit-font-smoothing:antialiased;
     line-height:1.55;
-    overflow-x:hidden;
+    /* NOTE: no overflow here. overflow-x on body forces overflow-y:auto, making
+       body a scroll container and breaking position:sticky for the scrolly
+       stages. Horizontal bleed is contained per-element instead (.bg-ambient,
+       .home-hero, .dr-grid, .ip-grid, .da-grid, .lt-body). */
   }
   h1,h2,h3,.display,.h1,.hero-h{font-family:var(--font-display);font-weight:480;letter-spacing:-.02em;color:var(--ink-h);font-variation-settings:"SOFT" 40,"WONK" 0}
   .it,em.it{font-family:var(--font-display);font-style:italic;font-weight:430;color:var(--green-mid)}
