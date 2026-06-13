@@ -1,0 +1,14 @@
+{
+  "name": "DOL PERM labor-certification outcomes (FY2024)",
+  "description": "Permanent labor certification decisions (the DOL step of an employment-based green card). CASE_STATUS = Certified / Certified-Expired (success) vs Denied (unsuccessful) / Withdrawn.",
+  "total_cases": 92258,
+  "certified": 86319,
+  "denied": 4892,
+  "files": {
+    "perm_fy2024_by_status.csv": "counts + pct by case status",
+    "perm_fy2024_by_country.csv": "certified/denied/withdrawn + denial_rate_pct by country of citizenship"
+  },
+  "source": "https://www.dol.gov/sites/dolgov/files/ETA/oflc/pdfs/PERM_Disclosure_Data_FY2024_Q4.xlsx",
+  "origin": "U.S. DOL Office of Foreign Labor Certification (public domain)",
+  "note": "Derived summaries; raw case-level file is ~76MB (linked). Educational, not legal advice."
+}
