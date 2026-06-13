@@ -1,0 +1,80 @@
+{
+  "name": "Employment-based green-card backlog (Visa Bulletin history)",
+  "description": "Monthly USCIS/DOS Visa Bulletin final-action dates and derived wait times, by chargeability country and employment-based preference (EB) level.",
+  "source_repo": "https://github.com/DavidBellamy/visa_dates",
+  "underlying_source": "U.S. Department of State Visa Bulletin (public domain, U.S. government work). travel.state.gov/content/travel/en/legal/visa-law0/visa-bulletin.html",
+  "license": "Underlying Visa Bulletin data is U.S. govt public domain; compilation via DavidBellamy/visa_dates (no explicit license).",
+  "columns": {
+    "EB_level": "Employment-based preference category (1=EB-1, 2=EB-2, 3=EB-3, ...)",
+    "final_action_dates": "Priority date that is current for that category/country/month (YYYY-MM-DD)",
+    "visa_bulletin_date": "The Visa Bulletin month this row reports (YYYY-MM-DD)",
+    "visa_wait_time": "Estimated wait in years (bulletin date minus final action date)"
+  },
+  "files": [
+    {
+      "file": "visa_bulletin/china_eb_backlog.csv",
+      "country": "China",
+      "rows": 924,
+      "columns": [
+        "EB_level",
+        "final_action_dates",
+        "visa_bulletin_date",
+        "visa_wait_time"
+      ],
+      "date_min": "2005-04-01",
+      "date_max": "2025-12-01"
+    },
+    {
+      "file": "visa_bulletin/india_eb_backlog.csv",
+      "country": "India",
+      "rows": 976,
+      "columns": [
+        "EB_level",
+        "final_action_dates",
+        "visa_bulletin_date",
+        "visa_wait_time"
+      ],
+      "date_min": "2003-10-01",
+      "date_max": "2025-12-01"
+    },
+    {
+      "file": "visa_bulletin/mexico_eb_backlog.csv",
+      "country": "Mexico",
+      "rows": 976,
+      "columns": [
+        "EB_level",
+        "final_action_dates",
+        "visa_bulletin_date",
+        "visa_wait_time"
+      ],
+      "date_min": "2003-10-01",
+      "date_max": "2025-12-01"
+    },
+    {
+      "file": "visa_bulletin/philippines_eb_backlog.csv",
+      "country": "Philippines",
+      "rows": 968,
+      "columns": [
+        "EB_level",
+        "final_action_dates",
+        "visa_bulletin_date",
+        "visa_wait_time"
+      ],
+      "date_min": "2003-10-01",
+      "date_max": "2025-12-01"
+    },
+    {
+      "file": "visa_bulletin/row_eb_backlog.csv",
+      "country": "Rest of world (all other countries)",
+      "rows": 468,
+      "columns": [
+        "EB_level",
+        "final_action_dates",
+        "visa_bulletin_date",
+        "visa_wait_time"
+      ],
+      "date_min": "2016-04-01",
+      "date_max": "2025-12-01"
+    }
+  ]
+}
