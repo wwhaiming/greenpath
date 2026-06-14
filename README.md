@@ -3,6 +3,7 @@ AI-powered green card navigation platform \
 Created by Whaiming Wang and Gary Zhang for the USAII Global AI Hackathon 2026
 
 ## To run in dev mode:
+cp .env.example .env  # then put your OpenAI key in .env (never commit it)
 npm install
 npm run dev          # Vite on :5173, proxies /api to Flask on :5000
 python server.py     # Flask API server
@@ -45,6 +46,31 @@ GreenPath turns the U.S. green card process from a maze of forms and legalese in
 | `POST /api/stage-qa` | pathway + stage + question → plain-language answer |
 | `POST /api/chat` | generic completion (date extraction, translation) |
 
+## Data grounding (not just a wrapper)
+
+Facts the model could get wrong are not left to the model. `visa_data.py` reads the
+vendored Visa Bulletin dataset (`datasets/`) plus `forecast.py`'s fitted priority-date
+advancement rates and builds a compact factual brief that is **injected into the
+Pathway Finder and Stage Q&A system prompts**. So "how long will I wait?" is answered
+with real historical movement for the user's country + category, with an explicit
+note that figures change monthly and to verify at travel.state.gov. Sources are listed
+in [`datasets/SOURCES.md`](datasets/SOURCES.md).
+
+## Evaluation
+
+`evals/` is a labeled accuracy harness that imports the **production prompts** from
+`server.py` and runs them against the live `gpt-4o-mini`, so the score is the deployed
+app's, not a copy. Latest run (2026-06-14): **100% on 38 cases** (26 Pathway + 12
+Document Review), including a hard tier (TPS/DACA with no direct path, EB-1C transfer,
+widow self-petition, missing translation, late conditional-removal). Methodology and
+honest limitations: [`evals/RESULTS.md`](evals/RESULTS.md). Reproduce:
+`python evals/run_evals.py --date YYYY-MM-DD`.
+
+## Submission (USAII Global AI Hackathon 2026)
+
+Paste-ready Devpost copy mapped to the high-school rubric and the 3–5 min pitch video
+script live in [`submission/`](submission/).
+
 ## Standalone demo
 
 `index-standalone.html` is a self-contained single-file build (scroll-driven SVG stories, animated section emblems, voice read-aloud). Open it directly in a browser — no install, no server.
@@ -52,7 +78,7 @@ GreenPath turns the U.S. green card process from a maze of forms and legalese in
 ## Tips
 
 - macOS: port 5000 is taken by AirPlay Receiver. Run `PORT=5001 python server.py` instead.
-- `OPENAI_API_KEY` is read from `.env` (python-dotenv).
+- `OPENAI_API_KEY` is read from `.env` (python-dotenv). `.env` is gitignored; copy `.env.example`. The key is server-side only — it is never sent to the browser by the React app.
 - Project structure: `src/pages/` (one file per feature), `src/utils/` (API + translation helpers), `src/constants/` (question banks, samples, languages), `server.py` (all backend).
 
 ## Disclaimer

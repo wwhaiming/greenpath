@@ -1,0 +1,47 @@
+{
+  "_note": "Labeled accuracy cases for GreenPath's two structured-output AI features. 'pathway' tests the Pathway Finder classifier (/api/pathway). 'review' tests Document Review (/api/document-review). Labels use the EXACT category strings the production prompts in server.py emit, so the score reflects the deployed app (gpt-4o-mini), not a stand-in. Expand freely; accuracy only means something with coverage.",
+  "pathway": [
+    {"id": "spouse-citizen-in-us", "input": "I am married to a U.S. citizen. We live together in California. I entered legally on a tourist visa.", "expect": ["Family-based"], "note": "AOS via I-130 + I-485"},
+    {"id": "spouse-citizen-abroad", "input": "My husband is a U.S. citizen. I live in the Philippines and have never been to the US.", "expect": ["Family-based"], "note": "Consular processing IR-1/CR-1"},
+    {"id": "parent-of-adult-citizen", "input": "My daughter is 27 and a U.S. citizen. She wants to sponsor me to live with her.", "expect": ["Family-based"], "note": "IR-5 immediate relative"},
+    {"id": "sibling-of-citizen", "input": "My brother is a U.S. citizen and wants to sponsor me. I live in India.", "expect": ["Family-based"], "note": "F4 preference, long wait"},
+    {"id": "phd-research", "input": "I have a PhD in biology and a U.S. university wants to hire me as a research scientist. My employer will sponsor me.", "expect": ["Employment-based"], "note": "EB-2"},
+    {"id": "extraordinary-ability", "input": "I am an award-winning athlete with international recognition and want to immigrate based on my achievements without an employer.", "expect": ["Employment-based"], "note": "EB-1A self-petition"},
+    {"id": "skilled-worker", "input": "I work as a welder and my U.S. employer is willing to sponsor me through labor certification (PERM).", "expect": ["Employment-based"], "note": "EB-3"},
+    {"id": "eb2-niw", "input": "I am a researcher whose work benefits the United States and I want to self-petition without a job offer based on a national interest waiver.", "expect": ["Employment-based"], "note": "EB-2 NIW"},
+    {"id": "asylum-fear", "input": "I fled my country because I was persecuted for my political opinion and I am afraid to return.", "expect": ["Humanitarian (Asylum/Refugee)"], "note": "Asylum"},
+    {"id": "vawa", "input": "I am married to a U.S. citizen who abuses me. I want to apply on my own without his help.", "expect": ["Humanitarian (Asylum/Refugee)"], "note": "VAWA self-petition"},
+    {"id": "u-visa-crime", "input": "I was the victim of a serious crime in the US and helped the police investigate it.", "expect": ["Humanitarian (Asylum/Refugee)"], "note": "U visa"},
+    {"id": "dv-lottery", "input": "I am from Nepal and entered the green card lottery. I was selected this year.", "expect": ["Diversity Visa"], "note": "DV"},
+    {"id": "investor", "input": "I have 1.2 million dollars to invest in a new U.S. business that will create at least 10 jobs.", "expect": ["Investment (EB-5)"], "note": "EB-5"},
+    {"id": "fiance", "input": "My U.S. citizen fiance and I plan to marry in the US after I arrive on a K-1 visa.", "expect": ["Family-based"], "note": "K-1 then AOS"},
+    {"id": "special-immigrant-religious", "input": "I am a minister and a U.S. religious organization wants to bring me to work for them permanently.", "expect": ["Special Immigrant", "Employment-based"], "note": "EB-4 special immigrant (religious worker)"},
+    {"id": "student-no-basis", "input": "I am an international student on an F-1 visa and just want a green card somehow.", "expect": ["Unclear — needs attorney review"], "note": "Insufficient basis; classifier should flag unclear / low confidence"},
+
+    {"id": "hard-eb1c-transfer", "input": "I am a manager at my company's office in Brazil and the company is transferring me to run its U.S. branch long term.", "expect": ["Employment-based"], "note": "HARD: EB-1C multinational manager"},
+    {"id": "hard-widow-citizen", "input": "My U.S. citizen wife passed away last year. We were married for two years and living together when she died.", "expect": ["Family-based"], "note": "HARD: widow(er) I-360 self-petition; model may misroute to Humanitarian"},
+    {"id": "hard-lpr-spouse", "input": "I am married to a green card holder, not a U.S. citizen. We live together in Texas.", "expect": ["Family-based"], "note": "HARD: F2A preference, not immediate relative"},
+    {"id": "hard-derivative-child", "input": "My mother is getting a green card through her employer and I am her 19-year-old son with no job or sponsor of my own.", "expect": ["Employment-based", "Family-based"], "note": "HARD: derivative beneficiary"},
+    {"id": "hard-afghan-siv", "input": "I worked as a translator for the U.S. military in Afghanistan and was told I might qualify for a special immigrant visa.", "expect": ["Special Immigrant"], "note": "HARD: SIV; may misroute to Humanitarian"},
+    {"id": "hard-tps-only", "input": "I have Temporary Protected Status from my country and have lived in the U.S. for ten years. I have no U.S. relatives and no employer sponsor.", "expect": ["Unclear — needs attorney review"], "note": "HARD: TPS is not itself a green-card path"},
+    {"id": "hard-daca-only", "input": "I have DACA. I came here as a young child without inspection and I am in college now. No family petition, no job offer.", "expect": ["Unclear — needs attorney review"], "note": "HARD: DACA alone has no direct GC path"},
+    {"id": "hard-multi-pathway", "input": "I have a master's degree and a U.S. job offer in my field, and separately my sister is a U.S. citizen.", "expect": ["Employment-based", "Family-based"], "note": "HARD: two valid pathways; should pick one and list the other as alternative"},
+    {"id": "hard-trafficking", "input": "I was brought to the U.S. and forced to work against my will, and I am helping law enforcement with the case.", "expect": ["Humanitarian (Asylum/Refugee)"], "note": "HARD: T visa (trafficking)"},
+    {"id": "hard-tourist-no-basis", "input": "I am here on a tourist visa and would love to stay permanently, but I have no family here, no job offer, and no investment.", "expect": ["Unclear — needs attorney review"], "note": "HARD: no qualifying basis -> should flag unclear / low confidence"}
+  ],
+  "review": [
+    {"id": "unsigned-i485", "input": "Form I-485. Applicant info complete. The signature field on the last page was left blank. Date of birth: 05/13/1990.", "expectStatus": ["needs-attention", "major-issues"], "expectKeywords": ["sign", "signature"]},
+    {"id": "date-mismatch-i130", "input": "Form I-130. Petitioner date of birth on the form is 03/04/1985 but the passport copy shows 04/03/1985.", "expectStatus": ["needs-attention", "major-issues"], "expectKeywords": ["date", "mismatch", "match", "inconsistent", "birth"]},
+    {"id": "blank-address-history", "input": "Form I-485. Address history section: only current address listed, prior 5 years left blank.", "expectStatus": ["needs-attention", "major-issues"], "expectKeywords": ["address", "blank", "missing", "history"]},
+    {"id": "clean-form", "input": "Form I-130. All fields complete, signed and dated, names match supporting documents, no gaps in history.", "expectStatus": ["looks-good"], "expectKeywords": []},
+    {"id": "missing-fee", "input": "Form I-765 complete and signed but no filing fee or fee waiver request (I-912) included.", "expectStatus": ["needs-attention", "major-issues"], "expectKeywords": ["fee", "payment", "waiver"]},
+    {"id": "employment-gap", "input": "Form I-485. Employment history shows a gap from 2019 to 2021 with no explanation and overlapping job dates in 2022.", "expectStatus": ["needs-attention", "major-issues"], "expectKeywords": ["gap", "employment", "overlap"]},
+    {"id": "name-mismatch", "input": "Form N-400. Name on the form is 'Maria Cruz' but the green card and tax records read 'Maria Cruz-Santos' with no name-change explanation.", "expectStatus": ["needs-attention", "major-issues"], "expectKeywords": ["name", "mismatch", "match", "consistent"]},
+
+    {"id": "hard-missing-translation", "input": "Form I-130 with a foreign-language marriage certificate attached, but no certified English translation is included.", "expectStatus": ["needs-attention", "major-issues"], "expectKeywords": ["translation", "translate", "english", "certified"]},
+    {"id": "hard-i751-late", "input": "Filing Form I-751 to remove conditions on residence five months after the conditional green card already expired, with no explanation for the late filing.", "expectStatus": ["needs-attention", "major-issues"], "expectKeywords": ["late", "condition", "expired", "explanation", "i-751"]},
+    {"id": "hard-ssn-conflict", "input": "Form N-400 lists a Social Security Number ending in 1234, but the attached tax transcript shows an SSN ending in 5678.", "expectStatus": ["needs-attention", "major-issues"], "expectKeywords": ["ssn", "social security", "conflict", "mismatch", "number"]},
+    {"id": "hard-low-sev-photo", "input": "Form I-485 is fully complete, signed, and dated. The only thing off: the passport photo has a light blue background instead of a plain white one.", "expectStatus": ["looks-good", "needs-attention"], "expectKeywords": ["photo", "background", "white"]},
+    {"id": "hard-mostly-blank", "input": "The form is mostly empty. Only the applicant's full name is filled in; every other field is blank.", "expectStatus": ["major-issues"], "expectKeywords": ["blank", "missing", "incomplete", "required"]}
+  ]
+}

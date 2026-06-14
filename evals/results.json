@@ -1,0 +1,374 @@
+{
+  "model": "gpt-4o-mini",
+  "date": "2026-06-14",
+  "grounding": "Visa Bulletin brief injected",
+  "pathway": {
+    "accuracy": 1.0,
+    "n": 26,
+    "cases": [
+      {
+        "id": "spouse-citizen-in-us",
+        "expected": [
+          "Family-based"
+        ],
+        "got": "Family-based",
+        "confidence": "high",
+        "pass": true
+      },
+      {
+        "id": "spouse-citizen-abroad",
+        "expected": [
+          "Family-based"
+        ],
+        "got": "Family-based",
+        "confidence": "high",
+        "pass": true
+      },
+      {
+        "id": "parent-of-adult-citizen",
+        "expected": [
+          "Family-based"
+        ],
+        "got": "Family-based",
+        "confidence": "medium",
+        "pass": true
+      },
+      {
+        "id": "sibling-of-citizen",
+        "expected": [
+          "Family-based"
+        ],
+        "got": "Family-based",
+        "confidence": "medium",
+        "pass": true
+      },
+      {
+        "id": "phd-research",
+        "expected": [
+          "Employment-based"
+        ],
+        "got": "Employment-based",
+        "confidence": "high",
+        "pass": true
+      },
+      {
+        "id": "extraordinary-ability",
+        "expected": [
+          "Employment-based"
+        ],
+        "got": "Employment-based",
+        "confidence": "high",
+        "pass": true
+      },
+      {
+        "id": "skilled-worker",
+        "expected": [
+          "Employment-based"
+        ],
+        "got": "Employment-based",
+        "confidence": "high",
+        "pass": true
+      },
+      {
+        "id": "eb2-niw",
+        "expected": [
+          "Employment-based"
+        ],
+        "got": "Employment-based",
+        "confidence": "high",
+        "pass": true
+      },
+      {
+        "id": "asylum-fear",
+        "expected": [
+          "Humanitarian (Asylum/Refugee)"
+        ],
+        "got": "Humanitarian (Asylum/Refugee)",
+        "confidence": "high",
+        "pass": true
+      },
+      {
+        "id": "vawa",
+        "expected": [
+          "Humanitarian (Asylum/Refugee)"
+        ],
+        "got": "Humanitarian (Asylum/Refugee)",
+        "confidence": "high",
+        "pass": true
+      },
+      {
+        "id": "u-visa-crime",
+        "expected": [
+          "Humanitarian (Asylum/Refugee)"
+        ],
+        "got": "Humanitarian (Asylum/Refugee)",
+        "confidence": "high",
+        "pass": true
+      },
+      {
+        "id": "dv-lottery",
+        "expected": [
+          "Diversity Visa"
+        ],
+        "got": "Diversity Visa",
+        "confidence": "high",
+        "pass": true
+      },
+      {
+        "id": "investor",
+        "expected": [
+          "Investment (EB-5)"
+        ],
+        "got": "Investment (EB-5)",
+        "confidence": "high",
+        "pass": true
+      },
+      {
+        "id": "fiance",
+        "expected": [
+          "Family-based"
+        ],
+        "got": "Family-based",
+        "confidence": "high",
+        "pass": true
+      },
+      {
+        "id": "special-immigrant-religious",
+        "expected": [
+          "Special Immigrant",
+          "Employment-based"
+        ],
+        "got": "Employment-based",
+        "confidence": "high",
+        "pass": true
+      },
+      {
+        "id": "student-no-basis",
+        "expected": [
+          "Unclear \u2014 needs attorney review"
+        ],
+        "got": "Unclear \u2014 needs attorney review",
+        "confidence": "low",
+        "pass": true
+      },
+      {
+        "id": "hard-eb1c-transfer",
+        "expected": [
+          "Employment-based"
+        ],
+        "got": "Employment-based",
+        "confidence": "high",
+        "pass": true
+      },
+      {
+        "id": "hard-widow-citizen",
+        "expected": [
+          "Family-based"
+        ],
+        "got": "Family-based",
+        "confidence": "medium",
+        "pass": true
+      },
+      {
+        "id": "hard-lpr-spouse",
+        "expected": [
+          "Family-based"
+        ],
+        "got": "Family-based",
+        "confidence": "medium",
+        "pass": true
+      },
+      {
+        "id": "hard-derivative-child",
+        "expected": [
+          "Employment-based",
+          "Family-based"
+        ],
+        "got": "Family-based",
+        "confidence": "medium",
+        "pass": true
+      },
+      {
+        "id": "hard-afghan-siv",
+        "expected": [
+          "Special Immigrant"
+        ],
+        "got": "Special Immigrant",
+        "confidence": "high",
+        "pass": true
+      },
+      {
+        "id": "hard-tps-only",
+        "expected": [
+          "Unclear \u2014 needs attorney review"
+        ],
+        "got": "Unclear \u2014 needs attorney review",
+        "confidence": "low",
+        "pass": true
+      },
+      {
+        "id": "hard-daca-only",
+        "expected": [
+          "Unclear \u2014 needs attorney review"
+        ],
+        "got": "Unclear \u2014 needs attorney review",
+        "confidence": "low",
+        "pass": true
+      },
+      {
+        "id": "hard-multi-pathway",
+        "expected": [
+          "Employment-based",
+          "Family-based"
+        ],
+        "got": "Employment-based",
+        "confidence": "medium",
+        "pass": true
+      },
+      {
+        "id": "hard-trafficking",
+        "expected": [
+          "Humanitarian (Asylum/Refugee)"
+        ],
+        "got": "Humanitarian (Asylum/Refugee)",
+        "confidence": "high",
+        "pass": true
+      },
+      {
+        "id": "hard-tourist-no-basis",
+        "expected": [
+          "Unclear \u2014 needs attorney review"
+        ],
+        "got": "Unclear \u2014 needs attorney review",
+        "confidence": "low",
+        "pass": true
+      }
+    ]
+  },
+  "review": {
+    "accuracy": 1.0,
+    "n": 12,
+    "cases": [
+      {
+        "id": "unsigned-i485",
+        "expectStatus": [
+          "needs-attention",
+          "major-issues"
+        ],
+        "got": "major-issues",
+        "keywordHit": true,
+        "pass": true
+      },
+      {
+        "id": "date-mismatch-i130",
+        "expectStatus": [
+          "needs-attention",
+          "major-issues"
+        ],
+        "got": "major-issues",
+        "keywordHit": true,
+        "pass": true
+      },
+      {
+        "id": "blank-address-history",
+        "expectStatus": [
+          "needs-attention",
+          "major-issues"
+        ],
+        "got": "needs-attention",
+        "keywordHit": true,
+        "pass": true
+      },
+      {
+        "id": "clean-form",
+        "expectStatus": [
+          "looks-good"
+        ],
+        "got": "looks-good",
+        "keywordHit": true,
+        "pass": true
+      },
+      {
+        "id": "missing-fee",
+        "expectStatus": [
+          "needs-attention",
+          "major-issues"
+        ],
+        "got": "major-issues",
+        "keywordHit": true,
+        "pass": true
+      },
+      {
+        "id": "employment-gap",
+        "expectStatus": [
+          "needs-attention",
+          "major-issues"
+        ],
+        "got": "major-issues",
+        "keywordHit": true,
+        "pass": true
+      },
+      {
+        "id": "name-mismatch",
+        "expectStatus": [
+          "needs-attention",
+          "major-issues"
+        ],
+        "got": "major-issues",
+        "keywordHit": true,
+        "pass": true
+      },
+      {
+        "id": "hard-missing-translation",
+        "expectStatus": [
+          "needs-attention",
+          "major-issues"
+        ],
+        "got": "major-issues",
+        "keywordHit": true,
+        "pass": true
+      },
+      {
+        "id": "hard-i751-late",
+        "expectStatus": [
+          "needs-attention",
+          "major-issues"
+        ],
+        "got": "major-issues",
+        "keywordHit": true,
+        "pass": true
+      },
+      {
+        "id": "hard-ssn-conflict",
+        "expectStatus": [
+          "needs-attention",
+          "major-issues"
+        ],
+        "got": "major-issues",
+        "keywordHit": true,
+        "pass": true
+      },
+      {
+        "id": "hard-low-sev-photo",
+        "expectStatus": [
+          "looks-good",
+          "needs-attention"
+        ],
+        "got": "needs-attention",
+        "keywordHit": true,
+        "pass": true
+      },
+      {
+        "id": "hard-mostly-blank",
+        "expectStatus": [
+          "major-issues"
+        ],
+        "got": "major-issues",
+        "keywordHit": true,
+        "pass": true
+      }
+    ]
+  },
+  "overall_accuracy": 1.0,
+  "total_cases": 38
+}
