@@ -7,8 +7,14 @@ from dotenv import load_dotenv
 load_dotenv()
 
 _root = os.path.dirname(os.path.abspath(__file__))
+# Single front-end: the polished single-file build (index-standalone.html). The old
+# React/Vite build was retired in favor of one app served behind the secure, grounded
+# API. If a dist/index.html ever exists again it transparently takes precedence.
 _dist = os.path.join(_root, 'dist')
-_static = _dist if os.path.isdir(_dist) else _root
+# Only treat dist/ as the front-end if it actually has a built index.html; a stray
+# empty dist/ must not hijack serving. Otherwise serve the single-file build from root.
+_static = _dist if os.path.isfile(os.path.join(_dist, 'index.html')) else _root
+_INDEX_FILE = 'index.html' if os.path.isfile(os.path.join(_static, 'index.html')) else 'index-standalone.html'
 
 app = Flask(__name__, static_folder=_static, static_url_path='')
 client = OpenAI(api_key=os.environ.get('OPENAI_API_KEY'))
@@ -33,7 +39,7 @@ def _ground(system_prompt):
 
 @app.route('/')
 def index():
-    return send_from_directory(_static, 'index.html')
+    return send_from_directory(_static, _INDEX_FILE)
 
 
 @app.route('/<path:path>')
@@ -41,7 +47,7 @@ def static_files(path):
     full = os.path.join(_static, path)
     if os.path.isfile(full):
         return send_from_directory(_static, path)
-    return send_from_directory(_static, 'index.html')
+    return send_from_directory(_static, _INDEX_FILE)
 
 
 # ── /api/chat  (generic – used for date extraction and translation) ──────────
@@ -54,6 +60,11 @@ def api_chat():
         max_tokens = int(data.get('max_tokens', 1000))
         if not messages:
             return jsonify({'error': 'messages required'}), 400
+
+        # Ground immigration features in the real Visa Bulletin brief when the client
+        # asks (ground:true). Generic calls (translation, date parsing) stay ungrounded.
+        if data.get('ground') and VISA_BRIEF:
+            messages = [{'role': 'system', 'content': VISA_BRIEF}] + messages
 
         resp = client.chat.completions.create(
             model=CHAT_MODEL,

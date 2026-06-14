@@ -1815,27 +1815,44 @@
     }finally{ aiExtract.disabled=false; }
   });
 
-  // ===== AI direct to OpenAI =====
-  // Standalone build runs from file:// with no server, so the AI calls go straight to
-  // OpenAI from the browser. We do NOT ship a key in source. The user supplies their
-  // own key once; it is kept only in this tab's sessionStorage (cleared on close) and
-  // never committed. For the secure, key-never-in-browser experience, run the full app
-  // (server.py proxies the key server-side).
+  // ===== AI =====
+  // Served by server.py (http/https): AI calls go through the secure /api/chat proxy.
+  // The OpenAI key stays server-side and never reaches the browser, and immigration
+  // features are grounded in real Visa Bulletin data (ground:true -> server injects the
+  // dataset brief). Opened directly (file://, no server): falls back to calling OpenAI
+  // from the browser with a key you paste once, kept only in this tab's sessionStorage
+  // and never committed. No key is shipped in this file.
+  const PROXY_ENDPOINT='/api/chat';
   const AI_ENDPOINT='https://api.openai.com/v1/chat/completions';
   const AI_MODEL='gpt-4o-mini';
+  const servedByServer = location.protocol==='http:' || location.protocol==='https:';
 
   function getAiKey(){
     let k = sessionStorage.getItem('gp_openai_key');
     if(!k){
-      k = window.prompt('This standalone demo calls OpenAI from your browser. Paste your own OpenAI API key (kept only in this tab, never sent anywhere else):') || '';
+      k = window.prompt('Opened without the GreenPath server, so AI calls go straight to OpenAI from your browser. Paste your own OpenAI API key (kept only in this tab, never sent anywhere else). For the secure version, run: python server.py') || '';
       if(k) sessionStorage.setItem('gp_openai_key', k.trim());
     }
     return (k||'').trim();
   }
 
   async function aiChatMessages(messages, opts={}){
+    if(servedByServer){
+      // Secure path: the server holds the key and grounds immigration answers.
+      const res=await fetch(PROXY_ENDPOINT,{
+        method:'POST', headers:{'Content-Type':'application/json'},
+        body:JSON.stringify({messages, model:opts.model||AI_MODEL,
+          temperature:opts.temperature??0.4, max_tokens:opts.max_tokens??900, ground:!!opts.ground})
+      });
+      if(!res.ok) throw new Error('proxy '+res.status);
+      const data=await res.json();
+      if(data.error) throw new Error(typeof data.error==='string'?data.error:(data.error.message||'proxy error'));
+      if(Array.isArray(data.content)) return data.content.map(b=>(b&&b.text)||'').join('').trim();
+      return (data.choices?.[0]?.message?.content||'').trim();
+    }
+    // file:// fallback: call OpenAI directly with a user-supplied key.
     const AI_KEY=getAiKey();
-    if(!AI_KEY) throw new Error('No API key provided. Add one to use the AI features in the standalone demo.');
+    if(!AI_KEY) throw new Error('No API key provided. Run "python server.py" for the secure version, or paste a key to use AI from this file directly.');
     const res=await fetch(AI_ENDPOINT,{
       method:'POST',
       headers:{'Content-Type':'application/json','Authorization':'Bearer '+AI_KEY},
@@ -1851,6 +1868,8 @@
   async function aiChat(prompt, system, opts={}){
     const messages=[];
     if(system) messages.push({role:'system',content:system});
+    // Auto-ground immigration features in real Visa Bulletin data via the server.
+    if(system && /immigration|green ?card|USCIS|visa|priority date|pathway/i.test(system)) opts={...opts, ground:true};
     messages.push({role:'user',content:prompt});
     return aiChatMessages(messages, opts);
   }

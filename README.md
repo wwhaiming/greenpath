@@ -2,15 +2,20 @@
 AI-powered green card navigation platform \
 Created by Whaiming Wang and Gary Zhang for the USAII Global AI Hackathon 2026
 
-## To run in dev mode:
-cp .env.example .env  # then put your OpenAI key in .env (never commit it)
-npm install
-npm run dev          # Vite on :5173, proxies /api to Flask on :5000
-python server.py     # Flask API server
+## Run
 
-## To build for production (Flask serves everything):
-npm run build        # outputs to dist/
-python server.py     # serves dist/ + /api/*
+```bash
+cp .env.example .env        # then put your OpenAI key in .env (never commit it)
+pip install -r requirements.txt
+PORT=5001 python server.py  # macOS: AirPlay owns :5000, so use 5001
+```
+
+Open http://localhost:5001 — Flask serves the single-file front-end (`index-standalone.html`)
+and the five `/api/*` endpoints. The OpenAI key stays server-side; the browser never sees it.
+
+`index-standalone.html` also opens directly (file://) for a quick look — the visuals work
+offline, and AI features fall back to a key you paste (kept only in your browser tab). Run the
+server for the secure, data-grounded experience.
 
 ## What it does
 
@@ -30,9 +35,9 @@ GreenPath turns the U.S. green card process from a maze of forms and legalese in
 
 | Layer | Tech |
 |---|---|
-| Frontend | React 18 + Vite 5, single-page app, no router dependency |
-| Backend | Flask (Python), serves `dist/` + 5 JSON API endpoints |
-| AI | OpenAI `gpt-4o-mini`, strict JSON contracts per feature |
+| Frontend | Single-file build `index-standalone.html` — scroll-driven SVG stories, animated emblems, no build step |
+| Backend | Flask (Python), serves the front-end + 5 JSON API endpoints, holds the key |
+| AI | OpenAI `gpt-4o-mini`, strict JSON contracts per feature, immigration answers grounded in real data |
 | OCR / PDF | tesseract.js 5 + pdf.js 3 (CDN, in-browser) |
 | Speech | Web Speech API (read-aloud) |
 
@@ -54,7 +59,9 @@ advancement rates and builds a compact factual brief that is **injected into the
 Pathway Finder and Stage Q&A system prompts**. So "how long will I wait?" is answered
 with real historical movement for the user's country + category, with an explicit
 note that figures change monthly and to verify at travel.state.gov. Sources are listed
-in [`datasets/SOURCES.md`](datasets/SOURCES.md).
+in [`datasets/SOURCES.md`](datasets/SOURCES.md). The front-end requests grounding via
+`{"ground": true}` on `/api/chat`, so the secure proxy and the data grounding apply
+to the immigration features automatically.
 
 ## Evaluation
 
@@ -71,15 +78,18 @@ honest limitations: [`evals/RESULTS.md`](evals/RESULTS.md). Reproduce:
 Paste-ready Devpost copy mapped to the high-school rubric and the 3–5 min pitch video
 script live in [`submission/`](submission/).
 
-## Standalone demo
+## Front-end
 
-`index-standalone.html` is a self-contained single-file build (scroll-driven SVG stories, animated section emblems, voice read-aloud). Open it directly in a browser — no install, no server.
+`index-standalone.html` is the single-file app — scroll-driven SVG stories, animated
+section emblems, voice read-aloud, no build step. `server.py` serves it at `/` and
+backs it with the secure `/api/*` endpoints. Opened directly (file://) the visuals work
+offline and AI falls back to a pasted key; run the server for the secure, grounded path.
 
 ## Tips
 
 - macOS: port 5000 is taken by AirPlay Receiver. Run `PORT=5001 python server.py` instead.
-- `OPENAI_API_KEY` is read from `.env` (python-dotenv). `.env` is gitignored; copy `.env.example`. The key is server-side only — it is never sent to the browser by the React app.
-- Project structure: `src/pages/` (one file per feature), `src/utils/` (API + translation helpers), `src/constants/` (question banks, samples, languages), `server.py` (all backend).
+- `OPENAI_API_KEY` is read from `.env` (python-dotenv). `.env` is gitignored; copy `.env.example`. The key is server-side only — it is never sent to the browser when served by `server.py`.
+- Project layout: `index-standalone.html` (front-end), `server.py` (backend + 5 API endpoints), `visa_data.py` + `forecast.py` (real-data grounding), `datasets/` (sources), `evals/` (accuracy harness), `submission/` (Devpost copy + pitch script + system-map visual).
 
 ## Disclaimer
 
