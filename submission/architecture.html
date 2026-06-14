@@ -1,0 +1,232 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>GreenPath — System Map</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Schibsted+Grotesk:wght@400;500;600;700&family=Fragment+Mono&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#faf7ed; --paper-2:#f3eeda; --card:#fffdf6;
+    --ink:#2a4434; --ink-soft:#4a6353; --ink-h:#2f7252;
+    --green:#1f8156; --green-deep:#1a5c43; --green-ink:#16432d;
+    --gold:#c79a3b; --gold-bright:#e8be62; --gold-soft:#f3e6c4;
+    --slate:#5b6f7a; --slate-soft:#dde6e9;
+    --terra:#b9694a; --line:#d9d2bd;
+    --shadow:0 10px 30px rgba(26,60,41,.10);
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:
+      radial-gradient(1200px 600px at 80% -10%, #fff8e6 0%, transparent 60%),
+      radial-gradient(900px 500px at -10% 20%, #eef5ee 0%, transparent 55%),
+      var(--paper);
+    color:var(--ink); font-family:'Schibsted Grotesk',system-ui,sans-serif; line-height:1.5;
+    -webkit-font-smoothing:antialiased;}
+  .wrap{max-width:1280px;margin:0 auto;padding:54px 46px 70px}
+  .mono{font-family:'Fragment Mono',ui-monospace,monospace}
+  .kicker{font-family:'Fragment Mono',monospace;letter-spacing:.22em;text-transform:uppercase;
+    font-size:12px;color:var(--gold);display:flex;align-items:center;gap:10px;margin-bottom:14px}
+  .kicker::before{content:"";width:34px;height:2px;background:linear-gradient(90deg,var(--gold),transparent)}
+  h1{font-family:'Fraunces',serif;font-weight:600;font-size:50px;line-height:1.04;margin:0 0 8px;color:var(--green-ink)}
+  h1 em{font-style:italic;color:var(--gold)}
+  .sub{font-size:18px;color:var(--ink-soft);max-width:760px;margin:0 0 6px}
+  .byline{font-family:'Fragment Mono',monospace;font-size:12.5px;color:var(--slate);margin-top:10px}
+  .sec-h{font-family:'Fraunces',serif;font-weight:600;font-size:23px;color:var(--green-ink);
+    margin:46px 0 18px;display:flex;align-items:center;gap:12px}
+  .sec-h span.n{font-family:'Fragment Mono',monospace;font-size:13px;color:#fff;background:var(--green);
+    width:26px;height:26px;border-radius:7px;display:grid;place-items:center;flex:0 0 auto}
+  .sec-h .rule{flex:1;height:1px;background:var(--line)}
+
+  /* pipeline */
+  .pipe{display:flex;align-items:stretch;gap:0;flex-wrap:nowrap}
+  .stage{flex:1;min-width:0;background:var(--card);border:1px solid var(--line);border-radius:14px;
+    padding:16px 16px 14px;box-shadow:var(--shadow);position:relative}
+  .stage .tag{font-family:'Fragment Mono',monospace;font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--slate);margin-bottom:7px}
+  .stage h4{font-family:'Fraunces',serif;font-weight:600;font-size:16.5px;margin:0 0 6px;color:var(--ink)}
+  .stage p{font-size:12.7px;color:var(--ink-soft);margin:0}
+  .stage.user{border-top:3px solid var(--slate)}
+  .stage.app{border-top:3px solid var(--green)}
+  .stage.ai{border-top:3px solid var(--gold);background:linear-gradient(180deg,#fffdf3,#fff)}
+  .stage.out{border-top:3px solid var(--terra)}
+  .arrow{flex:0 0 34px;display:grid;place-items:center;color:var(--gold)}
+  .arrow svg{width:24px;height:24px}
+
+  .ground{margin-top:16px;background:linear-gradient(180deg,#f6fbf3,#fffdf6);
+    border:1px solid #cfe3cf;border-left:4px solid var(--green);border-radius:12px;padding:16px 18px;
+    display:flex;gap:16px;align-items:flex-start;box-shadow:var(--shadow)}
+  .ground .badge{font-family:'Fragment Mono',monospace;font-size:10px;letter-spacing:.1em;text-transform:uppercase;
+    background:var(--green);color:#fff;padding:4px 9px;border-radius:20px;white-space:nowrap;margin-top:2px}
+  .ground b{color:var(--green-ink)}
+  .ground p{margin:0;font-size:13.5px;color:var(--ink-soft)}
+
+  .grid{display:grid;gap:14px}
+  .g3{grid-template-columns:repeat(3,1fr)}
+  .g4{grid-template-columns:repeat(4,1fr)}
+  .g2{grid-template-columns:1.15fr .85fr}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:13px;padding:15px 16px;box-shadow:var(--shadow)}
+  .card h5{font-family:'Fraunces',serif;font-weight:600;font-size:15.5px;margin:0 0 4px;color:var(--ink);display:flex;justify-content:space-between;align-items:center;gap:8px}
+  .card p{margin:0;font-size:12.6px;color:var(--ink-soft)}
+  .chip{font-family:'Fragment Mono',monospace;font-size:9.5px;letter-spacing:.08em;text-transform:uppercase;
+    padding:3px 8px;border-radius:20px;white-space:nowrap}
+  .chip.ai{background:var(--gold-soft);color:#8a6a1e;border:1px solid #e3cf94}
+  .chip.local{background:var(--slate-soft);color:#3f5360;border:1px solid #c4d2d8}
+  .chip.ground{background:#dff0df;color:var(--green-deep);border:1px solid #b9dab9}
+
+  /* module tree */
+  .tree{background:#102a20;color:#dfeee4;border-radius:14px;padding:20px 22px;font-family:'Fragment Mono',monospace;
+    font-size:12.5px;line-height:1.72;box-shadow:var(--shadow);overflow:auto}
+  .tree .d{color:var(--gold-bright)}
+  .tree .f{color:#bfe3cc}
+  .tree .c{color:#7fa490}
+  .tree .star{color:var(--gold-bright)}
+
+  /* eval scorecard */
+  .score{display:flex;gap:16px;align-items:stretch;flex-wrap:wrap}
+  .bigstat{background:linear-gradient(180deg,var(--green-deep),var(--green-ink));color:#eafff2;border-radius:16px;
+    padding:20px 26px;min-width:180px;box-shadow:var(--shadow);flex:0 0 auto}
+  .bigstat .num{font-family:'Fraunces',serif;font-weight:700;font-size:54px;line-height:1;color:var(--gold-bright)}
+  .bigstat .lbl{font-family:'Fragment Mono',monospace;font-size:11px;letter-spacing:.12em;text-transform:uppercase;margin-top:6px;opacity:.85}
+  .scol{flex:1;min-width:260px;display:grid;gap:10px;align-content:center}
+  .bar{background:var(--card);border:1px solid var(--line);border-radius:11px;padding:11px 14px;box-shadow:var(--shadow)}
+  .bar .top{display:flex;justify-content:space-between;font-size:13px;margin-bottom:7px}
+  .bar .top b{color:var(--ink)}
+  .bar .top .pct{font-family:'Fragment Mono',monospace;color:var(--green)}
+  .track{height:8px;background:var(--paper-2);border-radius:6px;overflow:hidden}
+  .fill{height:100%;background:linear-gradient(90deg,var(--green),var(--gold-bright));border-radius:6px}
+  .note{font-size:11.5px;color:var(--slate);margin-top:8px;font-family:'Fragment Mono',monospace}
+
+  .guard{background:linear-gradient(180deg,#fff7e9,#fffdf6);border:1px solid #ecd9a8;border-radius:14px;padding:18px 20px;box-shadow:var(--shadow)}
+  .guard h5{font-family:'Fraunces',serif;font-size:16px;margin:0 0 6px;color:var(--green-ink)}
+  .guard .risk{color:var(--terra);font-weight:600}
+  .guard p{margin:0 0 8px;font-size:13px;color:var(--ink-soft)}
+
+  .stackrow{display:flex;flex-wrap:wrap;gap:9px;margin-top:4px}
+  .badge2{background:var(--card);border:1px solid var(--line);border-radius:9px;padding:8px 12px;font-size:12.5px;
+    display:flex;gap:8px;align-items:center;box-shadow:0 4px 12px rgba(26,60,41,.06)}
+  .badge2 .dot{width:9px;height:9px;border-radius:50%;flex:0 0 auto}
+  .src{font-size:12px;color:var(--ink-soft)}
+  .src li{margin:3px 0}
+  footer{margin-top:50px;padding-top:18px;border-top:1px solid var(--line);display:flex;justify-content:space-between;
+    flex-wrap:wrap;gap:10px;font-family:'Fragment Mono',monospace;font-size:11.5px;color:var(--slate)}
+  .disc{font-style:italic;color:var(--ink-soft)}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="kicker">USAII Global AI Hackathon 2026 · Community — Help Is Hard to Find</div>
+  <h1>GreenPath <em>system map</em></h1>
+  <p class="sub">Turns the U.S. green-card maze into one obvious next step — plain-language, grounded in real wait-time data, in any language. General information, never legal advice.</p>
+  <div class="byline">Whaiming Wang · Gary Zhang   //   React + Vite · Flask · OpenAI gpt-4o-mini</div>
+
+  <!-- ARCHITECTURE -->
+  <div class="sec-h"><span class="n">1</span> Architecture — one input → AI (grounded) → one structured answer <span class="rule"></span></div>
+  <div class="pipe">
+    <div class="stage user">
+      <div class="tag">Input</div><h4>The user, in their own words</h4>
+      <p>"My wife is a citizen, I came on a tourist visa." Any language. Often on a phone, filing without a lawyer.</p>
+    </div>
+    <div class="arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 12h14M13 6l6 6-6 6"/></svg></div>
+    <div class="stage app">
+      <div class="tag">Frontend</div><h4>React SPA</h4>
+      <p>11 pages, no router dep. Sends free text to the Flask API. OCR / PDF / read-aloud run in-browser.</p>
+    </div>
+    <div class="arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 12h14M13 6l6 6-6 6"/></svg></div>
+    <div class="stage ai">
+      <div class="tag">Backend + AI</div><h4>Flask /api/* → gpt-4o-mini</h4>
+      <p>5 endpoints. System prompt + <b>real-data brief</b> → model → strict JSON, validated server-side.</p>
+    </div>
+    <div class="arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 12h14M13 6l6 6-6 6"/></svg></div>
+    <div class="stage out">
+      <div class="tag">Output</div><h4>Plain-language result</h4>
+      <p>Pathway · issues · next question · answer — with a confidence level and a pointer to the official source.</p>
+    </div>
+  </div>
+
+  <div class="ground">
+    <div class="badge">Grounding</div>
+    <p><b>Not just a wrapper.</b> <span class="mono">visa_data.py</span> + <span class="mono">forecast.py</span> read the vendored Visa Bulletin dataset and fitted priority-date advancement rates, then inject a factual brief into the Pathway & Q&A prompts. So "how long will I wait?" is answered with <b>real historical movement</b> for the user's country + category — flagged as changing monthly, verify at travel.state.gov.</p>
+  </div>
+
+  <!-- FEATURES -->
+  <div class="sec-h"><span class="n">2</span> Seven features · five AI endpoints <span class="rule"></span></div>
+  <div class="grid g4">
+    <div class="card"><h5>Pathway Finder <span class="chip ground">grounded</span></h5><p>Situation → likely category + confidence + next steps.</p></div>
+    <div class="card"><h5>Stage Q&amp;A <span class="chip ground">grounded</span></h5><p>Plain answers tuned to pathway + stage, in any language.</p></div>
+    <div class="card"><h5>Document Review <span class="chip ai">AI · JSON</span></h5><p>Form entries → severity-ranked RFE-risk issues.</p></div>
+    <div class="card"><h5>Interview Prep <span class="chip ai">AI · JSON</span></h5><p>USCIS-style officer, one question + coaching at a time.</p></div>
+    <div class="card"><h5>Deadline Alerts <span class="chip ai">AI + offline</span></h5><p>One sentence → dated timeline. Rule-based fallback.</p></div>
+    <div class="card"><h5>Language Tools <span class="chip local">in-browser</span></h5><p>Translate · detect · OCR · PDF · read-aloud, 100+ langs.</p></div>
+    <div class="card"><h5>Guided Walkthrough <span class="chip local">no AI</span></h5><p>Stage-by-stage roadmap, saved in localStorage.</p></div>
+    <div class="card"><h5>Progress Tracking <span class="chip local">no AI</span></h5><p>Interactive checkpoints; "see what comes next."</p></div>
+  </div>
+
+  <!-- MODULE TREE + EVAL -->
+  <div class="sec-h"><span class="n">3</span> Repository &amp; evidence <span class="rule"></span></div>
+  <div class="grid g2">
+    <div class="tree"><span class="c"># github.com/wwhaiming/greenpath</span><br>
+greenpath/<br>
+├─ <span class="d">src/</span>             <span class="c">React SPA</span><br>
+│  ├─ <span class="d">pages/</span>        <span class="c">11 features (one file each)</span><br>
+│  ├─ <span class="d">utils/</span>        <span class="f">api.js</span> <span class="f">translate.js</span> <span class="f">storage.js</span><br>
+│  └─ <span class="d">constants/</span>    <span class="c">question banks · languages</span><br>
+├─ <span class="f">server.py</span>        <span class="c">Flask · 5 AI endpoints</span><br>
+├─ <span class="f">visa_data.py</span>     <span class="star">★</span> <span class="c">real-data grounding brief</span><br>
+├─ <span class="f">forecast.py</span>      <span class="star">★</span> <span class="c">priority-date forecasts</span><br>
+├─ <span class="d">datasets/</span>        <span class="c">Visa Bulletin · LPR · PERM</span><br>
+│  └─ <span class="f">SOURCES.md</span>     <span class="c">every source, with links</span><br>
+├─ <span class="d">evals/</span>           <span class="star">★</span> <span class="c">labeled accuracy harness</span><br>
+│  ├─ <span class="f">run_evals.py</span>   <span class="c">imports prod prompts</span><br>
+│  └─ <span class="f">RESULTS.md</span>     <span class="c">100% / 38 cases</span><br>
+└─ <span class="d">submission/</span>      <span class="c">Devpost copy · pitch script</span>
+    </div>
+    <div>
+      <div class="score">
+        <div class="bigstat"><div class="num">100%</div><div class="lbl">38 labeled cases</div></div>
+        <div class="scol">
+          <div class="bar"><div class="top"><b>Pathway Finder</b><span class="pct">26/26</span></div><div class="track"><div class="fill" style="width:100%"></div></div></div>
+          <div class="bar"><div class="top"><b>Document Review</b><span class="pct">12/12</span></div><div class="track"><div class="fill" style="width:100%"></div></div></div>
+        </div>
+      </div>
+      <p class="note">Graded against the live gpt-4o-mini + production prompts<br>imported from server.py. Includes a hard tier: TPS/DACA<br>(no direct path), EB-1C, widow self-petition, late I-751.</p>
+      <div class="guard" style="margin-top:14px">
+        <h5>Responsible AI guardrail</h5>
+        <p><span class="risk">Risk:</span> a scared user treats AI output as a legal decision in an irreversible process.</p>
+        <p><b>Guardrail:</b> prompts refuse legal advice; uncertain inputs must return <span class="mono">"Unclear — needs attorney review"</span> + a confidence level instead of guessing. Facts grounded in real data. No accounts, nothing stored server-side.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- STACK + DATA -->
+  <div class="sec-h"><span class="n">4</span> Stack &amp; data sources <span class="rule"></span></div>
+  <div class="grid g2">
+    <div>
+      <div class="stackrow">
+        <div class="badge2"><span class="dot" style="background:var(--green)"></span>React 18 + Vite 5</div>
+        <div class="badge2"><span class="dot" style="background:var(--slate)"></span>Flask (Python)</div>
+        <div class="badge2"><span class="dot" style="background:var(--gold)"></span>OpenAI gpt-4o-mini</div>
+        <div class="badge2"><span class="dot" style="background:var(--terra)"></span>tesseract.js · pdf.js</div>
+        <div class="badge2"><span class="dot" style="background:var(--ink-h)"></span>Web Speech API</div>
+        <div class="badge2"><span class="dot" style="background:var(--gold-bright)"></span>strict JSON contracts</div>
+      </div>
+    </div>
+    <div class="card">
+      <h5>Data — all public government sources</h5>
+      <ul class="src">
+        <li>U.S. DOS Visa Bulletin (priority-date history)</li>
+        <li>USCIS LPR &amp; nonimmigrant admissions by country, 2005–2016</li>
+        <li>DOL PERM FY2024 outcomes</li>
+      </ul>
+      <p style="margin-top:6px;font-size:11.5px;color:var(--slate)" class="mono">No scraped or private data · no model training</p>
+    </div>
+  </div>
+
+  <footer>
+    <span>GreenPath · USAII Global AI Hackathon 2026 · Community track</span>
+    <span class="disc">General information about U.S. immigration — not legal advice.</span>
+  </footer>
+</div>
+</body>
+</html>
