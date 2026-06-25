@@ -518,6 +518,9 @@
     padding:7px 14px;text-decoration:none;transition:.15s}
   a.cite::before{content:"";width:6px;height:6px;border-radius:50%;background:var(--gold-leaf)}
   a.cite:hover{background:var(--pill-green);border-color:var(--green)}
+  a.cite-inline{font-size:.72em;font-weight:700;color:var(--green-deep);text-decoration:none;
+    padding:0 1px;margin-left:1px;border-bottom:1px dotted var(--gold-leaf)}
+  a.cite-inline:hover{color:var(--green);border-bottom-color:var(--green)}
   .ai-error{display:flex;flex-direction:column;gap:4px;background:#f8e7e1;border:1px solid #e3b3a4;
     border-radius:12px;padding:14px 16px;color:#8c2f17}
   .ai-error b{font-size:14px}
@@ -2108,7 +2111,57 @@
   function sourcesPrompt(query){
     return pickSources(query).map(s=>`[${s.id}] ${s.title} — ${s.url}`).join('\n');
   }
-  const GROUNDING_RULE='Ground every factual claim in the OFFICIAL sources listed below. Never invent fees, dollar amounts, dates, or processing times — if asked for a specific number, say it changes and tell the user to verify on the cited page. Keep it plain-language. This is general information, NOT legal advice; for complex cases point to authorized legal help. Do not print a sources list or [id] tags in your answer — those are shown separately.';
+  const GROUNDING_RULE='Ground every factual claim in the OFFICIAL sources listed below, and CITE each claim inline using the bracketed source id right after the sentence or claim it supports — e.g. "You file Form I-130 to petition for a relative [i-130]. Processing times vary by office and change often [times]." Only use [id] tags for ids that appear in the OFFICIAL SOURCES list below; never invent an id. Put the [id] immediately after the claim it backs; not every sentence needs a citation. Never invent fees, dollar amounts, dates, or processing times — if asked for a specific number, say it changes and tell the user to verify on the cited page. Keep it plain-language. This is general information, NOT legal advice; for complex cases point to authorized legal help.';
+  // Map of source id -> source object for O(1) lookup when linkifying [id] tags.
+  const SOURCE_BY_ID=USCIS_SOURCES.reduce((m,s)=>{ m[s.id]=s; return m; },{});
+  const CITE_RE=/\[([a-z0-9-]+)\]/gi;
+  // Ordered, unique list of source ids the model actually cited as [id] in its text,
+  // restricted to ids that exist in USCIS_SOURCES (stray/invalid ids are ignored).
+  function citedIds(text){
+    const out=[], seen=Object.create(null);
+    for(const m of String(text||'').matchAll(CITE_RE)){
+      const id=m[1].toLowerCase();
+      if(SOURCE_BY_ID[id] && !seen[id]){ seen[id]=1; out.push(id); }
+    }
+    return out;
+  }
+  // Replace each valid [id] token with a small numbered superscript link, building
+  // a DocumentFragment with createElement/textContent only (no innerHTML on model text).
+  // Unknown ids are dropped (rendered as harmless empty text, never a broken link).
+  // `numbers` (id -> citation number) is shared across calls so the same id keeps its number.
+  function linkifyCitations(text, numbers){
+    numbers=numbers||Object.create(null);
+    let next=1; for(const k in numbers){ if(numbers[k]>=next) next=numbers[k]+1; }
+    const frag=document.createDocumentFragment();
+    const s=String(text||''); let last=0;
+    for(const m of s.matchAll(CITE_RE)){
+      const id=m[1].toLowerCase(), src=SOURCE_BY_ID[id];
+      if(m.index>last) frag.appendChild(document.createTextNode(s.slice(last,m.index)));
+      last=m.index+m[0].length;
+      if(!src) continue; // unknown id: strip the token entirely
+      if(!numbers[id]) numbers[id]=next++;
+      const sup=document.createElement('sup');
+      const a=document.createElement('a');
+      a.className='cite-inline'; a.href=src.url; a.target='_blank'; a.rel='noopener';
+      a.title=src.title; a.textContent='['+numbers[id]+']';
+      sup.appendChild(a); frag.appendChild(sup);
+    }
+    if(last<s.length) frag.appendChild(document.createTextNode(s.slice(last)));
+    frag._numbers=numbers;
+    return frag;
+  }
+  // "Verified sources" bar for an explicit, ordered list of cited source ids.
+  function citationsForIds(ids){
+    const items=ids.map(id=>SOURCE_BY_ID[id]).filter(Boolean)
+      .map((s,i)=>`<a class="cite" href="${s.url}" target="_blank" rel="noopener">${i+1}. ${s.title}</a>`).join('');
+    return `<div class="cite-row"><span class="cite-label">Verified sources</span><div class="cite-list">${items}</div></div>`;
+  }
+  // Footer of sources actually cited in `text`; falls back to keyword-picked sources
+  // (the original behavior) when the model cited nothing valid inline.
+  function citationsFromText(text, fallbackQuery){
+    const ids=citedIds(text);
+    return ids.length ? citationsForIds(ids) : citationsHTML(fallbackQuery);
+  }
   function citationsHTML(query){
     const items=pickSources(query).map(s=>`<a class="cite" href="${s.url}" target="_blank" rel="noopener">${s.title}</a>`).join('');
     return `<div class="cite-row"><span class="cite-label">Verified sources</span><div class="cite-list">${items}</div></div>`;
@@ -2772,19 +2825,37 @@ Set "done":true and provide a short "summary" only when the interview should end
         const sys=`You are a U.S. immigration intake assistant that suggests the most likely green card pathway from a free-text description. You are not a lawyer; flag when a case is complex enough to need an accredited attorney. Return ONLY JSON.\n\n${GROUNDING_RULE}\nOFFICIAL SOURCES:\n${sourcesPrompt(text)}`;
         const pr=`Applicant's situation:\n"""${text}"""\n\nReturn ONLY a JSON object shaped exactly:\n{"primaryPathway":"name","subcategory":"optional or empty","confidence":"high"|"medium"|"low","reasoning":"1-3 sentence plain explanation","nextSteps":["step", ...],"alternativePathways":["option", ...]}`;
         const d=await aiJSONSchema(pr, sys, SCHEMAS.pathway, {model:AI_SMART, max_tokens:900, temperature:0.2});
-        const steps=(d.nextSteps||[]).map(s=>`<div class="issue blu ai-pop"><div class="idot"></div><div><p>${esc(s)}</p></div></div>`).join('');
-        const alts=(d.alternativePathways||[]).length
-          ? '<div class="dr-summary" style="margin-top:16px">Other options to explore:</div>'+
-            (d.alternativePathways||[]).map(a=>`<div class="issue amb ai-pop"><div class="idot"></div><div><p>${esc(a)}</p></div></div>`).join('')
-          : '';
-        pwResult.innerHTML=
-          `<div class="dr-summary ai-pop"><b>${esc(d.primaryPathway||'Pathway')}</b>${d.subcategory?' : '+esc(d.subcategory):''} · ${esc(CONF[d.confidence]||d.confidence||'')}</div>`+
-          `<div class="issue blu ai-pop"><div class="idot"></div><div><p>${esc(d.reasoning||'')}</p></div></div>`+
-          (steps?'<div class="dr-summary" style="margin-top:16px">Suggested next steps:</div>'+steps:'')+
-          alts+
-          `<div class="legal-row"><button class="btn-legal" data-go="qa">Ask a question about this</button><small>Not legal advice. Complex cases: consult an accredited attorney.</small></div>`;
+        // Shared numbering map so the same [id] reuses its number across reasoning + steps.
+        const nums=Object.create(null);
+        // Build an "issue" card whose <p> body holds model text with inline citations
+        // rendered as safe DOM (linkifyCitations -> createElement/textContent only).
+        const issueCard=(cls,modelText)=>{
+          const card=document.createElement('div'); card.className='issue '+cls+' ai-pop';
+          const dot=document.createElement('div'); dot.className='idot'; card.appendChild(dot);
+          const body=document.createElement('div'); const p=document.createElement('p');
+          p.appendChild(linkifyCitations(modelText, nums)); body.appendChild(p); card.appendChild(body);
+          return card;
+        };
+        const heading=(label)=>{ const h=document.createElement('div'); h.className='dr-summary'; h.style.marginTop='16px'; h.textContent=label; return h; };
+        pwResult.replaceChildren();
+        const summary=document.createElement('div'); summary.className='dr-summary ai-pop';
+        const nameB=document.createElement('b'); nameB.textContent=d.primaryPathway||'Pathway'; summary.appendChild(nameB);
+        summary.appendChild(document.createTextNode((d.subcategory?' : '+d.subcategory:'')+' · '+(CONF[d.confidence]||d.confidence||'')));
+        pwResult.appendChild(summary);
+        pwResult.appendChild(issueCard('blu', d.reasoning||''));
+        if((d.nextSteps||[]).length){
+          pwResult.appendChild(heading('Suggested next steps:'));
+          (d.nextSteps||[]).forEach(s=>pwResult.appendChild(issueCard('blu', s)));
+        }
+        if((d.alternativePathways||[]).length){
+          pwResult.appendChild(heading('Other options to explore:'));
+          (d.alternativePathways||[]).forEach(a=>pwResult.appendChild(issueCard('amb', a)));
+        }
+        pwResult.insertAdjacentHTML('beforeend', `<div class="legal-row"><button class="btn-legal" data-go="qa">Ask a question about this</button><small>Not legal advice. Complex cases: consult an accredited attorney.</small></div>`);
         pwResult.querySelectorAll('[data-go]').forEach(b=>b.addEventListener('click',()=>show(b.dataset.go)));
-        pwResult.insertAdjacentHTML('beforeend', citationsHTML(text));
+        // Footer lists only sources the model actually cited (across reasoning + steps + alts).
+        const allText=[d.reasoning||''].concat(d.nextSteps||[], d.alternativePathways||[]).join(' ');
+        pwResult.insertAdjacentHTML('beforeend', citationsFromText(allText, text));
       }catch(e){
         pwResult.replaceChildren(); pwResult.insertAdjacentHTML('beforeend', aiErrorHTML(e));
       }finally{ pwFind.disabled=false; }
@@ -2810,14 +2881,25 @@ Set "done":true and provide a short "summary" only when the interview should end
         const box=document.createElement('div');
         box.className='dr-summary ai-pop stream-caret'; box.style.lineHeight='1.6';
         qaAnswer.innerHTML=''; qaAnswer.appendChild(box);
+        // Render each paragraph as a safe <p> with inline citation superscripts
+        // (linkifyCitations builds DOM via createElement/textContent — never innerHTML).
+        let lastFull='';
+        const renderAnswer=(full)=>{
+          lastFull=full;
+          const nums=Object.create(null), frag=document.createDocumentFragment();
+          full.split(/\n+/).filter(Boolean).forEach(p=>{
+            const el=document.createElement('p'); el.style.margin='0 0 10px';
+            el.appendChild(linkifyCitations(p, nums)); frag.appendChild(el);
+          });
+          box.replaceChildren(frag);
+        };
         await aiStream(
           [{role:'system',content:sys},{role:'user',content:pr}],
-          (tok,full)=>{ box.innerHTML=full.split(/\n+/).filter(Boolean)
-            .map(p=>`<p style="margin:0 0 10px">${esc(p)}</p>`).join(''); },
+          (tok,full)=>renderAnswer(full),
           {temperature:0.3,max_tokens:700,model:AI_SMART}
         );
         box.classList.remove('stream-caret');
-        qaAnswer.insertAdjacentHTML('beforeend', citationsHTML(q+' '+qaStage.value));
+        qaAnswer.insertAdjacentHTML('beforeend', citationsFromText(lastFull, q+' '+qaStage.value));
       }catch(e){
         qaAnswer.innerHTML=aiErrorHTML(e);
       }finally{ qaAsk.disabled=false; }
@@ -2832,11 +2914,13 @@ Set "done":true and provide a short "summary" only when the interview should end
           check=document.getElementById('vbCheck'),
           result=document.getElementById('vbResult');
     if(!check) return;
-    // Render model output as plain-text <p> nodes (textContent = XSS-safe).
+    // Render model output as <p> nodes with inline citation superscripts.
+    // Built with createElement/textContent + linkifyCitations (XSS-safe; no innerHTML on model text).
     function renderParas(target, full){
-      const frag=document.createDocumentFragment();
+      const nums=Object.create(null), frag=document.createDocumentFragment();
       full.split(/\n+/).filter(Boolean).forEach(p=>{
-        const el=document.createElement('p'); el.style.margin='0 0 10px'; el.textContent=p; frag.appendChild(el);
+        const el=document.createElement('p'); el.style.margin='0 0 10px';
+        el.appendChild(linkifyCitations(p, nums)); frag.appendChild(el);
       });
       target.replaceChildren(frag);
     }
@@ -2901,13 +2985,13 @@ Set "done":true and provide a short "summary" only when the interview should end
         result.replaceChildren();
         if(estCard) result.appendChild(estCard);
         result.appendChild(box);
-        await aiStream(
+        const fullText=await aiStream(
           [{role:'system',content:sys},{role:'user',content:pr}],
           (tok,full)=>renderParas(box, full),
           {temperature:0.3,max_tokens:700,model:AI_SMART}
         );
         box.classList.remove('stream-caret');
-        result.insertAdjacentHTML('beforeend', citationsHTML(q));
+        result.insertAdjacentHTML('beforeend', citationsFromText(fullText, q));
       }catch(e){
         result.replaceChildren();
         if(estCard) result.appendChild(estCard);
