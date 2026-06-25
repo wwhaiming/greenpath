@@ -6,9 +6,15 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-_root = os.path.dirname(os.path.abspath(__file__))
-_dist = os.path.join(_root, 'dist')
-_static = _dist if os.path.isdir(_dist) else _root
+_root   = os.path.dirname(os.path.abspath(__file__))
+_public = os.path.join(_root, 'public')   # greenpath-new single-page frontend (served by default)
+_dist   = os.path.join(_root, 'dist')     # legacy React/Vite build (kept for reference)
+if os.path.isfile(os.path.join(_public, 'index.html')):
+    _static = _public
+elif os.path.isdir(_dist):
+    _static = _dist
+else:
+    _static = _root
 
 app = Flask(__name__, static_folder=_static, static_url_path='')
 client = OpenAI(api_key=os.environ.get('OPENAI_API_KEY'))
@@ -60,7 +66,16 @@ def api_chat():
             max_tokens=max_tokens,
             messages=messages,
         )
-        return jsonify({'content': [{'type': 'text', 'text': resp.choices[0].message.content}]})
+        text = resp.choices[0].message.content
+        # Dual response shape so both frontends work off the same endpoint:
+        #   `content` (Anthropic-style) — read by the legacy React UI
+        #   `choices` (OpenAI-style)    — read by the greenpath-new single-page frontend
+        #                                 (aiChatMessages: data.choices[0].message.content)
+        return jsonify({
+            'content': [{'type': 'text', 'text': text}],
+            'choices': [{'message': {'role': 'assistant', 'content': text}}],
+            'model': CHAT_MODEL,
+        })
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 

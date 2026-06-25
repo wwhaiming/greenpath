@@ -2,8 +2,11 @@ services:
   - type: web
     name: greenpath
     runtime: static
-    buildCommand: npm install && npm run build
-    staticPublishPath: ./dist
+    # Frontend is the greenpath-new self-contained single-page app (public/) — no build step.
+    # NOTE: this static service has no Python backend; /api/* runs only when server.py is
+    # hosted (e.g. a Render web service / local). The frontend degrades gracefully offline.
+    buildCommand: "echo 'static single-page frontend (public/) - no build step'"
+    staticPublishPath: ./public
     pullRequestPreviewsEnabled: true
     routes:
       - type: rewrite
