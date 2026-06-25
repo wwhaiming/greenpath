@@ -222,6 +222,8 @@
     box-shadow:0 14px 26px -14px rgba(14,61,41,.55),inset 0 0 0 1px rgba(255,255,255,.22);
     transition:transform .35s cubic-bezier(.22,.61,.36,1)}
   .node:hover .dot{transform:scale(1.08) rotate(-4deg)}
+  .node[data-go]{cursor:pointer;border-radius:14px;transition:transform .25s}
+  .node[data-go]:hover{transform:translateY(-3px)}
   .node .ntitle{font-family:var(--font-display);font-size:21px;font-weight:500;margin:18px 0 6px;line-height:1.12;letter-spacing:-.015em}
   .node p{color:var(--muted);font-size:14px;line-height:1.45}
   .c-green{background:var(--green)} .c-slate{background:var(--slate)}
@@ -858,12 +860,12 @@
   <div class="rail-wrap">
     <div class="rail-line"></div>
     <div class="nodes">
-      <div class="node"><div class="dot c-green">G</div><div class="ntitle">Guided Walkthrough</div><p>Understand possible pathways</p></div>
-      <div class="node"><div class="dot c-slate">U</div><div class="ntitle">Understand Language</div><p>Translate, scan, and listen</p></div>
-      <div class="node"><div class="dot c-amber">I</div><div class="ntitle">Interview Prep</div><p>Practice with confidence</p></div>
-      <div class="node"><div class="dot c-terra">D</div><div class="ntitle">Deadline Alerts</div><p>Keep important dates visible</p></div>
-      <div class="node"><div class="dot c-green">E</div><div class="ntitle">Evidence Review</div><p>Check for possible issues</p></div>
-      <div class="node"><div class="dot c-slate">S</div><div class="ntitle">Stage Tracking</div><p>See what comes next</p></div>
+      <div class="node" data-go="guided" role="button" tabindex="0" aria-label="Open Guided Walkthrough"><div class="dot c-green">G</div><div class="ntitle">Guided Walkthrough</div><p>Understand possible pathways</p></div>
+      <div class="node" data-go="language" role="button" tabindex="0" aria-label="Open Understand Language"><div class="dot c-slate">U</div><div class="ntitle">Understand Language</div><p>Translate, scan, and listen</p></div>
+      <div class="node" data-go="interview" role="button" tabindex="0" aria-label="Open Interview Prep"><div class="dot c-amber">I</div><div class="ntitle">Interview Prep</div><p>Practice with confidence</p></div>
+      <div class="node" data-go="alerts" role="button" tabindex="0" aria-label="Open Deadline Alerts"><div class="dot c-terra">D</div><div class="ntitle">Deadline Alerts</div><p>Keep important dates visible</p></div>
+      <div class="node" data-go="review" role="button" tabindex="0" aria-label="Open Evidence Review"><div class="dot c-green">E</div><div class="ntitle">Evidence Review</div><p>Check for possible issues</p></div>
+      <div class="node" data-go="progress" role="button" tabindex="0" aria-label="Open Stage Tracking"><div class="dot c-slate">S</div><div class="ntitle">Stage Tracking</div><p>See what comes next</p></div>
     </div>
   </div>
 
@@ -1647,6 +1649,8 @@
   // Bind every static [data-go] element (nav links + hero buttons) to navigate.
   // (Dynamically-created result buttons bind themselves elsewhere.)
   document.querySelectorAll('[data-go]').forEach(el=>el.addEventListener('click',e=>{e.preventDefault();show(el.dataset.go)}));
+  // role=button divs (home step-rail nodes) — activate with Enter/Space too
+  document.querySelectorAll('.node[data-go]').forEach(el=>el.addEventListener('keydown',e=>{ if(e.key==='Enter'||e.key===' '){ e.preventDefault(); show(el.dataset.go); } }));
 
   /* ================= EASY-READING MODE (dyslexia / low-literacy friendly) ================= */
   (function(){
