@@ -26,7 +26,24 @@ CHAT_MODEL    = 'gpt-4o-mini'
 QUALITY_MODEL = 'gpt-4o-mini'
 
 MAX_FIELD_CHARS = 6000
+MAX_CHAT_MESSAGES = 20
+MAX_CHAT_MESSAGE_CHARS = 6000
 MAX_TRANSCRIPT_TURNS = 20
+
+
+class RequestValidationError(ValueError):
+    pass
+
+
+def _text_field(data, key, default='', max_chars=MAX_FIELD_CHARS, strip=True):
+    value = data.get(key, default)
+    if value is None:
+        value = default
+    if not isinstance(value, str):
+        raise RequestValidationError(f'{key} must be a string')
+    if strip:
+        value = value.strip()
+    return value[:max_chars]
 
 
 def _extract_json(text):
@@ -97,6 +114,14 @@ def api_chat():
         except (TypeError, ValueError):
             return jsonify({'error': 'max_tokens must be an integer'}), 400
         mt = max(1, min(mt, 2000))
+        try:
+            temperature = float(data.get('temperature', 0.4))
+        except (TypeError, ValueError):
+            return jsonify({'error': 'temperature must be a number'}), 400
+        temperature = max(0.0, min(temperature, 2.0))
+        response_format = data.get('response_format')
+        if response_format is not None and not isinstance(response_format, dict):
+            return jsonify({'error': 'response_format must be an object'}), 400
 
         # Validate + sanitize caller-supplied messages.
         if not isinstance(raw_messages, list) or not raw_messages:
@@ -112,17 +137,22 @@ def api_chat():
             # Drop any caller-provided system messages; we set our own guardrail.
             if role == 'system':
                 continue
-            clean.append({'role': role, 'content': content})
+            clean.append({'role': role, 'content': content[:MAX_CHAT_MESSAGE_CHARS]})
         if not clean:
             return jsonify({'error': 'messages required'}), 400
-        # Prepend fixed server-side guardrail and cap message count.
-        messages = [{'role': 'system', 'content': GUARDRAIL_SYSTEM}] + clean[:20]
+        # Prepend fixed server-side guardrail and cap message count/cost.
+        messages = [{'role': 'system', 'content': GUARDRAIL_SYSTEM}] + clean[-MAX_CHAT_MESSAGES:]
 
-        resp = client.chat.completions.create(
-            model=CHAT_MODEL,
-            max_tokens=mt,
-            messages=messages,
-        )
+        create_kwargs = {
+            'model': CHAT_MODEL,
+            'max_tokens': mt,
+            'temperature': temperature,
+            'messages': messages,
+        }
+        if response_format is not None:
+            create_kwargs['response_format'] = response_format
+
+        resp = client.chat.completions.create(**create_kwargs)
         text = resp.choices[0].message.content
         # Dual response shape so both frontends work off the same endpoint:
         #   `content` (Anthropic-style) — read by the legacy React UI
@@ -133,6 +163,8 @@ def api_chat():
             'choices': [{'message': {'role': 'assistant', 'content': text}}],
             'model': CHAT_MODEL,
         })
+    except openai.BadRequestError:
+        return jsonify({'error': 'invalid AI request'}), 400
     except openai.APITimeoutError:
         return jsonify({'error': 'upstream timeout'}), 504
     except Exception:
@@ -194,7 +226,7 @@ def api_document_review():
         data = request.get_json(silent=True)
         if not isinstance(data, dict):
             return jsonify({'error': 'invalid JSON body'}), 400
-        document = data.get('document', '').strip()[:MAX_FIELD_CHARS]
+        document = _text_field(data, 'document')
         if not document:
             return jsonify({'error': 'document required'}), 400
 
@@ -205,6 +237,8 @@ def api_document_review():
         )
         result = _extract_json(resp.choices[0].message.content)
         return jsonify(result)
+    except RequestValidationError as e:
+        return jsonify({'error': str(e)}), 400
     except openai.APITimeoutError:
         return jsonify({'error': 'upstream timeout'}), 504
     except json.JSONDecodeError:
@@ -265,13 +299,13 @@ def api_interview():
         data = request.get_json(silent=True)
         if not isinstance(data, dict):
             return jsonify({'error': 'invalid JSON body'}), 400
-        pathway   = data.get('pathway', 'Green card interview')
+        pathway = _text_field(data, 'pathway', 'Green card interview', max_chars=1000)
         transcript = data.get('transcript', [])
         if not isinstance(transcript, list):
-            transcript = []
+            return jsonify({'error': 'transcript must be a list'}), 400
         # Cap to the most recent turns to bound prompt size / cost.
         transcript = transcript[-MAX_TRANSCRIPT_TURNS:]
-        answer    = data.get('answer', '')[:MAX_FIELD_CHARS]
+        answer = _text_field(data, 'answer', '', strip=False)
 
         # Build the conversation messages from the running transcript
         messages = []
@@ -285,8 +319,13 @@ def api_interview():
         else:
             # Reconstruct the message history
             for turn in transcript:
+                if not isinstance(turn, dict):
+                    return jsonify({'error': 'invalid transcript turn'}), 400
+                content = turn.get('content', '')
+                if not isinstance(content, str):
+                    return jsonify({'error': 'invalid transcript turn'}), 400
                 role = 'user' if turn.get('role') == 'applicant' else 'assistant'
-                messages.append({'role': role, 'content': turn.get('content', '')})
+                messages.append({'role': role, 'content': content[:MAX_FIELD_CHARS]})
             # Append current answer as the latest user turn
             if answer:
                 messages.append({'role': 'user', 'content': answer})
@@ -300,6 +339,8 @@ def api_interview():
         )
         result = _extract_json(resp.choices[0].message.content)
         return jsonify(result)
+    except RequestValidationError as e:
+        return jsonify({'error': str(e)}), 400
     except openai.APITimeoutError:
         return jsonify({'error': 'upstream timeout'}), 504
     except json.JSONDecodeError:
@@ -352,7 +393,7 @@ def api_pathway():
         data = request.get_json(silent=True)
         if not isinstance(data, dict):
             return jsonify({'error': 'invalid JSON body'}), 400
-        intake = data.get('intake', '').strip()[:MAX_FIELD_CHARS]
+        intake = _text_field(data, 'intake')
         if not intake:
             return jsonify({'error': 'intake required'}), 400
 
@@ -363,6 +404,8 @@ def api_pathway():
         )
         result = _extract_json(resp.choices[0].message.content)
         return jsonify(result)
+    except RequestValidationError as e:
+        return jsonify({'error': str(e)}), 400
     except openai.APITimeoutError:
         return jsonify({'error': 'upstream timeout'}), 504
     except json.JSONDecodeError:
@@ -394,9 +437,9 @@ def api_stage_qa():
         data = request.get_json(silent=True)
         if not isinstance(data, dict):
             return jsonify({'error': 'invalid JSON body'}), 400
-        pathway  = data.get('pathway', 'General')
-        stage    = data.get('stage', 'General')
-        question = data.get('question', '').strip()[:MAX_FIELD_CHARS]
+        pathway = _text_field(data, 'pathway', 'General', max_chars=1000)
+        stage = _text_field(data, 'stage', 'General', max_chars=1000)
+        question = _text_field(data, 'question')
         if not question:
             return jsonify({'error': 'question required'}), 400
 
@@ -409,6 +452,8 @@ def api_stage_qa():
         )
         answer = resp.choices[0].message.content.strip()
         return jsonify({'answer': answer})
+    except RequestValidationError as e:
+        return jsonify({'error': str(e)}), 400
     except openai.APITimeoutError:
         return jsonify({'error': 'upstream timeout'}), 504
     except Exception:
