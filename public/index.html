@@ -174,8 +174,13 @@
     line-height:1;color:transparent;-webkit-text-stroke:1px rgba(30,122,82,.13)}
   .home-hero::after{content:"";position:absolute;inset:-30px;border-radius:24px;pointer-events:none;opacity:0;
     transition:opacity .35s;background:radial-gradient(440px circle at var(--mx,50%) var(--my,50%),rgba(201,149,44,.12),transparent 62%)}
-  .home-hero:hover::after{opacity:1}
+  .home-hero:hover::after{opacity:0}
   .home-hero-glow{display:none}
+  /* global cursor glow — gold light follows the cursor on every section/page */
+  .cursor-glow{position:fixed;inset:0;z-index:0;pointer-events:none;opacity:0;transition:opacity .35s;
+    background:radial-gradient(460px circle at var(--gx,50%) var(--gy,50%),rgba(201,149,44,.13),transparent 60%)}
+  .cursor-glow.on{opacity:1}
+  @media (prefers-reduced-motion:reduce){.cursor-glow{display:none}}
   /* staggered page-load entrance */
   .home-hero .kicker-rule,.home-hero .h1,.home-hero .lede,.home-hero .btn-row{
     animation:heroUp .8s cubic-bezier(.22,.61,.36,1) both}
@@ -2846,13 +2851,14 @@ Set "done":true and provide a short "summary" only when the interview should end
       el.addEventListener('mouseleave',()=>{ el.style.transform=''; });
     });
 
-    // ---- hero cursor spotlight ----
-    const hero=document.querySelector('.home-hero');
-    if(hero) hero.addEventListener('mousemove',ev=>{
-      const r=hero.getBoundingClientRect();
-      hero.style.setProperty('--mx',(ev.clientX-r.left)+'px');
-      hero.style.setProperty('--my',(ev.clientY-r.top)+'px');
-    });
+    // ---- global cursor glow: gold light follows the cursor on every section/page ----
+    const glow=document.createElement('div'); glow.className='cursor-glow'; document.body.appendChild(glow);
+    addEventListener('mousemove',ev=>{
+      glow.classList.add('on');
+      glow.style.setProperty('--gx',ev.clientX+'px');
+      glow.style.setProperty('--gy',ev.clientY+'px');
+    },{passive:true});
+    document.addEventListener('mouseleave',()=>glow.classList.remove('on'));
   })();
 
   /* ================= SCROLL-SCRUBBED STORIES ================= */
