@@ -8,7 +8,7 @@
 <title>GreenPath : AI Navigator</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..700;1,9..144,300..700&family=Schibsted+Grotesk:ital,wght@0,400..900;1,400..900&family=Fragment+Mono:ital@0;1&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400;1,700&family=Fraunces:ital,opsz,wght@0,9..144,300..700;1,9..144,300..700&family=Schibsted+Grotesk:ital,wght@0,400..900;1,400..900&family=Fragment+Mono:ital@0;1&display=swap" rel="stylesheet">
 <style>
   /* ==================================================================
      GREENPATH — "Heirloom Ledger" design system
@@ -754,11 +754,50 @@
     .add-row input[type=date],.add-row input[type=text],.add-row .btn{width:100%;min-width:0}
   }
   @media (prefers-reduced-motion: reduce){*{animation:none!important;transition:none!important}}
+
+  /* ---------- READING / EASY-READING MODE ---------- */
+  .reading-btn{
+    flex:none;margin-left:auto;cursor:pointer;appearance:none;
+    border:1px solid rgba(246,241,226,.3);border-radius:999px;
+    min-width:44px;height:42px;padding:0 16px;color:#f1ecdc;font-weight:700;font-size:16px;
+    font-family:var(--font-body);background-color:rgba(246,241,226,.08);letter-spacing:.01em;
+    display:inline-flex;align-items:center;justify-content:center;
+    transition:background-color .18s,border-color .18s}
+  .reading-btn:hover{background-color:rgba(246,241,226,.16);border-color:rgba(201,149,44,.6)}
+  .reading-btn + select.lang{margin-left:10px}
+  .reading-btn[aria-pressed="true"]{background-color:var(--gold-leaf);border-color:var(--gold-leaf);color:var(--green-ink)}
+  body.reading{
+    font-family:"Atkinson Hyperlegible",system-ui,"Segoe UI",sans-serif;
+    font-size:18.5px;line-height:1.8;letter-spacing:.02em;word-spacing:.06em}
+  body.reading p,body.reading li,body.reading .lede,body.reading .dr-summary,
+  body.reading .dr-placeholder,body.reading td,body.reading label,body.reading small{
+    text-align:left;line-height:1.85;letter-spacing:.02em;word-spacing:.06em}
+  body.reading .lede{font-size:1.06em}
+
+  /* ---------- LOCAL HELP FINDER + SAFETY CALLOUT ---------- */
+  .help-finder{border-top:1px solid var(--line);margin-top:34px;padding-top:26px;max-width:760px}
+  .help-finder h2{font-size:24px;font-family:var(--font-body);font-weight:700;letter-spacing:0;margin-bottom:6px}
+  .help-row{display:flex;gap:12px;flex-wrap:wrap;align-items:flex-end;margin:16px 0 6px}
+  .help-row .help-field{flex:1 1 240px;min-width:200px}
+  .help-row label{display:block;font-size:13px;font-weight:700;color:var(--green-mid);margin-bottom:6px}
+  .help-finder select{width:100%;padding:13px 16px;border:1px solid var(--line);border-radius:12px;
+    font-family:var(--font-body);font-size:15.5px;color:var(--ink);background:#fffdf7;cursor:pointer}
+  .help-result{margin-top:18px}
+  .help-result .cite-list{display:flex;flex-wrap:wrap;gap:9px;margin-top:8px}
+  .help-result .help-intro{font-size:15.5px;line-height:1.6;color:var(--ink);margin-bottom:8px}
+  .safety-callout{margin-top:24px;border:1px solid rgba(201,149,44,.45);border-left:5px solid var(--gold-leaf);
+    border-radius:14px;background:rgba(246,241,226,.5);padding:18px 22px;max-width:760px}
+  .safety-callout h3{font-family:var(--font-body);font-size:16px;font-weight:700;color:var(--green-deep);
+    margin-bottom:8px;display:flex;align-items:center;gap:9px}
+  .safety-callout h3::before{content:"";width:9px;height:9px;border-radius:50%;background:var(--gold-leaf);flex:none}
+  .safety-callout p{font-size:14.5px;line-height:1.65;color:var(--ink);margin:0 0 8px}
+  .safety-callout p:last-child{margin-bottom:0}
 </style>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/tesseract.js/5.1.0/tesseract.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
 </head>
 <body>
+<div id="a11yAnnounce" class="sr-only" aria-live="polite" aria-atomic="true"></div>
 <div class="bg-ambient"><div class="bg-blob blob-1"></div><div class="bg-blob blob-2"></div><div class="bg-blob blob-3"></div></div>
 <div class="bg-grain"></div>
 <div class="page-band"></div>
@@ -783,6 +822,7 @@
       <a href="#" data-go="bulletin">Visa Bulletin</a>
       <a href="#" data-go="legal">Legal</a>
     </nav>
+    <button type="button" class="reading-btn" id="readingBtn" aria-pressed="false" aria-label="Toggle easy-reading mode"><span class="no-i18n">Aa</span></button>
     <select class="lang" id="siteLang" aria-label="Site language">
       <option value="English">English ⌄</option>
     </select>
@@ -1131,8 +1171,8 @@
         </div>
       </div>
 
-      <div id="noticeResult"></div>
-      <div id="timeline"></div>
+      <div id="noticeResult" role="status" aria-live="polite"></div>
+      <div id="timeline" role="status" aria-live="polite"></div>
 
       <!-- manual add -->
       <div class="add-row">
@@ -1289,7 +1329,7 @@
     </div>
     <div class="dr-right">
       <div class="kicker">Possible issues to review</div>
-      <div id="drIssues">
+      <div id="drIssues" role="status" aria-live="polite">
         <p class="dr-placeholder">Enter your form details on the left and select <b>Review with AI</b>. GreenPath will flag fields that commonly trigger a Request for Evidence (RFE) so you can fix them before filing.</p>
       </div>
       <div class="legal-row"><button class="btn-legal" data-go="interview">Find Authorized Legal Help</button><small>AI review can miss issues.</small></div>
@@ -1342,7 +1382,7 @@
     </div>
 
     <div class="ip-chat-wrap">
-      <div class="ip-chat" id="ipChat">
+      <div class="ip-chat" id="ipChat" aria-live="polite" aria-atomic="false">
         <div class="ip-empty">
           <div class="ip-empty-icon">🎙️</div>
           <p>Pick a case type and press <b>Start Practice</b>. An AI interviewer will ask one USCIS-style question at a time, then give you coaching feedback on each answer.</p>
@@ -1387,7 +1427,7 @@
     </div>
     <div class="dr-right">
       <div class="kicker">Suggested pathway</div>
-      <div id="pwResult">
+      <div id="pwResult" role="status" aria-live="polite">
         <p class="dr-placeholder">Describe your situation on the left and select <b>Find my pathway</b>. GreenPath will suggest the most likely category and next steps. For complex cases, talk with an accredited immigration attorney.</p>
       </div>
     </div>
@@ -1440,7 +1480,7 @@
     </div>
     <div class="dr-right">
       <div class="kicker">Answer</div>
-      <div id="qaAnswer">
+      <div id="qaAnswer" role="status" aria-live="polite">
         <p class="dr-placeholder">Pick your pathway and stage, type a question, and select <b>Ask GreenPath</b>. Answers are general information : not legal advice or case predictions.</p>
       </div>
     </div>
@@ -1501,7 +1541,7 @@
     </div>
     <div class="dr-right">
       <div class="kicker">What this means</div>
-      <div id="vbResult">
+      <div id="vbResult" role="status" aria-live="polite">
         <p class="dr-placeholder">Pick your category, country, and priority date, then select <b>Check my priority date</b>. GreenPath explains how the bulletin works for your case : general information, not legal advice or a prediction of timing.</p>
       </div>
       <div style="margin-top:18px;display:grid;gap:10px">
@@ -1539,6 +1579,26 @@
     <p><b>Complex cases need real help.</b> Immigration law is complex and mistakes can be costly or permanent. For anything beyond general guidance, consult an accredited representative or a licensed immigration attorney.</p>
     <div class="legal-row" style="margin-top:18px;display:flex;gap:12px;flex-wrap:wrap"><button class="btn btn-primary" data-go="qa">Ask a question</button><a class="btn btn-ghost" href="https://www.uscis.gov/scams-fraud-and-misconduct/avoid-scams/find-legal-services" target="_blank" rel="noopener">Find authorized legal help</a></div>
   </div>
+
+  <div class="safety-callout" role="note">
+    <h3>Avoid notario fraud</h3>
+    <p>In the United States, only a licensed attorney or a representative accredited by the U.S. Department of Justice can give you legal advice or represent you with USCIS. A <em>notario público</em> is not a lawyer in the U.S., even though the title means something different in many other countries.</p>
+    <p>Never pay anyone who guarantees a result, asks you to sign blank forms, or keeps your original documents. Real help can be free or low cost. Always ask for the person's name and credentials, and keep copies of everything you sign.</p>
+  </div>
+
+  <div class="help-finder">
+    <h2>Find local immigration help</h2>
+    <p class="dr-placeholder">Pick your state to see official, nonprofit, and government locators for free or low-cost legal help near you. These are real directories run by trusted organizations, not GreenPath.</p>
+    <div class="help-row">
+      <div class="help-field">
+        <label for="helpState">Your state or territory</label>
+        <select id="helpState"></select>
+      </div>
+      <button type="button" class="btn btn-primary" id="helpFind">Find help in my state</button>
+    </div>
+    <div class="help-result" id="helpResult" role="status" aria-live="polite"></div>
+  </div>
+
   <div class="footer-rule"><span>General information only. GreenPath does not provide legal advice.</span><span class="pg">GreenPath</span></div>
 </section>
 
@@ -1552,6 +1612,14 @@
   const menuBtn = document.getElementById('menuBtn');
   const mainnav = document.getElementById('mainnav');
 
+  const a11yAnnounce = document.getElementById('a11yAnnounce');
+  function announce(msg){ if(a11yAnnounce){ a11yAnnounce.textContent=''; a11yAnnounce.textContent=msg; } }
+  // Readable label for a section id, derived from the matching nav link text.
+  function labelFor(id){
+    const target = (id==='hero2') ? 'home' : id;
+    const link = document.querySelector('nav.main a[data-go="'+target+'"]');
+    return (link && link.textContent.trim()) || target;
+  }
   function show(id){
     sections.forEach(s=>s.classList.toggle('show', s.id===id));
     document.querySelectorAll('nav.main a').forEach(a=>{
@@ -1563,6 +1631,11 @@
     mainnav.classList.remove('open');
     menuBtn?.setAttribute('aria-expanded','false');
     window.scrollTo({top:0,behavior:'smooth'});
+    // Announce the new view and move focus to its main heading for screen-reader / keyboard users.
+    announce('Showing ' + labelFor(id));
+    const sec = document.getElementById(id) || document.getElementById(id==='hero2'?'home':id);
+    const heading = sec && sec.querySelector('h1,h2');
+    if(heading){ heading.setAttribute('tabindex','-1'); heading.focus({preventScroll:true}); }
   }
   menuBtn?.addEventListener('click',()=>{
     const open = mainnav.classList.toggle('open');
@@ -1571,6 +1644,98 @@
   // Bind every static [data-go] element (nav links + hero buttons) to navigate.
   // (Dynamically-created result buttons bind themselves elsewhere.)
   document.querySelectorAll('[data-go]').forEach(el=>el.addEventListener('click',e=>{e.preventDefault();show(el.dataset.go)}));
+
+  /* ================= EASY-READING MODE (dyslexia / low-literacy friendly) ================= */
+  (function(){
+    const btn=document.getElementById('readingBtn');
+    if(!btn) return;
+    function apply(on){
+      document.body.classList.toggle('reading', on);
+      btn.setAttribute('aria-pressed', String(on));
+    }
+    // Restore saved preference on load.
+    let saved=false;
+    try{ saved = localStorage.getItem('gp-reading')==='1'; }catch(_){}
+    apply(saved);
+    btn.addEventListener('click',()=>{
+      const on=!document.body.classList.contains('reading');
+      apply(on);
+      try{ localStorage.setItem('gp-reading', on?'1':'0'); }catch(_){}
+      announce(on ? 'Easy-reading mode on' : 'Easy-reading mode off');
+    });
+  })();
+
+  /* ================= LOCAL HELP FINDER + SCAM AVOIDANCE ================= */
+  (function(){
+    const sel=document.getElementById('helpState'),
+          findBtn=document.getElementById('helpFind'),
+          out=document.getElementById('helpResult');
+    if(!sel || !findBtn || !out) return;
+    // 2-letter code -> name, all states + DC + Puerto Rico.
+    const STATES=[
+      ['AL','Alabama'],['AK','Alaska'],['AZ','Arizona'],['AR','Arkansas'],['CA','California'],
+      ['CO','Colorado'],['CT','Connecticut'],['DE','Delaware'],['DC','District of Columbia'],
+      ['FL','Florida'],['GA','Georgia'],['HI','Hawaii'],['ID','Idaho'],['IL','Illinois'],
+      ['IN','Indiana'],['IA','Iowa'],['KS','Kansas'],['KY','Kentucky'],['LA','Louisiana'],
+      ['ME','Maine'],['MD','Maryland'],['MA','Massachusetts'],['MI','Michigan'],['MN','Minnesota'],
+      ['MS','Mississippi'],['MO','Missouri'],['MT','Montana'],['NE','Nebraska'],['NV','Nevada'],
+      ['NH','New Hampshire'],['NJ','New Jersey'],['NM','New Mexico'],['NY','New York'],
+      ['NC','North Carolina'],['ND','North Dakota'],['OH','Ohio'],['OK','Oklahoma'],['OR','Oregon'],
+      ['PA','Pennsylvania'],['PR','Puerto Rico'],['RI','Rhode Island'],['SC','South Carolina'],
+      ['SD','South Dakota'],['TN','Tennessee'],['TX','Texas'],['UT','Utah'],['VT','Vermont'],
+      ['VA','Virginia'],['WA','Washington'],['WV','West Virginia'],['WI','Wisconsin'],['WY','Wyoming']
+    ];
+    // Build the state dropdown safely with DOM nodes (no HTML injection).
+    const ph=document.createElement('option'); ph.value=''; ph.textContent='Choose a state…'; sel.appendChild(ph);
+    STATES.forEach(s=>{ const o=document.createElement('option'); o.value=s[0]; o.textContent=s[1]; sel.appendChild(o); });
+    function linkChip(label, url){
+      const a=document.createElement('a');
+      a.className='cite'; a.href=url; a.target='_blank'; a.rel='noopener'; a.textContent=label;
+      return a;
+    }
+    findBtn.addEventListener('click',async()=>{
+      const code=sel.value;
+      const name=(STATES.find(s=>s[0]===code)||[])[1];
+      out.textContent='';
+      if(!code || !name){
+        const p=document.createElement('p'); p.className='dr-placeholder';
+        p.textContent='Please choose your state first.'; out.appendChild(p);
+        return;
+      }
+      // Always show the official links first — they never depend on AI.
+      const intro=document.createElement('p'); intro.className='help-intro';
+      const b=document.createElement('b'); b.textContent='Official help directories for '+name+'.';
+      intro.appendChild(b);
+      intro.appendChild(document.createTextNode(' These directories let you search for free or low-cost, '
+        +'authorized legal help. Use them to confirm anyone you work with is a licensed attorney or a DOJ-accredited representative.'));
+      out.appendChild(intro);
+      const list=document.createElement('div'); list.className='cite-list';
+      list.appendChild(linkChip('Immigration Law Help (nonprofit legal-aid directory)', 'https://www.immigrationlawhelp.org/search?state='+code));
+      list.appendChild(linkChip('USCIS: Find Legal Services', 'https://www.uscis.gov/scams-fraud-and-misconduct/avoid-scams/find-legal-services'));
+      list.appendChild(linkChip('DOJ Recognized Organizations & Accredited Representatives roster', 'https://www.justice.gov/eoir/recognition-and-accreditation-roster-reports'));
+      list.appendChild(linkChip('DOJ List of Pro Bono Legal Service Providers', 'https://www.justice.gov/eoir/list-pro-bono-legal-service-providers'));
+      out.appendChild(list);
+      announce('Showing official immigration help directories for '+name);
+      findBtn.disabled=true;
+      // Optionally add a short plain-language explanation. Non-blocking: links stay if AI fails.
+      const note=document.createElement('p');
+      note.className='help-intro'; note.style.marginTop='14px';
+      const load=document.createElement('span'); load.className='dr-loading';
+      const spin=document.createElement('span'); spin.className='dr-spin';
+      load.appendChild(spin); load.appendChild(document.createTextNode('Adding a plain-language note…'));
+      note.appendChild(load);
+      out.appendChild(note);
+      try{
+        const sys='You explain U.S. immigration legal help options in clear, plain, supportive language for immigrants. You are not a lawyer and do not give legal advice. Mention that nonprofit legal aid and DOJ-accredited representatives can be free or low cost, and that only licensed attorneys or DOJ-accredited representatives may give legal advice. Keep it to 2-3 short sentences. No markdown.';
+        const txt=await aiChat('Briefly explain free vs low-cost immigration legal help options for someone living in '+name+'.', sys, {temperature:0.3,max_tokens:220});
+        note.textContent=String(txt||'').trim();
+        if(!note.textContent) note.remove();
+      }catch(e){
+        // AI optional — drop the note, keep the official links visible.
+        note.remove();
+      }finally{ findBtn.disabled=false; }
+    });
+  })();
 
   /* ================= INTERACTIVE GUIDED WALKTHROUGH ================= */
   const ALL_COUNTRIES = ["India","China","Philippines","Mexico","Afghanistan","Albania","Algeria","Andorra","Angola","Antigua and Barbuda","Argentina","Armenia","Australia","Austria","Azerbaijan","Bahamas","Bahrain","Bangladesh","Barbados","Belarus","Belgium","Belize","Benin","Bhutan","Bolivia","Bosnia and Herzegovina","Botswana","Brazil","Brunei","Bulgaria","Burkina Faso","Burundi","Cabo Verde","Cambodia","Cameroon","Canada","Central African Republic","Chad","Chile","Colombia","Comoros","Congo (Brazzaville)","Congo (Kinshasa)","Costa Rica","Côte d'Ivoire","Croatia","Cuba","Cyprus","Czechia","Denmark","Djibouti","Dominica","Dominican Republic","Ecuador","Egypt","El Salvador","Equatorial Guinea","Eritrea","Estonia","Eswatini","Ethiopia","Fiji","Finland","France","Gabon","Gambia","Georgia","Germany","Ghana","Greece","Grenada","Guatemala","Guinea","Guinea-Bissau","Guyana","Haiti","Honduras","Hungary","Iceland","Indonesia","Iran","Iraq","Ireland","Israel","Italy","Jamaica","Japan","Jordan","Kazakhstan","Kenya","Kiribati","Kosovo","Kuwait","Kyrgyzstan","Laos","Latvia","Lebanon","Lesotho","Liberia","Libya","Liechtenstein","Lithuania","Luxembourg","Madagascar","Malawi","Malaysia","Maldives","Mali","Malta","Marshall Islands","Mauritania","Mauritius","Micronesia","Moldova","Monaco","Mongolia","Montenegro","Morocco","Mozambique","Myanmar","Namibia","Nauru","Nepal","Netherlands","New Zealand","Nicaragua","Niger","Nigeria","North Korea","North Macedonia","Norway","Oman","Pakistan","Palau","Palestine","Panama","Papua New Guinea","Paraguay","Peru","Poland","Portugal","Qatar","Romania","Russia","Rwanda","Saint Kitts and Nevis","Saint Lucia","Saint Vincent and the Grenadines","Samoa","San Marino","Sao Tome and Principe","Saudi Arabia","Senegal","Serbia","Seychelles","Sierra Leone","Singapore","Slovakia","Slovenia","Solomon Islands","Somalia","South Africa","South Korea","South Sudan","Spain","Sri Lanka","Sudan","Suriname","Sweden","Switzerland","Syria","Taiwan","Tajikistan","Tanzania","Thailand","Timor-Leste","Togo","Tonga","Trinidad and Tobago","Tunisia","Turkey","Turkmenistan","Tuvalu","Uganda","Ukraine","United Arab Emirates","United Kingdom","United States","Uruguay","Uzbekistan","Vanuatu","Vatican City","Venezuela","Vietnam","Yemen","Zambia","Zimbabwe","Other / not listed"];
