@@ -1,0 +1,1673 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GreenPath — AI Navigator</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700;9..144,900&family=Asap:ital,wght@0,400;0,500;0,600;0,700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --green:#1c4332;        /* deep green header / headlines */
+    --green-deep:#15392a;
+    --green-mid:#2f6b4f;     /* node 01 / accents */
+    --slate:#5a7791;         /* node 02 */
+    --amber:#d99a35;         /* node 03 / active */
+    --terra:#bf6048;         /* node 04 */
+    --cream:#f3ede1;         /* page top/bottom band + panels */
+    --cream-panel:#f5efe3;
+    --paper:#ffffff;
+    --ink:#1d2a22;
+    --muted:#6f7b73;
+    --line:#e4ded2;
+    --line-soft:#eceadf;
+    --rail:#dfe7e1;
+    --rail-fill:#1c4332;
+    --soft-green:#e9f0ea;
+    --pill-green:#dfeae0;
+    --shadow:0 1px 2px rgba(20,40,30,.04);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{
+    font-family:'Asap',system-ui,sans-serif;
+    color:var(--ink);
+    background:var(--cream);
+    -webkit-font-smoothing:antialiased;
+    line-height:1.55;
+  }
+  h1,h2,h3,.display{font-family:'Fraunces',Georgia,serif;color:var(--green);letter-spacing:-.01em}
+  .page-band{background:var(--cream);height:14px}
+  .shell{background:var(--paper)}
+
+  /* ---------- HEADER ---------- */
+  header{
+    background:linear-gradient(180deg,#1f4a38 0%,var(--green) 60%,#16382a 100%);
+    color:#fff;
+    position:sticky;top:0;z-index:50;
+    box-shadow:0 6px 24px -8px rgba(15,40,28,.45), 0 1px 0 rgba(255,255,255,.06) inset;
+    border-bottom:1px solid rgba(255,255,255,.07);
+  }
+  .nav-inner{
+    max-width:1320px;margin:0 auto;
+    display:flex;align-items:center;gap:26px;
+    padding:20px 40px;flex-wrap:nowrap;
+  }
+  .brand{display:flex;flex-direction:column;line-height:1;margin-right:6px;flex:none}
+  .brand .logo{font-family:'Fraunces',serif;font-weight:700;font-size:30px;color:#fff}
+  .brand .tag{font-size:10.5px;letter-spacing:.18em;color:#bcd0c4;margin-top:5px;font-weight:600}
+  nav.main{display:flex;gap:26px;flex:1;flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;-ms-overflow-style:none}
+  nav.main::-webkit-scrollbar{display:none}
+  nav.main a{
+    color:#cfe0d4;text-decoration:none;font-size:15.5px;font-weight:500;
+    padding-bottom:6px;border-bottom:3px solid transparent;transition:color .15s;
+    white-space:nowrap;flex:none;
+  }
+  nav.main a:hover{color:#fff}
+  nav.main a.active{color:#fff;border-bottom-color:var(--amber)}
+  select.lang{
+    border:1px solid rgba(255,255,255,.28);border-radius:12px;
+    padding:12px 40px 12px 18px;color:#fff;font-weight:600;font-size:15px;cursor:pointer;
+    background:rgba(255,255,255,.04);appearance:none;font-family:'Asap',sans-serif;flex:none;
+    background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='12' height='8'><path d='M1 1l5 5 5-5' stroke='white' stroke-width='1.6' fill='none'/></svg>");
+    background-repeat:no-repeat;background-position:right 16px center;max-width:230px;
+  }
+  select.lang:hover{background-color:rgba(255,255,255,.09)}
+  select.lang option{color:#1d2a22;background:#fff}
+  .lang-loading{position:fixed;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--amber),var(--green-mid));
+    transform-origin:left;animation:langbar 1.2s ease-in-out infinite;z-index:200}
+  @keyframes langbar{0%{transform:scaleX(0)}50%{transform:scaleX(.7)}100%{transform:scaleX(1);opacity:.4}}
+
+  /* ---------- SECTION FRAME ---------- */
+  main{max-width:1320px;margin:0 auto;background:var(--paper)}
+  section{display:none;padding:64px 40px 70px;scroll-margin-top:120px;animation:fade .4s ease}
+  section.show{display:block}
+  @keyframes fade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+  .kicker-rule{width:64px;height:4px;background:var(--amber);border-radius:3px;margin-bottom:18px}
+  .kicker{color:var(--green-mid);font-size:13px;font-weight:700;letter-spacing:.14em;text-transform:uppercase}
+  .lede{color:var(--muted);font-size:19px;margin-top:14px;max-width:760px}
+  .footer-rule{border-top:1px solid var(--line);margin-top:54px;padding-top:18px;
+    display:flex;justify-content:space-between;align-items:center;
+    color:var(--muted);font-size:13.5px}
+  .footer-rule .pg{color:var(--green-mid);font-weight:700}
+
+  /* ---------- HOME (step rail) ---------- */
+  .h1{font-size:clamp(44px,6vw,76px);line-height:.98;margin-top:6px}
+  .home-hero{position:relative;overflow:hidden;border-radius:24px;
+    background:radial-gradient(1200px 380px at 12% -40%, #e7f0e8 0%, transparent 60%),
+               linear-gradient(135deg,#f6f1e6 0%, #eef4ee 100%);
+    border:1px solid var(--line);padding:54px 52px 56px;margin-bottom:18px}
+  .home-hero-inner{position:relative;z-index:2;max-width:780px}
+  .home-hero .lede{margin-top:18px}
+  .home-hero-glow{position:absolute;right:-80px;top:-80px;width:340px;height:340px;border-radius:50%;
+    background:radial-gradient(circle at 30% 30%, rgba(47,107,79,.16), transparent 70%);z-index:1}
+  .rail-wrap{margin:54px 0 34px;position:relative}
+  .rail-line{position:absolute;top:34px;left:34px;right:34px;height:2px;background:var(--line);z-index:0}
+  .nodes{display:grid;grid-template-columns:repeat(6,1fr);gap:18px;position:relative;z-index:1}
+  .node .dot{
+    width:68px;height:68px;border-radius:50%;display:flex;align-items:center;justify-content:center;
+    color:#fff;font-weight:700;font-size:20px;font-family:'Fraunces',serif;
+  }
+  .node h3{font-size:19px;margin:18px 0 6px}
+  .node p{color:var(--muted);font-size:14.5px;line-height:1.4}
+  .c-green{background:var(--green-mid)} .c-slate{background:var(--slate)}
+  .c-amber{background:var(--amber)} .c-terra{background:var(--terra)}
+  .pill{
+    display:inline-flex;align-items:center;gap:10px;background:var(--soft-green);
+    color:var(--green);font-weight:700;font-size:12.5px;letter-spacing:.06em;
+    padding:12px 22px;border-radius:30px;border:1px solid #dde8df;
+  }
+  .clarity-row{display:flex;align-items:center;gap:26px;margin-top:38px;flex-wrap:wrap}
+  .clarity-row span{color:var(--muted);font-size:16px}
+
+  /* ---------- HOME 2 (hero split) ---------- */
+  .split{display:grid;grid-template-columns:1.1fr .9fr;gap:64px;align-items:start;margin-top:8px}
+  .badge-row{display:inline-flex;background:var(--soft-green);border:1px solid #dde8df;border-radius:30px;
+    padding:11px 20px;color:var(--green);font-weight:700;font-size:12.5px;letter-spacing:.07em;margin-bottom:26px}
+  .hero-h{font-size:clamp(40px,5vw,64px);line-height:1.02}
+  .btn{border:none;cursor:pointer;font-family:'Asap',sans-serif;font-weight:700;font-size:16px;
+    border-radius:12px;padding:18px 30px;transition:.15s}
+  .btn-primary{background:var(--green-deep);color:#fff}
+  .btn-primary:hover{background:#102b20}
+  .btn-ghost{background:var(--soft-green);color:var(--green)}
+  .btn-ghost:hover{background:#dfeae0}
+  .btn:disabled{opacity:.4;cursor:not-allowed}
+  .btn:disabled:hover{background:var(--soft-green)}
+  .btn-row{display:flex;gap:18px;margin:34px 0;flex-wrap:wrap}
+  .note-strong{color:var(--green-mid);font-weight:700;font-size:17px;margin-top:10px}
+  .note{color:var(--muted);margin-top:8px}
+  .roadmap-card{background:var(--cream-panel);border:1px solid var(--line);border-radius:18px;padding:38px 38px 30px}
+  .roadmap-card .kicker{margin-bottom:6px}
+  .roadmap-card h2{font-size:34px;margin-bottom:24px}
+  .road-step{display:flex;gap:18px;align-items:flex-start;position:relative;padding-bottom:26px}
+  .road-step:not(:last-child)::before{content:"";position:absolute;left:18px;top:38px;bottom:0;width:2px;background:#d9d2c2}
+  .road-step .rnum{width:38px;height:38px;border-radius:50%;flex:none;display:flex;align-items:center;
+    justify-content:center;color:#fff;font-weight:700;font-family:'Fraunces',serif;font-size:16px;z-index:1}
+  .road-step h4{font-size:17px;color:var(--ink);font-family:'Asap',sans-serif;font-weight:700}
+  .road-step p{color:var(--muted);font-size:14.5px;margin-top:2px}
+
+  /* ---------- GUIDED WALKTHROUGH ---------- */
+  .gw-grid{display:grid;grid-template-columns:.62fr 1fr;gap:34px;margin-top:8px;align-items:start}
+  .intake{background:var(--cream-panel);border:1px solid var(--line);border-radius:18px;padding:34px}
+  .intake .kicker{margin-bottom:22px}
+  .istep{display:flex;align-items:center;gap:18px;position:relative;padding-bottom:24px}
+  .istep:not(:last-child)::before{content:"";position:absolute;left:18px;top:38px;height:24px;width:2px;background:#d9d2c2}
+  .istep .ic{width:38px;height:38px;border-radius:50%;flex:none;display:flex;align-items:center;justify-content:center;
+    font-weight:700;font-family:'Fraunces',serif;font-size:15px}
+  .ic.done{background:var(--green-mid);color:#fff}
+  .ic.cur{background:var(--amber);color:#fff}
+  .ic.todo{background:#e7e2d5;color:#9a9384}
+  .istep span{font-size:16px;color:var(--muted)}
+  .istep.active span{color:var(--ink);font-weight:700}
+  .qcard{background:var(--paper);border:1px solid var(--line);border-radius:18px;padding:34px 38px}
+  .qlabel{color:var(--amber);font-weight:700;font-size:12.5px;letter-spacing:.1em}
+  .qbar{height:8px;background:var(--rail);border-radius:6px;margin:16px 0 30px;overflow:hidden}
+  .qbar i{display:block;height:100%;width:50%;background:var(--green-mid);border-radius:6px}
+  .qcard h2{font-size:30px;line-height:1.12;margin-bottom:26px}
+  .q-row{display:grid;grid-template-columns:1fr .52fr;gap:22px;align-items:start}
+  select,.fake-select{width:100%;border:1px solid var(--line);border-radius:12px;padding:18px 20px;
+    font-family:'Asap',sans-serif;font-size:16px;color:var(--ink);background:#fbfaf6;appearance:none;cursor:pointer}
+  .ai-assist{background:var(--soft-green);border:1px solid #dde8df;border-radius:12px;padding:18px 20px}
+  .ai-assist b{color:var(--green-mid);font-size:12px;letter-spacing:.1em;text-transform:uppercase}
+  .ai-assist p{color:var(--ink);margin-top:6px;font-size:15px}
+  .q-foot{display:flex;justify-content:space-between;align-items:center;margin-top:22px}
+  .q-foot small{color:var(--muted);font-size:14.5px}
+
+  /* ---------- PROGRESS ---------- */
+  .prog-top{display:flex;justify-content:space-between;align-items:baseline}
+  .prog-top h3{font-size:24px;color:var(--ink);font-family:'Asap',sans-serif;font-weight:700}
+  .prog-top .pct{color:var(--green-mid);font-weight:700;font-size:24px;font-family:'Fraunces',serif}
+  .pbar{height:9px;background:var(--rail);border-radius:6px;margin:16px 0 40px;overflow:hidden}
+  .pbar i{display:block;height:100%;width:42%;background:var(--rail-fill);border-radius:6px}
+  .stagerow{display:grid;grid-template-columns:repeat(6,1fr);gap:14px;text-align:center}
+  .stage .sdot{width:58px;height:58px;border-radius:50%;margin:0 auto;display:flex;align-items:center;
+    justify-content:center;color:#fff;font-weight:700;font-family:'Fraunces',serif;font-size:18px}
+  .sdot.muted{background:#d6d2c8;color:#fff}
+  .stage h4{margin-top:16px;font-size:18px;color:var(--ink);font-family:'Asap',sans-serif;font-weight:700}
+  .stage small{color:var(--muted);font-size:14px}
+  .stage small.act{color:var(--amber);font-weight:700}
+  .checkpoint{background:var(--cream-panel);border:1px solid #c9d6e6;border-radius:16px;padding:34px 38px;margin-top:46px}
+  .checkpoint .kicker{margin-bottom:8px}
+  .checkpoint h2{font-size:28px;margin-bottom:8px}
+  .cp-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px 60px;margin-top:14px}
+  .cp-item{display:flex;gap:16px;align-items:flex-start;padding:8px 0}
+  .cp-box{width:26px;height:26px;border-radius:50%;flex:none;border:2px solid #cfc9ba;margin-top:2px}
+  .cp-box.checked{background:var(--green-mid);border-color:var(--green-mid);position:relative}
+  .cp-box.checked::after{content:"✓";color:#fff;position:absolute;inset:0;display:flex;align-items:center;
+    justify-content:center;font-size:15px;font-weight:700}
+  .cp-item .ct{font-weight:700;color:var(--ink);font-size:17px}
+  .status{display:inline-block;margin-top:7px;font-size:11.5px;font-weight:700;letter-spacing:.08em;
+    padding:6px 14px;border-radius:8px}
+  .status.complete{background:var(--pill-green);color:var(--green-mid)}
+  .status.inprog{background:#f6e8cb;color:#b07f25}
+
+  /* ---------- DEADLINE ALERTS ---------- */
+  .da-grid{display:grid;grid-template-columns:1.35fr 1fr;gap:34px;margin-top:8px;align-items:start}
+  .timeline-card{background:var(--cream-panel);border:1px solid var(--line);border-radius:18px;padding:36px 40px}
+  .timeline-card .kicker,.settings-card .kicker{margin-bottom:26px}
+  .tl-item{display:flex;align-items:center;gap:22px;position:relative;padding-bottom:30px}
+  .tl-item:not(:last-child)::before{content:"";position:absolute;left:19px;top:40px;bottom:0;width:2px;background:#d9d2c2}
+  .tl-dot{width:40px;height:40px;border-radius:50%;flex:none;z-index:1}
+  .tl-date{font-size:12px;font-weight:700;letter-spacing:.05em;padding:8px 14px;border-radius:8px;flex:none;min-width:74px;text-align:center}
+  .d-terra{background:#f6ddd5;color:var(--terra)} .d-amber{background:#f6e8cb;color:#b07f25}
+  .d-slate{background:#dde6ef;color:var(--slate)} .d-green{background:var(--pill-green);color:var(--green-mid)}
+  .tl-item .tt b{font-size:17px;color:var(--ink)} .tl-item .tt p{color:var(--muted);font-size:14.5px}
+  .settings-card{background:var(--paper);border:1px solid var(--line);border-radius:18px;padding:36px 38px}
+  .field-label{color:var(--muted);font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;margin:22px 0 9px}
+  .field-label:first-of-type{margin-top:0}
+  .src-row{display:flex;align-items:center;gap:18px;margin-top:28px}
+  .src-pill{background:var(--soft-green);color:var(--green-mid);font-weight:700;font-size:12px;letter-spacing:.06em;
+    padding:13px 20px;border-radius:10px;border:1px solid #dde8df}
+  .src-row small{color:var(--muted);font-size:14px}
+
+  /* alerts: AI box + manual add + remove + summary */
+  .ai-box{background:var(--paper);border:1px solid #cfd9c9;border-radius:14px;padding:20px 22px;margin-bottom:26px}
+  .ai-box-head{display:flex;align-items:center;gap:10px;margin-bottom:12px}
+  .ai-badge{background:var(--green-mid);color:#fff;font-weight:700;font-size:11px;letter-spacing:.06em;
+    padding:5px 10px;border-radius:7px}
+  .ai-box-head b{color:var(--ink);font-size:16px}
+  .ai-box textarea{width:100%;min-height:92px;resize:vertical;border:1px solid var(--line);border-radius:11px;
+    padding:14px 16px;font-family:'Asap',sans-serif;font-size:15px;color:var(--ink);background:#fbfaf6;line-height:1.5}
+  .ai-box textarea:focus{outline:none;border-color:var(--green-mid)}
+  .ai-box-foot{display:flex;align-items:center;gap:18px;margin-top:14px}
+  .ai-box-foot small{color:var(--muted);font-size:14px}
+  .tl-item .tl-x{margin-left:auto;border:none;background:transparent;color:var(--terra);font-size:20px;
+    cursor:pointer;line-height:1;padding:4px 8px;border-radius:8px;opacity:.6;transition:.15s}
+  .tl-item .tl-x:hover{opacity:1;background:#f6ddd5}
+  .add-row{display:flex;gap:14px;align-items:center;margin-top:20px;flex-wrap:wrap}
+  .add-row input[type=date]{border:1px solid var(--line);border-radius:11px;padding:15px 16px;
+    font-family:'Asap',sans-serif;font-size:15px;color:var(--ink);background:#fbfaf6}
+  .add-row input[type=text]{flex:1;min-width:200px;border:1px solid var(--line);border-radius:11px;
+    padding:15px 16px;font-family:'Asap',sans-serif;font-size:15px;color:var(--ink);background:#fbfaf6}
+  .add-row input:focus{outline:none;border-color:var(--green-mid)}
+  .tl-empty{color:var(--muted);font-size:15px;padding:14px 0 24px}
+  .settings-summary{background:var(--soft-green);border:1px solid #dde8df;border-radius:11px;
+    padding:14px 16px;margin-top:22px;color:var(--green);font-size:14.5px;line-height:1.5}
+  button.src-pill{cursor:pointer;border:1px solid #dde8df;font-family:'Asap',sans-serif}
+  button.src-pill:hover{background:#dfeae0}
+  .src-panel{border:1px solid var(--line);border-radius:12px;padding:18px 20px;margin-top:16px;background:#fbfaf6}
+  .src-line{display:flex;justify-content:space-between;gap:16px;padding:7px 0;font-size:14.5px}
+  .src-line b{color:var(--ink);font-weight:600} .src-line span{color:var(--muted)}
+  .src-foot{display:block;color:var(--muted);font-size:13px;margin-top:10px;line-height:1.5}
+
+  /* ---------- LANGUAGE TOOLS ---------- */
+  .lt-toolbar{background:var(--cream-panel);border:1px solid var(--line);border-radius:16px;padding:22px 26px;
+    display:flex;gap:14px;align-items:center;flex-wrap:wrap;margin-top:8px}
+  .lt-sel{background:var(--paper);border:1px solid var(--line);border-radius:11px;padding:14px 18px;
+    font-size:15px;font-weight:500;color:var(--ink);min-width:150px;display:flex;justify-content:space-between;gap:14px;align-items:center}
+  .lt-arrow{color:var(--green-mid);font-size:20px}
+  .lt-body{background:var(--paper);border:1px solid var(--line);border-top:none;border-radius:0 0 16px 16px;padding:34px 38px;margin-top:-8px}
+  .lt-cols{display:grid;grid-template-columns:1fr 1fr;gap:38px}
+  .lt-cols h5{color:var(--green-mid);font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;margin-bottom:14px}
+  .lt-text{border:1px solid var(--line);border-radius:14px;padding:26px;font-size:21px;line-height:1.5;min-height:170px;background:#fbfaf6;color:var(--ink)}
+  .lt-text.out{background:var(--soft-green);border-color:#dde8df}
+  .lt-actions{display:flex;gap:16px;align-items:center;margin-top:22px;flex-wrap:wrap}
+  .btn-read{background:#f5e6c4;color:var(--green-deep);font-weight:700;border:none;border-radius:11px;padding:15px 24px;cursor:pointer}
+  .btn-detect{background:#dde6ef;color:var(--slate);font-weight:700;font-size:12px;letter-spacing:.07em;border:none;border-radius:11px;padding:15px 22px;cursor:pointer}
+  .btn-scan{background:var(--soft-green);color:var(--green-mid);font-weight:700;border:1px solid #dde8df;border-radius:11px;padding:15px 22px;cursor:pointer;display:flex;gap:10px}
+  .lt-actions small{color:var(--muted);font-weight:600;margin-left:auto}
+  /* interactive language tools */
+  .lt-sel-real{background:var(--paper);border:1px solid var(--line);border-radius:11px;padding:14px 38px 14px 18px;
+    font-family:'Asap',sans-serif;font-size:15px;font-weight:500;color:var(--ink);cursor:pointer;
+    appearance:none;background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='12' height='8'><path d='M1 1l5 5 5-5' stroke='%231c4332' stroke-width='1.6' fill='none'/></svg>");
+    background-repeat:no-repeat;background-position:right 16px center}
+  .lt-sel-real:focus{outline:none;border-color:var(--green-mid)}
+  button.lt-arrow{background:var(--soft-green);border:1px solid #dde8df;color:var(--green-mid);font-size:20px;
+    cursor:pointer;border-radius:11px;width:46px;height:46px;line-height:1;transition:.15s}
+  button.lt-arrow:hover{background:#dfeae0}
+  textarea.lt-text{width:100%;resize:vertical;font-family:'Asap',sans-serif}
+  textarea.lt-text:focus{outline:none;border-color:var(--green-mid)}
+  .lt-out-empty{color:var(--muted)}
+  #ltStatus{color:var(--muted);font-size:14px}
+  .btn-read.speaking{background:var(--green-mid);color:#fff}
+
+  /* ---------- DOCUMENT REVIEW ---------- */
+  .dr-grid{display:grid;grid-template-columns:1fr 1fr;gap:34px;margin-top:8px;align-items:start}
+  .dr-actions{display:flex;gap:14px;margin:20px 0 12px;flex-wrap:wrap}
+  textarea#drInput{width:100%;resize:vertical;font-family:'Asap',sans-serif;line-height:1.5}
+  textarea#drInput:focus{outline:none;border-color:var(--green-mid)}
+  .dr-placeholder{color:var(--muted);font-size:15.5px;line-height:1.6;padding:6px 0 18px}
+  .dr-summary{background:var(--soft-green);border:1px solid #dde8df;border-radius:12px;padding:14px 18px;
+    margin-bottom:18px;color:var(--green);font-size:14.5px;line-height:1.5}
+  .dr-loading{color:var(--muted);font-size:15px;padding:8px 0 20px;display:flex;align-items:center;gap:12px}
+  .dr-spin{width:18px;height:18px;border:3px solid #d9d2c2;border-top-color:var(--green-mid);
+    border-radius:50%;animation:spin .8s linear infinite}
+  @keyframes spin{to{transform:rotate(360deg)}}
+  .dr-left{background:var(--cream-panel);border:1px solid var(--line);border-radius:18px;padding:36px 38px}
+  .dr-right{background:var(--paper);border:1px solid var(--line);border-radius:18px;padding:36px 38px}
+  .dr-left .kicker,.dr-right .kicker{margin-bottom:26px}
+  .form-preview{background:var(--paper);border:1px solid var(--line);border-radius:14px;padding:30px 32px}
+  .form-preview h3{font-size:21px;color:var(--ink);font-family:'Asap',sans-serif;font-weight:700;
+    border-bottom:1px solid var(--line);padding-bottom:16px;margin-bottom:20px}
+  .fp-row{display:flex;justify-content:space-between;gap:20px;padding:9px 0}
+  .fp-row b{color:var(--ink);font-weight:700}
+  .fp-row .ok{color:var(--ink)}
+  .fp-row .warn{color:var(--terra);font-weight:700}
+  .issue{display:flex;gap:16px;align-items:flex-start;border-radius:12px;padding:18px 22px;margin-bottom:14px}
+  .issue .idot{width:14px;height:14px;border-radius:50%;flex:none;margin-top:6px}
+  .issue.red{background:#f8e2db} .issue.red .idot{background:var(--terra)}
+  .issue.amb{background:#f7ebcf} .issue.amb .idot{background:var(--amber)}
+  .issue.blu{background:#e4ecf3} .issue.blu .idot{background:var(--slate)}
+  .issue b{color:var(--ink);font-size:16.5px} .issue p{color:var(--muted);font-size:14.5px;margin-top:2px}
+  .legal-row{display:flex;align-items:center;gap:22px;margin-top:24px;flex-wrap:wrap}
+  .btn-legal{background:var(--soft-green);color:var(--green);font-weight:700;border:1px solid #dde8df;border-radius:11px;padding:16px 26px;cursor:pointer}
+  .legal-row small{color:var(--terra);font-weight:700;font-size:14.5px}
+  .dr-left .btn-primary{width:100%;margin-top:24px}
+  .dr-left .tiny{color:var(--muted);font-size:14px;text-align:center;margin-top:14px}
+
+  /* ---------- INTERVIEW PREP ---------- */
+  .ip-grid{display:grid;grid-template-columns:.85fr 1.05fr;gap:34px;margin-top:8px;align-items:start}
+  .ip-left{background:var(--cream-panel);border:1px solid var(--line);border-radius:18px;padding:36px 38px}
+  .ip-left .kicker{margin-bottom:24px}
+  .example-q{background:var(--paper);border:1px solid var(--line);border-radius:14px;padding:22px 24px;margin:24px 0 22px}
+  .example-q small{color:var(--green-mid);font-weight:600;font-size:13px}
+  .example-q b{display:block;font-size:21px;color:var(--ink);margin-top:6px;font-family:'Fraunces',serif}
+  .ip-btns{display:flex;gap:16px;flex-wrap:wrap;margin-top:6px}
+  .ip-left .field-label{margin-top:22px}
+  /* interview chat */
+  .ip-chat-wrap{display:flex;flex-direction:column;border:1px solid var(--line);border-radius:18px;
+    background:linear-gradient(160deg,#f6f1e6,#eef3ec);overflow:hidden;
+    height:620px;max-height:78vh}
+  .ip-chat{flex:1;min-height:0;overflow-y:auto;padding:26px 28px;display:flex;flex-direction:column;gap:16px}
+  .ip-empty{margin:auto;text-align:center;max-width:380px;color:var(--muted)}
+  .ip-empty-icon{font-size:40px;margin-bottom:14px}
+  .ip-empty p{font-size:15.5px;line-height:1.6}
+  .bubble{max-width:82%;padding:15px 19px;border-radius:16px;font-size:15.5px;line-height:1.5}
+  .bubble.officer{background:var(--paper);border:1px solid var(--line);align-self:flex-start;border-bottom-left-radius:5px}
+  .bubble.officer .who{color:var(--green-mid);font-weight:700;font-size:11.5px;letter-spacing:.08em;text-transform:uppercase;display:block;margin-bottom:6px}
+  .bubble.me{background:var(--green-deep);color:#fff;align-self:flex-end;border-bottom-right-radius:5px}
+  .coach-card{align-self:flex-start;max-width:82%;border-radius:14px;padding:14px 18px;border:1px solid}
+  .coach-card .ctag{font-weight:700;font-size:11.5px;letter-spacing:.08em;text-transform:uppercase;display:flex;align-items:center;gap:8px}
+  .coach-card p{font-size:14.5px;color:var(--ink);margin-top:6px;line-height:1.5}
+  .coach-card.clear{background:#e9f3ea;border-color:#cfe3d2} .coach-card.clear .ctag{color:var(--green-mid)}
+  .coach-card.clarify{background:#f7ebcf;border-color:#ecd9a8} .coach-card.clarify .ctag{color:#b07f25}
+  .coach-card.help{background:#e4ecf3;border-color:#cfdbe7} .coach-card.help .ctag{color:var(--slate)}
+  .ip-typing{align-self:flex-start;color:var(--muted);font-size:14px;display:flex;gap:6px;align-items:center}
+  .ip-typing i{width:7px;height:7px;border-radius:50%;background:var(--green-mid);opacity:.5;animation:blink 1s infinite}
+  .ip-typing i:nth-child(2){animation-delay:.2s} .ip-typing i:nth-child(3){animation-delay:.4s}
+  @keyframes blink{0%,100%{opacity:.3}50%{opacity:1}}
+  .ip-input{display:flex;gap:12px;padding:16px 18px;border-top:1px solid var(--line);background:rgba(255,255,255,.5)}
+  .ip-input textarea{flex:1;resize:none;border:1px solid var(--line);border-radius:11px;padding:13px 16px;
+    font-family:'Asap',sans-serif;font-size:15px;color:var(--ink);background:#fff;max-height:120px}
+  .ip-input textarea:focus{outline:none;border-color:var(--green-mid)}
+  .ip-done{align-self:center;text-align:center;color:var(--green-mid);font-weight:700;font-size:15px;padding:8px 0}
+  .ip-art{border-radius:18px;overflow:hidden;border:1px solid var(--line);position:relative;background:linear-gradient(160deg,#f1ead9,#e6efe5);min-height:430px}
+  .coach{position:absolute;right:26px;bottom:26px;background:rgba(255,255,255,.92);backdrop-filter:blur(4px);
+    border:1px solid #e4ded2;border-radius:14px;padding:18px 24px;max-width:330px}
+  .coach small{color:var(--green-mid);font-weight:700;font-size:11.5px;letter-spacing:.1em}
+  .coach b{display:block;color:var(--ink);font-size:15px;margin-top:6px}
+
+  @media(max-width:1000px){
+    .split,.gw-grid,.da-grid,.lt-cols,.dr-grid,.ip-grid,.q-row,.cp-grid{grid-template-columns:1fr}
+    .nodes,.stagerow{grid-template-columns:repeat(3,1fr);gap:30px 18px}
+    .rail-line{display:none}
+    nav.main{display:none}
+    .nav-inner{flex-wrap:wrap}
+  }
+  /* mobile nav toggle */
+  .menu-btn{display:none;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.25);
+    color:#fff;border-radius:10px;padding:10px 14px;font-weight:700;cursor:pointer;font-size:15px}
+  @media(max-width:1000px){
+    .menu-btn{display:block;margin-left:auto}
+    nav.main.open{display:flex;flex-direction:column;width:100%;gap:6px;margin-top:6px}
+    nav.main.open a{padding:10px 0;border-bottom:1px solid rgba(255,255,255,.1)}
+  }
+</style>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/tesseract.js/5.1.0/tesseract.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+</head>
+<body>
+<div class="page-band"></div>
+
+<header>
+  <div class="nav-inner">
+    <div class="brand">
+      <span class="logo">GreenPath</span>
+      <span class="tag">AI NAVIGATOR</span>
+    </div>
+    <button class="menu-btn" onclick="document.getElementById('mainnav').classList.toggle('open')">Menu</button>
+    <nav class="main" id="mainnav">
+      <a href="#" data-go="home" class="active">Home</a>
+      <a href="#" data-go="guided">Guided Walkthrough</a>
+      <a href="#" data-go="progress">Progress</a>
+      <a href="#" data-go="alerts">Deadline Alerts</a>
+      <a href="#" data-go="language">Language Tools</a>
+      <a href="#" data-go="pathway">Pathway Finder</a>
+      <a href="#" data-go="qa">Stage Q&amp;A</a>
+      <a href="#" data-go="review">Document Review</a>
+      <a href="#" data-go="interview">Interview Prep</a>
+    </nav>
+    <select class="lang" id="siteLang" aria-label="Site language">
+      <option value="English">English ⌄</option>
+    </select>
+  </div>
+</header>
+
+<main>
+
+<!-- ===================== HOME ===================== -->
+<section id="home" class="show">
+  <div class="home-hero">
+    <div class="home-hero-inner">
+      <div class="kicker-rule"></div>
+      <div class="kicker">A clear starting point</div>
+      <h1 class="h1">One clear place to begin.</h1>
+      <p class="lede">GreenPath organizes the green-card journey into visible, human-sized steps — in your language, at your pace.</p>
+      <div class="btn-row" style="margin-top:30px">
+        <button class="btn btn-primary" data-go="guided">Start My Walkthrough</button>
+        <button class="btn btn-ghost" data-go="hero2">See How It Works</button>
+      </div>
+    </div>
+    <div class="home-hero-glow"></div>
+  </div>
+
+  <div class="rail-wrap">
+    <div class="rail-line"></div>
+    <div class="nodes">
+      <div class="node"><div class="dot c-green">01</div><h3>Guided Walkthrough</h3><p>Understand possible pathways</p></div>
+      <div class="node"><div class="dot c-slate">02</div><h3>Progress Tracking</h3><p>See what comes next</p></div>
+      <div class="node"><div class="dot c-amber">03</div><h3>Deadline Alerts</h3><p>Keep important dates visible</p></div>
+      <div class="node"><div class="dot c-terra">04</div><h3>Language Tools</h3><p>Translate, scan, and listen</p></div>
+      <div class="node"><div class="dot c-green">05</div><h3>Document Review</h3><p>Check for possible issues</p></div>
+      <div class="node"><div class="dot c-slate">06</div><h3>Interview Prep</h3><p>Practice with confidence</p></div>
+    </div>
+  </div>
+
+  <div class="clarity-row">
+    <span class="pill">DESIGNED FOR CLARITY</span>
+    <span>Every section is reachable from the top navigation.</span>
+  </div>
+
+  <div class="footer-rule"><span>General information only. GreenPath does not provide legal advice.</span><span class="pg">01</span></div>
+</section>
+
+<!-- ===================== HOME 2 / HERO (Explore) ===================== -->
+<section id="hero2">
+  <div class="split">
+    <div>
+      <div class="badge-row">PERSONALIZED &nbsp;•&nbsp; MULTILINGUAL &nbsp;•&nbsp; CLEAR</div>
+      <h1 class="hero-h">Your next step should not be a mystery.</h1>
+      <p class="lede">GreenPath helps you understand possible pathways, organize documents, track deadlines, and prepare questions in your preferred language.</p>
+      <div class="btn-row">
+        <button class="btn btn-primary" data-go="guided">Start My Walkthrough</button>
+        <button class="btn btn-ghost" data-go="home">Explore Features</button>
+      </div>
+      <p class="note-strong">Built to guide. Designed to know when to hand off.</p>
+      <p class="note">Complex situations are redirected to authorized legal help.</p>
+    </div>
+    <div class="roadmap-card">
+      <div class="kicker">Your roadmap</div>
+      <h2>A visible path forward</h2>
+      <div class="road-step"><div class="rnum c-green">1</div><div><h4>Tell us your situation</h4><p>Plain-language questions</p></div></div>
+      <div class="road-step"><div class="rnum c-slate">2</div><div><h4>See a possible pathway</h4><p>Official sources linked</p></div></div>
+      <div class="road-step"><div class="rnum c-amber">3</div><div><h4>Follow your checklist</h4><p>Progress saved locally</p></div></div>
+      <div class="road-step"><div class="rnum c-terra">4</div><div><h4>Know when to ask for help</h4><p>Authorized support referrals</p></div></div>
+    </div>
+  </div>
+  <div class="footer-rule"><span>General information only. GreenPath does not provide legal advice.</span><span class="pg">02</span></div>
+</section>
+
+<!-- ===================== GUIDED WALKTHROUGH ===================== -->
+<section id="guided">
+  <div class="kicker-rule"></div>
+  <div class="kicker">Guided Walkthrough</div>
+  <h1 class="h1" style="font-size:clamp(36px,4.4vw,56px);margin-top:8px">A few questions reveal a possible pathway.</h1>
+  <p class="lede">One calm question at a time. No legal terminology required.</p>
+
+  <div class="gw-grid">
+    <div class="intake">
+      <div class="kicker">Your intake</div>
+      <div id="intakeList"></div>
+    </div>
+
+    <!-- QUESTION CARD -->
+    <div class="qcard" id="qCard">
+      <div class="qlabel" id="qLabel">QUESTION 1 OF 6</div>
+      <div class="qbar"><i id="qFill"></i></div>
+      <h2 id="qTitle">—</h2>
+      <div class="q-row">
+        <div>
+          <select id="qSelect"><option value="">Select an answer</option></select>
+          <div class="q-foot"><small id="qHint">You can ask questions in your own words.</small></div>
+        </div>
+        <div>
+          <div class="ai-assist"><b>AI Assistance</b><p id="aiTip">Explains unfamiliar terms simply.</p></div>
+          <div style="display:flex;gap:12px;justify-content:flex-end;margin-top:18px">
+            <button class="btn btn-ghost" id="qBack" style="padding:14px 22px">Back</button>
+            <button class="btn btn-primary" id="qNext">Continue</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- RESULT CARD (hidden until finished) -->
+    <div class="qcard" id="resultCard" style="display:none">
+      <div class="qlabel" style="color:var(--green-mid)">YOUR POSSIBLE PATHWAY</div>
+      <div class="qbar"><i style="width:100%"></i></div>
+      <h2 id="resultTitle">A possible pathway</h2>
+      <p style="color:var(--muted);font-size:16px;margin-bottom:8px" id="resultBody"></p>
+      <div class="ai-assist" style="margin:18px 0">
+        <b>Important</b>
+        <p>This is general information based on your answers — not a legal determination. Complex situations should be reviewed with an authorized immigration attorney.</p>
+      </div>
+      <div style="display:flex;gap:12px;flex-wrap:wrap">
+        <button class="btn btn-primary" data-go="progress">See My Roadmap</button>
+        <button class="btn btn-ghost" id="qRestart">Start Over</button>
+      </div>
+    </div>
+  </div>
+  <div class="footer-rule"><span>General information only. GreenPath does not provide legal advice.</span><span class="pg">03</span></div>
+</section>
+
+<!-- ===================== PROGRESS ===================== -->
+<section id="progress">
+  <div class="kicker-rule"></div>
+  <div class="kicker">Progress Tracking</div>
+  <h1 class="h1" style="font-size:clamp(36px,4.6vw,58px);margin-top:8px">A roadmap makes a long process feel manageable.</h1>
+
+  <div style="margin-top:40px">
+    <div class="prog-top"><h3>Your personalized roadmap</h3><span class="pct">42% complete</span></div>
+    <div class="pbar"><i></i></div>
+    <div class="stagerow">
+      <div class="stage"><div class="sdot c-green">1</div><h4>Eligibility</h4><small>Complete</small></div>
+      <div class="stage"><div class="sdot c-amber">2</div><h4>Gather</h4><small class="act">In progress</small></div>
+      <div class="stage"><div class="sdot c-slate">3</div><h4>File</h4><small>Next</small></div>
+      <div class="stage"><div class="sdot muted">4</div><h4>Biometrics</h4><small>Later</small></div>
+      <div class="stage"><div class="sdot muted">5</div><h4>Interview</h4><small>Later</small></div>
+      <div class="stage"><div class="sdot muted">6</div><h4>Decision</h4><small>Later</small></div>
+    </div>
+  </div>
+
+  <div class="checkpoint">
+    <div class="kicker">Current checkpoint</div>
+    <h2>Gather supporting documents</h2>
+    <div class="cp-grid">
+      <div class="cp-item"><div class="cp-box checked"></div><div><div class="ct">Identity document</div><span class="status complete">COMPLETE</span></div></div>
+      <div class="cp-item"><div class="cp-box checked"></div><div><div class="ct">Birth certificate</div><span class="status complete">COMPLETE</span></div></div>
+      <div class="cp-item"><div class="cp-box"></div><div><div class="ct">Passport-style photos</div><span class="status inprog">IN PROGRESS</span></div></div>
+      <div class="cp-item"><div class="cp-box"></div><div><div class="ct">Form checklist review</div><span class="status inprog">IN PROGRESS</span></div></div>
+    </div>
+  </div>
+  <div class="footer-rule"><span>General information only. GreenPath does not provide legal advice.</span><span class="pg">04</span></div>
+</section>
+
+<!-- ===================== DEADLINE ALERTS ===================== -->
+<section id="alerts">
+  <div class="kicker-rule"></div>
+  <div class="kicker">Deadline Alerts</div>
+  <h1 class="h1" style="font-size:clamp(36px,4.6vw,58px);margin-top:8px">See important dates before they become urgent.</h1>
+  <p class="lede">Based on dates you enter and dated official public sources.</p>
+
+  <div class="da-grid">
+    <div class="timeline-card">
+      <div class="kicker">Upcoming timeline</div>
+
+      <!-- AI describe box -->
+      <div class="ai-box">
+        <div class="ai-box-head"><span class="ai-badge">AI</span><b>Describe your situation</b></div>
+        <textarea id="aiDesc" placeholder="e.g. My biometrics appointment is on June 12. I got my green-card medical exam (I-693) done on March 3 — it's valid for 2 years. My priority date is in the August visa bulletin."></textarea>
+        <div class="ai-box-foot">
+          <button class="btn btn-primary" id="aiExtract">Extract Dates with AI</button>
+          <small id="aiStatus"></small>
+        </div>
+      </div>
+
+      <div id="timeline"></div>
+
+      <!-- manual add -->
+      <div class="add-row">
+        <input type="date" id="newDate">
+        <input type="text" id="newLabel" placeholder="Add your own reminder…">
+        <button class="btn btn-ghost" id="addBtn" style="padding:16px 26px">Add</button>
+      </div>
+    </div>
+
+    <div class="settings-card">
+      <div class="kicker">Alert settings</div>
+      <div class="field-label">Notification channel</div>
+      <select id="setChannel">
+        <option>In-browser reminders</option>
+        <option>Email reminders</option>
+        <option>Email + in-browser</option>
+        <option>No notifications</option>
+      </select>
+      <div class="field-label">Reminder timing</div>
+      <select id="setTiming">
+        <option value="1">1 day before</option>
+        <option value="3">3 days before</option>
+        <option value="7" selected>7 days before</option>
+        <option value="14">14 days before</option>
+        <option value="30">30 days before</option>
+      </select>
+      <div class="field-label">Calendar filter</div>
+      <select id="setFilter">
+        <option value="all">All upcoming dates</option>
+        <option value="30">Next 30 days</option>
+        <option value="60">Next 60 days</option>
+      </select>
+      <div class="settings-summary" id="setSummary"></div>
+      <div class="src-row"><button class="src-pill" id="srcToggle" type="button">OFFICIAL SOURCE DATES</button><small>Show source and last-updated date.</small></div>
+      <div class="src-panel" id="srcPanel" hidden>
+        <div class="src-line"><b>USCIS processing times</b><span>updated May 28, 2026</span></div>
+        <div class="src-line"><b>Visa Bulletin (travel.state.gov)</b><span>updated May 15, 2026</span></div>
+        <div class="src-line"><b>I-693 medical validity</b><span>2 years from exam date</span></div>
+        <small class="src-foot">Dates are drawn from public government sources. Always confirm against the official notice for your case.</small>
+      </div>
+    </div>
+  </div>
+  <div class="footer-rule"><span>General information only. GreenPath does not provide legal advice.</span><span class="pg">05</span></div>
+</section>
+
+<!-- ===================== LANGUAGE TOOLS ===================== -->
+<section id="language">
+  <div class="kicker-rule"></div>
+  <div class="kicker">Multilingual Support</div>
+  <h1 class="h1" style="font-size:clamp(36px,4.6vw,58px);margin-top:8px">Support works in the language and format the user needs.</h1>
+  <p class="lede">Translate text, scan a page, or hear instructions read aloud.</p>
+
+  <div class="lt-toolbar">
+    <select class="lt-sel-real" id="ltFrom">
+      <option value="auto">Detect language</option>
+    </select>
+    <button class="lt-arrow" id="ltSwap" title="Swap languages" type="button">⇄</button>
+    <select class="lt-sel-real" id="ltTo">
+    </select>
+    <div style="flex:1"></div>
+    <select class="lt-sel-real" id="ltVoice">
+      <option>Voice: Natural</option>
+      <option>Voice: Clear</option>
+      <option>Voice: Warm</option>
+    </select>
+    <select class="lt-sel-real" id="ltSpeed">
+      <option value="0.75">Speed: 0.75×</option>
+      <option value="1" selected>Speed: 1.0×</option>
+      <option value="1.25">Speed: 1.25×</option>
+      <option value="1.5">Speed: 1.5×</option>
+    </select>
+    <select class="lt-sel-real" id="ltSize">
+      <option value="17">Text size: Small</option>
+      <option value="21" selected>Text size: Medium</option>
+      <option value="26">Text size: Large</option>
+    </select>
+  </div>
+  <div class="lt-body">
+    <div class="lt-cols">
+      <div>
+        <h5>Source text</h5>
+        <textarea class="lt-text" id="ltSource" spellcheck="false">Necesito ayuda para entender qué documentos debo reunir para mi próximo paso.</textarea>
+      </div>
+      <div>
+        <h5>Translation</h5>
+        <div class="lt-text out" id="ltOut">I need help understanding which documents I should gather for my next step.</div>
+      </div>
+    </div>
+    <div class="lt-cols" style="margin-top:22px">
+      <div class="lt-actions">
+        <button class="btn-scan" id="ltScan">📄 Scan Document</button>
+        <button class="btn btn-primary" id="ltTranslate" style="padding:15px 30px">Translate</button>
+        <small id="ltStatus"></small>
+      </div>
+      <div class="lt-actions">
+        <button class="btn-read" id="ltRead">▶ Read Aloud</button>
+        <button class="btn-detect" id="ltDetect">AUTO-DETECT LANGUAGE</button>
+        <small>Translation tools</small>
+      </div>
+    </div>
+    <input type="file" id="ltFile" accept="image/*,.pdf,.txt" hidden>
+  </div>
+  <div class="footer-rule"><span>General information only. GreenPath does not provide legal advice.</span><span class="pg">06</span></div>
+</section>
+
+<!-- ===================== DOCUMENT REVIEW ===================== -->
+<section id="review">
+  <div class="kicker-rule"></div>
+  <div class="kicker">Document Review</div>
+  <h1 class="h1" style="font-size:clamp(36px,4.6vw,58px);margin-top:8px">AI review catches possible issues before submission.</h1>
+  <p class="lede">Prototype demo uses synthetic entries only. Verify every form before filing.</p>
+
+  <div class="dr-grid">
+    <div class="dr-left">
+      <div class="kicker">Form entry to review</div>
+      <div class="field-label" style="margin-top:0">Which form is this?</div>
+      <select id="drForm" class="lt-sel-real" style="width:100%;margin-bottom:18px">
+        <option value="I-485">I-485 — Adjustment of Status</option>
+        <option value="I-130">I-130 — Petition for Alien Relative</option>
+        <option value="I-765">I-765 — Employment Authorization</option>
+        <option value="I-693">I-693 — Medical Examination</option>
+        <option value="N-400">N-400 — Application for Naturalization</option>
+        <option value="Other">Other / not sure</option>
+      </select>
+      <div class="field-label">Describe or paste your entries</div>
+      <textarea id="drInput" class="lt-text" spellcheck="false" style="min-height:170px;font-size:16px">Address history: 2019–2021 (Chicago), 2022–present (Houston). Signature: left blank. Date of birth: 05/30/1996 on this form, 30/05/1996 on my passport. Employment: no end date listed for previous job.</textarea>
+      <div class="dr-actions">
+        <button class="btn btn-primary" id="drReview">Review with AI</button>
+        <button class="btn btn-ghost" id="drSample">Load sample</button>
+      </div>
+      <p class="tiny">Use synthetic or sample text only. Do not paste real personal documents into this demo.</p>
+    </div>
+    <div class="dr-right">
+      <div class="kicker">Possible issues to review</div>
+      <div id="drIssues">
+        <p class="dr-placeholder">Enter your form details on the left and select <b>Review with AI</b>. GreenPath will flag fields that commonly trigger a Request for Evidence (RFE) so you can fix them before filing.</p>
+      </div>
+      <div class="legal-row"><button class="btn-legal" data-go="interview">Find Authorized Legal Help</button><small>AI review can miss issues.</small></div>
+    </div>
+  </div>
+  <div class="footer-rule"><span>General information only. GreenPath does not provide legal advice.</span><span class="pg">07</span></div>
+</section>
+
+<!-- ===================== INTERVIEW PREP ===================== -->
+<section id="interview">
+  <div class="kicker-rule"></div>
+  <div class="kicker">Interview Prep</div>
+  <h1 class="h1" style="font-size:clamp(36px,4.6vw,58px);margin-top:8px">Practice replaces uncertainty with preparation.</h1>
+  <p class="lede">A calm simulator helps users rehearse questions and notice what needs clarification.</p>
+
+  <div class="ip-grid">
+    <div class="ip-left">
+      <div class="kicker">Practice session</div>
+      <div class="field-label">Case type</div>
+      <select id="ipCase" class="lt-sel-real" style="width:100%">
+        <option value="">Select a practice scenario</option>
+        <option value="Marriage-based adjustment of status (I-485)">Marriage-based green card (I-485)</option>
+        <option value="Family-based petition (I-130)">Family-based petition (I-130)</option>
+        <option value="Employment-based green card">Employment-based green card</option>
+        <option value="Naturalization / citizenship (N-400)">Citizenship interview (N-400)</option>
+        <option value="Asylum interview">Asylum interview</option>
+      </select>
+      <div class="field-label">Language</div>
+      <select id="ipLang" class="lt-sel-real" style="width:100%">
+        <option value="English">English</option>
+      </select>
+      <div class="example-q"><small>Example question</small><b id="ipExample">Please explain your current address history.</b></div>
+      <div class="ip-btns">
+        <button class="btn btn-primary" id="ipStart">● Start Practice</button>
+        <button class="btn-read" id="ipReadQ">▶ Read Question</button>
+      </div>
+      <p class="tiny" style="margin-top:14px">A calm simulation only. Real interviews vary — never treat this as legal advice.</p>
+    </div>
+
+    <div class="ip-chat-wrap">
+      <div class="ip-chat" id="ipChat">
+        <div class="ip-empty">
+          <div class="ip-empty-icon">🎙️</div>
+          <p>Pick a case type and press <b>Start Practice</b>. An AI interviewer will ask one USCIS-style question at a time, then give you coaching feedback on each answer.</p>
+        </div>
+      </div>
+      <div class="ip-input" id="ipInputBar" hidden>
+        <textarea id="ipAnswer" placeholder="Type your answer…" rows="1"></textarea>
+        <button class="btn btn-primary" id="ipSend">Send</button>
+      </div>
+    </div>
+  </div>
+  <div class="footer-rule"><span>General information only. GreenPath does not provide legal advice.</span><span class="pg">08</span></div>
+</section>
+
+<!-- ===================== PATHWAY FINDER (AI) ===================== -->
+<section id="pathway">
+  <div class="kicker-rule"></div>
+  <div class="kicker">Pathway Finder</div>
+  <h1 class="h1" style="font-size:clamp(36px,4.6vw,58px);margin-top:8px">Find your most likely green card pathway.</h1>
+  <p class="lede">Answer in your own words. GreenPath suggests a likely pathway — general information only, not legal advice.</p>
+
+  <div class="dr-grid">
+    <div class="dr-left">
+      <div class="kicker">Tell us about your situation</div>
+      <div class="field-label" style="margin-top:0">Describe your situation</div>
+      <textarea id="pwInput" class="lt-text" spellcheck="false" style="min-height:200px;font-size:16px">I am married to a U.S. citizen and we have lived together in the U.S. for 2 years. I entered on a tourist visa that has since expired. I have no criminal history. I do not have a U.S. job offer.</textarea>
+      <p class="tiny">Include: relationship to a U.S. citizen or green-card holder, your job situation, current immigration status, time in the U.S., and any special circumstances (asylum, military, investment).</p>
+      <div class="dr-actions">
+        <button class="btn btn-primary" id="pwFind">Find my pathway</button>
+      </div>
+    </div>
+    <div class="dr-right">
+      <div class="kicker">Suggested pathway</div>
+      <div id="pwResult">
+        <p class="dr-placeholder">Describe your situation on the left and select <b>Find my pathway</b>. GreenPath will suggest the most likely category and next steps. For complex cases, talk with an accredited immigration attorney.</p>
+      </div>
+    </div>
+  </div>
+  <div class="footer-rule"><span>General information only. GreenPath does not provide legal advice.</span><span class="pg">09</span></div>
+</section>
+
+<!-- ===================== STAGE Q&A (AI) ===================== -->
+<section id="qa">
+  <div class="kicker-rule"></div>
+  <div class="kicker">Stage Q&amp;A</div>
+  <h1 class="h1" style="font-size:clamp(36px,4.6vw,58px);margin-top:8px">Ask a question about your current stage.</h1>
+  <p class="lede">Plain-language answers about the green card process. Always verify specifics on USCIS.gov.</p>
+
+  <div class="dr-grid">
+    <div class="dr-left">
+      <div class="kicker">Your question</div>
+      <div class="field-label" style="margin-top:0">Your pathway</div>
+      <select id="qaPathway" class="lt-sel-real" style="width:100%;margin-bottom:14px">
+        <option value="Family-based">Family-based</option>
+        <option value="Employment-based">Employment-based</option>
+        <option value="Humanitarian (asylum/refugee)">Humanitarian (asylum/refugee)</option>
+        <option value="Diversity Visa lottery">Diversity Visa lottery</option>
+        <option value="Investment">Investment</option>
+        <option value="Not sure">Not sure</option>
+      </select>
+      <div class="field-label">Current stage</div>
+      <select id="qaStage" class="lt-sel-real" style="width:100%;margin-bottom:14px">
+        <option value="Just getting started">Just getting started</option>
+        <option value="Petition filed">Petition filed</option>
+        <option value="Waiting for a priority date">Waiting for a priority date</option>
+        <option value="Biometrics scheduled">Biometrics scheduled</option>
+        <option value="Interview scheduled">Interview scheduled</option>
+        <option value="Decision pending">Decision pending</option>
+      </select>
+      <div class="field-label">Your question</div>
+      <textarea id="qaInput" class="lt-text" spellcheck="false" style="min-height:120px;font-size:16px">What does Form I-130 do, and what happens after it is approved?</textarea>
+      <div class="dr-actions">
+        <button class="btn btn-primary" id="qaAsk">Ask GreenPath</button>
+      </div>
+    </div>
+    <div class="dr-right">
+      <div class="kicker">Answer</div>
+      <div id="qaAnswer">
+        <p class="dr-placeholder">Pick your pathway and stage, type a question, and select <b>Ask GreenPath</b>. Answers are general information — not legal advice or case predictions.</p>
+      </div>
+    </div>
+  </div>
+  <div class="footer-rule"><span>General information only. GreenPath does not provide legal advice.</span><span class="pg">10</span></div>
+</section>
+
+</main>
+<div class="page-band"></div>
+
+<script>
+  const links = document.querySelectorAll('[data-go]');
+  const sections = document.querySelectorAll('section');
+  const navMap = {home:'home',hero2:null,guided:'guided',progress:'progress',alerts:'alerts',language:'language',pathway:'pathway',qa:'qa',review:'review',interview:'interview'};
+
+  function show(id){
+    sections.forEach(s=>s.classList.toggle('show', s.id===id));
+    document.querySelectorAll('nav.main a').forEach(a=>{
+      a.classList.toggle('active', a.dataset.go===id || (id==='hero2' && a.dataset.go==='home'));
+    });
+    document.getElementById('mainnav').classList.remove('open');
+    window.scrollTo({top:0,behavior:'smooth'});
+  }
+  links.forEach(el=>el.addEventListener('click',e=>{e.preventDefault();show(el.dataset.go)}));
+  // Home "Explore Features" reveals hero2; allow direct nav
+  document.querySelectorAll('[data-go="home"]').forEach(el=>{
+    if(el.textContent.trim()==='Explore Features') el.addEventListener('click',()=>show('hero2'));
+  });
+
+  /* ================= INTERACTIVE GUIDED WALKTHROUGH ================= */
+  const ALL_COUNTRIES = ["India","China","Philippines","Mexico","Afghanistan","Albania","Algeria","Andorra","Angola","Antigua and Barbuda","Argentina","Armenia","Australia","Austria","Azerbaijan","Bahamas","Bahrain","Bangladesh","Barbados","Belarus","Belgium","Belize","Benin","Bhutan","Bolivia","Bosnia and Herzegovina","Botswana","Brazil","Brunei","Bulgaria","Burkina Faso","Burundi","Cabo Verde","Cambodia","Cameroon","Canada","Central African Republic","Chad","Chile","Colombia","Comoros","Congo (Brazzaville)","Congo (Kinshasa)","Costa Rica","Côte d'Ivoire","Croatia","Cuba","Cyprus","Czechia","Denmark","Djibouti","Dominica","Dominican Republic","Ecuador","Egypt","El Salvador","Equatorial Guinea","Eritrea","Estonia","Eswatini","Ethiopia","Fiji","Finland","France","Gabon","Gambia","Georgia","Germany","Ghana","Greece","Grenada","Guatemala","Guinea","Guinea-Bissau","Guyana","Haiti","Honduras","Hungary","Iceland","Indonesia","Iran","Iraq","Ireland","Israel","Italy","Jamaica","Japan","Jordan","Kazakhstan","Kenya","Kiribati","Kosovo","Kuwait","Kyrgyzstan","Laos","Latvia","Lebanon","Lesotho","Liberia","Libya","Liechtenstein","Lithuania","Luxembourg","Madagascar","Malawi","Malaysia","Maldives","Mali","Malta","Marshall Islands","Mauritania","Mauritius","Micronesia","Moldova","Monaco","Mongolia","Montenegro","Morocco","Mozambique","Myanmar","Namibia","Nauru","Nepal","Netherlands","New Zealand","Nicaragua","Niger","Nigeria","North Korea","North Macedonia","Norway","Oman","Pakistan","Palau","Palestine","Panama","Papua New Guinea","Paraguay","Peru","Poland","Portugal","Qatar","Romania","Russia","Rwanda","Saint Kitts and Nevis","Saint Lucia","Saint Vincent and the Grenadines","Samoa","San Marino","Sao Tome and Principe","Saudi Arabia","Senegal","Serbia","Seychelles","Sierra Leone","Singapore","Slovakia","Slovenia","Solomon Islands","Somalia","South Africa","South Korea","South Sudan","Spain","Sri Lanka","Sudan","Suriname","Sweden","Switzerland","Syria","Taiwan","Tajikistan","Tanzania","Thailand","Timor-Leste","Togo","Tonga","Trinidad and Tobago","Tunisia","Turkey","Turkmenistan","Tuvalu","Uganda","Ukraine","United Arab Emirates","United Kingdom","United States","Uruguay","Uzbekistan","Vanuatu","Vatican City","Venezuela","Vietnam","Yemen","Zambia","Zimbabwe","Other / not listed"];
+
+  const STEPS = [
+    {label:'Current location', q:'Where do you currently live?',
+      hint:'This helps determine whether you would adjust status or use consular processing.',
+      tip:'"Adjustment of status" means applying while inside the U.S.',
+      options:['Inside the United States','Outside the United States']},
+    {label:'Country of birth', q:'What is your country of birth?',
+      hint:'Some countries have longer waits due to per-country caps.',
+      tip:'Birth country — not citizenship — usually sets your visa category.',
+      options:ALL_COUNTRIES},
+    {label:'Immigration status', q:'What best describes your current immigration status?',
+      hint:'You can ask questions in your own words.',
+      tip:'Explains unfamiliar terms simply.',
+      options:['U.S. visa holder (work or student)','Temporary protected / humanitarian status','No current status','Not sure']},
+    {label:'Family relationships', q:'Do you have a close family member who can sponsor you?',
+      hint:'A spouse, parent, or child who is a citizen or green-card holder may open a pathway.',
+      tip:'"LPR" means Lawful Permanent Resident — a green-card holder.',
+      options:['Spouse is a U.S. citizen','Parent or child is a citizen / LPR','Sibling is a U.S. citizen','No qualifying family member']},
+    {label:'Employment situation', q:'What is your employment situation?',
+      hint:'A job offer or employer sponsorship can support an employment-based pathway.',
+      tip:'Employer sponsorship often involves a labor certification step.',
+      options:['I have an employer willing to sponsor me','I have specialized skills or an advanced degree','Self-employed / investor','No U.S. job offer']},
+    {label:'Special circumstances', q:'Do any special circumstances apply to you?',
+      hint:'These can change which pathway and protections are available.',
+      tip:'Several of these route you to specialized, authorized help.',
+      options:['Asylum or refugee situation','Survivor of abuse or a serious crime','Selected in the Diversity Visa lottery','None of these apply']}
+  ];
+
+  function pathwayResult(a){
+    if(a[0]==='Asylum or refugee situation'||a[5]==='Asylum or refugee situation')
+      return ['Humanitarian pathway','Your answers point toward a humanitarian (asylum or refugee) pathway. These cases are highly individual — GreenPath would connect you with an authorized support organization.'];
+    if(a[5]==='Survivor of abuse or a serious crime')
+      return ['Protective pathway','Your situation may qualify for special protections. This is a sensitive area best handled directly with an authorized advocate, which GreenPath would help you find.'];
+    if(a[5]==='Selected in the Diversity Visa lottery')
+      return ['Diversity Visa pathway','Being selected in the Diversity Visa lottery opens a specific, time-sensitive process. GreenPath would help you track its strict deadlines.'];
+    if(a[3]&&a[3]!=='No qualifying family member')
+      return ['Family-based pathway','Based on your family relationship, a family-based pathway looks possible. GreenPath would break it into stages: petition, processing, biometrics, interview, and decision.'];
+    if(a[4]&&a[4]!=='No U.S. job offer')
+      return ['Employment-based pathway','Your employment situation suggests an employment-based pathway may apply. GreenPath would map the petition, priority-date, and filing steps for you.'];
+    return ['Let’s explore options together','Your answers don’t point to one clear pathway yet. GreenPath would ask a few more questions and, where helpful, suggest authorized organizations that can review your case.'];
+  }
+
+  const gw = {i:0, answers:Array(6).fill('')};
+  const qLabel=document.getElementById('qLabel'), qFill=document.getElementById('qFill'),
+        qTitle=document.getElementById('qTitle'), qSelect=document.getElementById('qSelect'),
+        qHint=document.getElementById('qHint'), aiTip=document.getElementById('aiTip'),
+        qBack=document.getElementById('qBack'), qNext=document.getElementById('qNext'),
+        intakeList=document.getElementById('intakeList'),
+        qCard=document.getElementById('qCard'), resultCard=document.getElementById('resultCard');
+
+  function renderIntake(){
+    intakeList.innerHTML = STEPS.map((s,idx)=>{
+      let cls,ic;
+      if(idx<gw.i){cls='';ic='<div class="ic done">✓</div>';}
+      else if(idx===gw.i){cls=' active';ic='<div class="ic cur">'+(idx+1)+'</div>';}
+      else {cls='';ic='<div class="ic todo">'+(idx+1)+'</div>';}
+      return '<div class="istep'+cls+'">'+ic+'<span>'+s.label+'</span></div>';
+    }).join('');
+  }
+  function renderQuestion(){
+    const s = STEPS[gw.i];
+    qLabel.textContent = 'QUESTION '+(gw.i+1)+' OF 6';
+    qFill.style.width = ((gw.i+1)/6*100)+'%';
+    qTitle.textContent = s.q;
+    qHint.textContent = s.hint;
+    aiTip.textContent = s.tip;
+    qSelect.innerHTML = '<option value="">Select an answer</option>' +
+      s.options.map(o=>'<option'+(gw.answers[gw.i]===o?' selected':'')+'>'+o+'</option>').join('');
+    qBack.disabled = gw.i===0;
+    qNext.textContent = gw.i===5 ? 'See Pathway' : 'Continue';
+    qNext.disabled = !gw.answers[gw.i];
+    renderIntake();
+  }
+  qSelect.addEventListener('change',()=>{ gw.answers[gw.i]=qSelect.value; qNext.disabled=!qSelect.value; });
+  qBack.addEventListener('click',()=>{ if(gw.i>0){gw.i--; renderQuestion();} });
+  qNext.addEventListener('click',()=>{
+    if(!gw.answers[gw.i]) return;
+    if(gw.i<5){ gw.i++; renderQuestion(); }
+    else {
+      const [t,b]=pathwayResult(gw.answers);
+      document.getElementById('resultTitle').textContent=t;
+      document.getElementById('resultBody').textContent=b;
+      gw.i=6; renderIntake();
+      qCard.style.display='none'; resultCard.style.display='block';
+    }
+  });
+  document.getElementById('qRestart').addEventListener('click',()=>{
+    gw.i=0; gw.answers=Array(6).fill('');
+    resultCard.style.display='none'; qCard.style.display='block'; renderQuestion();
+  });
+  renderQuestion();
+
+  /* ================= DEADLINE ALERTS ================= */
+  const PALETTE=['c-terra','c-amber','c-slate','c-green'];
+  const DATEPILL={'c-terra':'d-terra','c-amber':'d-amber','c-slate':'d-slate','c-green':'d-green'};
+  // timeline starts empty — it is populated by the AI extractor or manual add
+  let reminders=[];
+  let nextId=1;
+  const MON=['JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC'];
+  const today=new Date();
+  const tlEl=document.getElementById('timeline'),
+        setTiming=document.getElementById('setTiming'),
+        setFilter=document.getElementById('setFilter'),
+        setChannel=document.getElementById('setChannel'),
+        setSummary=document.getElementById('setSummary');
+
+  function daysAway(d){
+    const ms=new Date(d+'T00:00:00')-new Date(today.toDateString());
+    return Math.round(ms/86400000);
+  }
+  function awayText(n){
+    if(n<0) return Math.abs(n)+' days ago';
+    if(n===0) return 'Today';
+    if(n===1) return 'Tomorrow';
+    return n+' days away';
+  }
+  function renderTimeline(){
+    const filter=setFilter.value;
+    let list=[...reminders].sort((a,b)=>a.date.localeCompare(b.date));
+    if(filter!=='all') list=list.filter(r=>{const n=daysAway(r.date);return n>=0&&n<=+filter;});
+    if(!list.length){ tlEl.innerHTML='<div class="tl-empty">Your timeline is empty. Describe your situation above and let AI pull out the important dates — or add one manually below.</div>'; updateSummary(); return; }
+    tlEl.innerHTML=list.map((r,i)=>{
+      const c=PALETTE[i%PALETTE.length];
+      const dt=new Date(r.date+'T00:00:00');
+      const pill=MON[dt.getMonth()]+' '+String(dt.getDate()).padStart(2,'0');
+      return `<div class="tl-item">
+        <div class="tl-dot ${c}"></div>
+        <div class="tl-date ${DATEPILL[c]}">${pill}</div>
+        <div class="tt"><b>${esc(r.label)}</b><p>${esc(r.note||awayText(daysAway(r.date)))}</p></div>
+        <button class="tl-x" data-rid="${r.id}" title="Remove">×</button>
+      </div>`;
+    }).join('');
+    tlEl.querySelectorAll('.tl-x').forEach(b=>b.addEventListener('click',()=>{
+      reminders=reminders.filter(r=>r.id!=b.dataset.rid); renderTimeline();
+    }));
+    updateSummary();
+  }
+  function esc(s){return (s||'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));}
+
+  function updateSummary(){
+    const filter=setFilter.value;
+    const shown = filter==='all'?reminders.length:reminders.filter(r=>{const n=daysAway(r.date);return n>=0&&n<=+filter;}).length;
+    const next = [...reminders].filter(r=>daysAway(r.date)>=0).sort((a,b)=>a.date.localeCompare(b.date))[0];
+    let txt = `Tracking ${reminders.length} date${reminders.length!==1?'s':''} · showing ${shown}. `;
+    if(next){ txt += `${setChannel.value} will alert you ${setTiming.options[setTiming.selectedIndex].text.toLowerCase()} each date. Next: ${esc(next.label)} (${awayText(daysAway(next.date))}).`; }
+    else { txt += 'No upcoming dates.'; }
+    setSummary.textContent=txt;
+  }
+
+  function addReminder(date,label,note){
+    if(!date||!label) return false;
+    reminders.push({id:nextId++,date,label,note:note||''});
+    return true;
+  }
+  document.getElementById('addBtn').addEventListener('click',()=>{
+    const d=document.getElementById('newDate').value, l=document.getElementById('newLabel').value.trim();
+    if(!d||!l){ alert('Pick a date and type a reminder.'); return; }
+    addReminder(d,l,'User-entered reminder');
+    document.getElementById('newDate').value=''; document.getElementById('newLabel').value='';
+    renderTimeline();
+  });
+  [setTiming,setFilter,setChannel].forEach(s=>s.addEventListener('change',renderTimeline));
+
+  const srcToggle=document.getElementById('srcToggle'), srcPanel=document.getElementById('srcPanel');
+  srcToggle.addEventListener('click',()=>{
+    const open=srcPanel.hidden;
+    srcPanel.hidden=!open;
+    srcToggle.style.background = open ? '#dfeae0' : '';
+  });
+
+  /* ---- AI extraction ---- */
+  const aiExtract=document.getElementById('aiExtract'),
+        aiDesc=document.getElementById('aiDesc'),
+        aiStatus=document.getElementById('aiStatus');
+
+  aiExtract.addEventListener('click',async()=>{
+    const text=aiDesc.value.trim();
+    if(!text){ aiStatus.textContent='Type a few sentences first.'; return; }
+    aiStatus.textContent='Reading your description…'; aiExtract.disabled=true;
+    try{
+      const items=await extractWithAI(text);
+      if(!items.length){ aiStatus.textContent='No clear dates found — try including months and days.'; }
+      else{
+        items.forEach(it=>addReminder(it.date,it.label,it.note||'AI-extracted'));
+        renderTimeline();
+        aiStatus.textContent=`Added ${items.length} date${items.length!==1?'s':''} to your timeline.`;
+        aiDesc.value='';
+      }
+    }catch(e){
+      // fallback to local parser if the API isn't reachable (e.g. opened as a local file)
+      const items=localParse(text);
+      if(items.length){ items.forEach(it=>addReminder(it.date,it.label,'Extracted offline')); renderTimeline();
+        aiStatus.textContent=`Added ${items.length} date${items.length!==1?'s':''} (offline parser).`; aiDesc.value=''; }
+      else aiStatus.textContent='Could not reach the AI service. Add the date manually below.';
+    }finally{ aiExtract.disabled=false; }
+  });
+
+  async function extractWithAI(text){
+    const todayStr=today.toISOString().slice(0,10);
+    const prompt=`You extract immigration-related deadlines from a user's plain-language description and return them as JSON.
+Today's date is ${todayStr}. The user wrote:
+"""${text}"""
+Return ONLY a JSON array (no prose, no markdown fences). Each element: {"date":"YYYY-MM-DD","label":"short title (max 6 words)","note":"short context (max 8 words)"}.
+Rules: resolve relative dates against today. If a medical exam (I-693) is mentioned as valid 2 years, add an expiration entry 2 years after the exam date. If a year is missing, choose the next upcoming occurrence. Skip anything with no determinable date. If none, return [].`;
+    const res=await fetch('/api/chat',{
+      method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({max_tokens:1000,
+        messages:[{role:'user',content:prompt}]})
+    });
+    const data=await res.json();
+    let txt=(data.content||[]).filter(b=>b.type==='text').map(b=>b.text).join('').trim();
+    txt=txt.replace(/```json|```/g,'').trim();
+    const arr=JSON.parse(txt);
+    return Array.isArray(arr)?arr.filter(x=>x&&/^\d{4}-\d{2}-\d{2}$/.test(x.date)):[];
+  }
+
+  // crude offline fallback: finds "Month Day" patterns
+  function localParse(text){
+    const months={january:0,february:1,march:2,april:3,may:4,june:5,july:6,august:7,september:8,october:9,november:10,december:11,
+      jan:0,feb:1,mar:2,apr:3,jun:5,jul:6,aug:7,sep:8,sept:8,oct:9,nov:10,dec:11};
+    const out=[]; const re=/([a-z]+)\s+(\d{1,2})(?:,?\s*(\d{4}))?/gi; let m;
+    while((m=re.exec(text))){
+      const mo=months[m[1].toLowerCase()]; if(mo===undefined) continue;
+      let yr=m[3]?+m[3]:today.getFullYear();
+      let d=new Date(yr,mo,+m[2]);
+      if(!m[3]&&d<today) d=new Date(yr+1,mo,+m[2]);
+      const iso=d.toISOString().slice(0,10);
+      // grab a few words before the date as a label
+      const before=text.slice(0,m.index).split(/[.;\n]/).pop().trim().split(/\s+/).slice(-4).join(' ');
+      out.push({date:iso,label:(before||'Important date').replace(/^\w/,c=>c.toUpperCase()).slice(0,40)});
+    }
+    return out;
+  }
+
+  renderTimeline();
+
+  /* ================= LANGUAGE TOOLS ================= */
+  const ltFrom=document.getElementById('ltFrom'), ltTo=document.getElementById('ltTo'),
+        ltSwap=document.getElementById('ltSwap'), ltSource=document.getElementById('ltSource'),
+        ltOut=document.getElementById('ltOut'), ltTranslate=document.getElementById('ltTranslate'),
+        ltRead=document.getElementById('ltRead'), ltDetect=document.getElementById('ltDetect'),
+        ltStatus=document.getElementById('ltStatus'), ltSize=document.getElementById('ltSize'),
+        ltSpeed=document.getElementById('ltSpeed'), ltVoice=document.getElementById('ltVoice'),
+        ltScan=document.getElementById('ltScan'), ltFile=document.getElementById('ltFile');
+
+  const ISO={'Afrikaans':'af','Albanian':'sq','Amharic':'am','Arabic':'ar','Armenian':'hy','Azerbaijani':'az',
+    'Basque':'eu','Belarusian':'be','Bengali':'bn','Bosnian':'bs','Bulgarian':'bg','Catalan':'ca','Cebuano':'ceb',
+    'Mandarin Chinese':'zh-CN','Chinese (Traditional)':'zh-TW','Corsican':'co','Croatian':'hr','Czech':'cs',
+    'Danish':'da','Dutch':'nl','English':'en','Esperanto':'eo','Estonian':'et','Finnish':'fi','French':'fr',
+    'Frisian':'fy','Galician':'gl','Georgian':'ka','German':'de','Greek':'el','Gujarati':'gu','Haitian Creole':'ht',
+    'Hausa':'ha','Hawaiian':'haw','Hebrew':'iw','Hindi':'hi','Hmong':'hmn','Hungarian':'hu','Icelandic':'is',
+    'Igbo':'ig','Indonesian':'id','Irish':'ga','Italian':'it','Japanese':'ja','Javanese':'jw','Kannada':'kn',
+    'Kazakh':'kk','Khmer':'km','Kinyarwanda':'rw','Korean':'ko','Kurdish':'ku','Kyrgyz':'ky','Lao':'lo','Latin':'la',
+    'Latvian':'lv','Lithuanian':'lt','Luxembourgish':'lb','Macedonian':'mk','Malagasy':'mg','Malay':'ms',
+    'Malayalam':'ml','Maltese':'mt','Maori':'mi','Marathi':'mr','Mongolian':'mn','Myanmar (Burmese)':'my',
+    'Nepali':'ne','Norwegian':'no','Nyanja (Chichewa)':'ny','Odia (Oriya)':'or','Pashto':'ps','Persian':'fa',
+    'Polish':'pl','Portuguese':'pt','Punjabi':'pa','Romanian':'ro','Russian':'ru','Samoan':'sm','Scots Gaelic':'gd',
+    'Serbian':'sr','Sesotho':'st','Shona':'sn','Sindhi':'sd','Sinhala':'si','Slovak':'sk','Slovenian':'sl',
+    'Somali':'so','Spanish':'es','Sundanese':'su','Swahili':'sw','Swedish':'sv','Tagalog':'tl','Tajik':'tg',
+    'Tamil':'ta','Tatar':'tt','Telugu':'te','Thai':'th','Turkish':'tr','Turkmen':'tk','Ukrainian':'uk','Urdu':'ur',
+    'Uyghur':'ug','Uzbek':'uz','Vietnamese':'vi','Welsh':'cy','Xhosa':'xh','Yiddish':'yi','Yoruba':'yo','Zulu':'zu'};
+  // shorter code for speech synthesis (drop region for zh)
+  function speechCode(name){ const c=ISO[name]||'en'; return c.split('-')[0]; }
+
+  function applySize(){ const px=ltSize.value+'px'; ltSource.style.fontSize=px; ltOut.style.fontSize=px; }
+  // build the language menus from the ISO map
+  (function fillLangMenus(){
+    const names=Object.keys(ISO).sort();
+    names.forEach(n=>{
+      const o1=document.createElement('option'); o1.value=n; o1.textContent=n; ltFrom.appendChild(o1);
+      const o2=document.createElement('option'); o2.value=n; o2.textContent=n; ltTo.appendChild(o2);
+    });
+    ltFrom.value='Spanish'; ltTo.value='English';
+  })();
+  ltSize.addEventListener('change',applySize); applySize();
+
+  ltSwap.addEventListener('click',()=>{
+    const f=ltFrom.value==='auto'?'English':ltFrom.value, t=ltTo.value;
+    ltFrom.value=t; ltTo.value=f;
+    const src=ltSource.value; ltSource.value=ltOut.textContent.trim(); ltOut.textContent=src;
+  });
+
+  ltTranslate.addEventListener('click',async()=>{
+    const text=ltSource.value.trim();
+    if(!text){ ltStatus.textContent='Type something to translate.'; return; }
+    if(ltFrom.value!=='auto' && ltFrom.value===ltTo.value){
+      ltOut.textContent=text; ltStatus.textContent='Source and target are the same language.'; return;
+    }
+    ltStatus.textContent='Translating…'; ltTranslate.disabled=true;
+    // 1) try Claude (best quality, works when served over https / in-app)
+    try{
+      const out=await translateAI(text, ltFrom.value, ltTo.value);
+      if(out){ ltOut.textContent=out; ltStatus.textContent='Translated to '+ltTo.value+'.'; ltTranslate.disabled=false; return; }
+    }catch(e){ /* fall through to the keyless engine */ }
+    // 2) real keyless translation that works even from a local file (any language)
+    try{
+      const out=await translateFree(text, ltFrom.value, ltTo.value);
+      if(out){ ltOut.textContent=out; ltStatus.textContent='Translated to '+ltTo.value+'.'; return; }
+      throw new Error('empty');
+    }catch(e){
+      ltOut.textContent=''; ltStatus.textContent='Translation service is unreachable right now — check your connection and try again.';
+    }finally{ ltTranslate.disabled=false; }
+  });
+
+  async function translateAI(text, from, to){
+    const fromTxt = from==='auto' ? 'the detected source language' : from;
+    const prompt=`Translate the text below from ${fromTxt} into ${to}. Return ONLY the translation — no notes, no quotes, no language labels.\n\nText:\n${text}`;
+    const res=await fetch('/api/chat',{
+      method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({max_tokens:1000,
+        messages:[{role:'user',content:prompt}]})
+    });
+    if(!res.ok) throw new Error('api '+res.status);
+    const data=await res.json();
+    return (data.content||[]).filter(b=>b.type==='text').map(b=>b.text).join('').trim();
+  }
+
+  // Keyless, CORS-enabled translation (Google's public endpoint). Real translations, ~100+ languages.
+  async function translateFree(text, from, to){
+    const sl = from==='auto' ? 'auto' : (ISO[from]||'auto');
+    const tl = ISO[to]||'en';
+    const url='https://translate.googleapis.com/translate_a/single?client=gtx&sl='+sl+
+              '&tl='+tl+'&dt=t&q='+encodeURIComponent(text);
+    const res=await fetch(url);
+    if(!res.ok) throw new Error('tx '+res.status);
+    const data=await res.json();
+    // data[0] is an array of [translatedChunk, originalChunk, ...]
+    return (data[0]||[]).map(seg=>seg[0]).join('').trim();
+  }
+
+  ltDetect.addEventListener('click',()=>{
+    const t=ltSource.value.trim();
+    if(!t){ ltStatus.textContent='Type some text first.'; return; }
+    const guess=detectLang(t);
+    if(guess && [...ltFrom.options].some(o=>o.value===guess)){ ltFrom.value=guess; ltStatus.textContent='Detected: '+guess+'.'; }
+    else ltStatus.textContent='Could not confidently detect — please choose the source language.';
+  });
+  function detectLang(t){
+    if(/[\u4e00-\u9fff]/.test(t)) return 'Mandarin Chinese';
+    if(/[\u0600-\u06ff]/.test(t)) return 'Arabic';
+    if(/[\uac00-\ud7af]/.test(t)) return 'Korean';
+    if(/[\u0900-\u097f]/.test(t)) return 'Hindi';
+    const l=' '+t.toLowerCase()+' ';
+    if(/[ñ¿¡]|\b(necesito|documentos|ayuda|para|próximo|qué)\b/.test(l)) return 'Spanish';
+    if(/\b(je|vous|bonjour|besoin|prochaine|documents)\b/.test(l)) return 'French';
+    if(/\b(preciso|documentos|próximo|ajuda)\b/.test(l)) return 'Portuguese';
+    return 'English';
+  }
+
+  let speaking=false;
+  ltRead.addEventListener('click',()=>{
+    if(!('speechSynthesis' in window)){ ltStatus.textContent='Read-aloud not supported in this browser.'; return; }
+    if(speaking){ window.speechSynthesis.cancel(); return; }
+    const text=ltOut.textContent.trim();
+    if(!text){ ltStatus.textContent='Nothing to read yet — translate first.'; return; }
+    const u=new SpeechSynthesisUtterance(text);
+    u.rate=parseFloat(ltSpeed.value);
+    u.lang=speechCode(ltTo.value);
+    u.onstart=()=>{ speaking=true; ltRead.classList.add('speaking'); ltRead.textContent='■ Stop'; };
+    u.onend=u.onerror=()=>{ speaking=false; ltRead.classList.remove('speaking'); ltRead.textContent='▶ Read Aloud'; };
+    window.speechSynthesis.cancel();
+    window.speechSynthesis.speak(u);
+  });
+  ltSpeed.addEventListener('change',()=>{ if(speaking){ window.speechSynthesis.cancel(); ltRead.click(); }});
+
+  // configure PDF.js worker
+  if(window.pdfjsLib){ pdfjsLib.GlobalWorkerOptions.workerSrc='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js'; }
+
+  ltScan.addEventListener('click',()=>ltFile.click());
+  ltFile.addEventListener('change',async()=>{
+    const f=ltFile.files[0]; if(!f){ return; }
+    ltScan.disabled=true;
+    try{
+      if(f.type==='text/plain'){
+        const txt=await f.text();
+        setScanned(txt, f.name);
+      } else if(f.type==='application/pdf' || /\.pdf$/i.test(f.name)){
+        ltStatus.textContent='Reading PDF…';
+        const txt=await readPdf(f);
+        setScanned(txt, f.name);
+      } else if(f.type.startsWith('image/')){
+        const txt=await ocrImage(f);
+        setScanned(txt, f.name);
+      } else {
+        ltStatus.textContent='Unsupported file type. Use an image, PDF, or .txt file.';
+      }
+    }catch(err){
+      ltStatus.textContent='Could not read that file: '+(err && err.message ? err.message : 'unknown error')+'.';
+    }finally{
+      ltScan.disabled=false; ltFile.value='';
+    }
+  });
+
+  function setScanned(text, name){
+    text=(text||'').trim();
+    if(!text){ ltStatus.textContent='No readable text found in '+name+'.'; return; }
+    ltSource.value=text.slice(0,5000);
+    ltFrom.value='auto'; // let the translator auto-detect the scanned language
+    ltStatus.textContent='Scanned text from '+name+'. Press Translate.';
+  }
+
+  // ---- image OCR via Tesseract.js ----
+  async function ocrImage(file){
+    if(!window.Tesseract) throw new Error('OCR library not loaded — check your connection');
+    ltStatus.textContent='Scanning image… 0%';
+    const url=URL.createObjectURL(file);
+    try{
+      const {data}=await Tesseract.recognize(url, 'eng+spa+fra+por+deu+ita', {
+        logger:m=>{ if(m.status==='recognizing text'){ ltStatus.textContent='Scanning image… '+Math.round(m.progress*100)+'%'; } }
+      });
+      return data.text;
+    } finally { URL.revokeObjectURL(url); }
+  }
+
+  // ---- PDF: try the text layer first, then OCR each page image ----
+  async function readPdf(file){
+    if(!window.pdfjsLib) throw new Error('PDF library not loaded — check your connection');
+    const buf=await file.arrayBuffer();
+    const pdf=await pdfjsLib.getDocument({data:buf}).promise;
+    let out='';
+    for(let p=1;p<=pdf.numPages;p++){
+      ltStatus.textContent='Reading PDF page '+p+' of '+pdf.numPages+'…';
+      const page=await pdf.getPage(p);
+      const tc=await page.getTextContent();
+      out += tc.items.map(i=>i.str).join(' ')+'\n';
+    }
+    if(out.trim().length>15) return out;           // born-digital PDF with a real text layer
+    // scanned PDF (image only) → OCR the first few pages
+    ltStatus.textContent='Scanned PDF detected — running OCR…';
+    let ocr='';
+    const pages=Math.min(pdf.numPages,3);
+    for(let p=1;p<=pages;p++){
+      const page=await pdf.getPage(p);
+      const vp=page.getViewport({scale:2});
+      const cv=document.createElement('canvas'); cv.width=vp.width; cv.height=vp.height;
+      await page.render({canvasContext:cv.getContext('2d'),viewport:vp}).promise;
+      const blob=await new Promise(r=>cv.toBlob(r,'image/png'));
+      const {data}=await Tesseract.recognize(blob,'eng+spa+fra',{ 
+        logger:m=>{ if(m.status==='recognizing text') ltStatus.textContent='OCR page '+p+'/'+pages+'… '+Math.round(m.progress*100)+'%'; }
+      });
+      ocr += data.text+'\n';
+    }
+    return ocr;
+  }
+
+  /* ================= DOCUMENT REVIEW ================= */
+  const drForm=document.getElementById('drForm'), drInput=document.getElementById('drInput'),
+        drReview=document.getElementById('drReview'), drSample=document.getElementById('drSample'),
+        drIssues=document.getElementById('drIssues');
+
+  const DR_SAMPLES={
+    'I-485':'Address history: 2019–2021 (Chicago), 2022–present (Houston). Signature: left blank. Date of birth: 05/30/1996 on this form, 30/05/1996 on my passport. Employment: no end date listed for previous job.',
+    'I-130':'Petitioner is U.S. citizen. Beneficiary is spouse. Marriage date listed but no marriage certificate number entered. Prior marriages: question left blank. Signatures: petitioner signed, beneficiary section empty.',
+    'I-765':'Eligibility category: (c)(9). SSN: left blank. Previous EAD: marked yes but card number not provided. Name matches passport. Signature present.',
+    'I-693':'Civil surgeon section completed. Exam date: 02/2024. Vaccination record: partial. Applicant signature present. Sealed envelope: not noted.',
+    'N-400':'Continuous residence: trips abroad listed but two overlap in dates. Tax filing: marked yes. Selective Service: left blank for male applicant under 26. Signature present.',
+    'Other':'Describe the form fields you filled in, any blanks you left, and any dates that might not match across documents.'
+  };
+  drSample.addEventListener('click',()=>{ drInput.value=DR_SAMPLES[drForm.value]||DR_SAMPLES.Other; });
+
+  const SEV={high:'red',medium:'amb',low:'blu'};
+  const STATUS_TEXT={
+    'looks-good':'No obvious issues found. This is not a guarantee — always confirm against the official USCIS form instructions.',
+    'needs-attention':'A few points to review before you file.',
+    'major-issues':'Several important issues to fix before filing.'
+  };
+  // result = {overallStatus, issues:[{severity,field,problem,suggestion}], reminders:[...]}
+  function renderIssues(result, note){
+    const issues=result.issues||[], reminders=result.reminders||[];
+    const status=result.overallStatus||'needs-attention';
+    let html='<div class="dr-summary">'+esc(STATUS_TEXT[status]||status)+(note?' '+esc(note):'')+'</div>';
+    html+=issues.map(i=>{
+      const c=SEV[i.severity]||'blu';
+      const sug=i.suggestion?` <i>Fix: ${esc(i.suggestion)}</i>`:'';
+      return `<div class="issue ${c}"><div class="idot"></div><div><b>${esc(i.field||'Field')}</b><p>${esc(i.problem||'')}${sug}</p></div></div>`;
+    }).join('');
+    if(reminders.length){
+      html+='<div class="dr-summary" style="margin-top:16px">Before you submit:</div>'+
+        reminders.map(r=>`<div class="issue blu"><div class="idot"></div><div><p>${esc(r)}</p></div></div>`).join('');
+    }
+    drIssues.innerHTML=html;
+  }
+
+  drReview.addEventListener('click',async()=>{
+    const text=drInput.value.trim();
+    if(!text){ drIssues.innerHTML='<p class="dr-placeholder">Describe or paste your form entries first.</p>'; return; }
+    drIssues.innerHTML='<div class="dr-loading"><div class="dr-spin"></div>Reviewing your '+esc(drForm.value)+' entries…</div>';
+    drReview.disabled=true;
+    try{
+      const items=await reviewAI(drForm.value, text);
+      renderIssues(items);
+    }catch(e){
+      const local=localReview(text);
+      renderIssues({
+        overallStatus: local.some(i=>i.severity==='high')?'major-issues':'needs-attention',
+        issues: local.map(i=>({severity:i.severity, field:i.title, problem:i.detail, suggestion:''})),
+        reminders: []
+      }, '(Reviewed with the on-device checker; connect to the internet for the full AI review.)');
+    }finally{ drReview.disabled=false; }
+  });
+
+  async function reviewAI(form, text){
+    // Calls the Python /api/document-review endpoint (GreenPath document-review prompt).
+    const res=await fetch('/api/document-review',{
+      method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({document:`Form: ${form}\n\nEntries:\n${text}`})
+    });
+    if(!res.ok) throw new Error('api '+res.status);
+    const data=await res.json();
+    if(data.error) throw new Error(data.error);
+    return {
+      overallStatus: data.overallStatus||'needs-attention',
+      issues: Array.isArray(data.issues)?data.issues:[],
+      reminders: Array.isArray(data.reminders)?data.reminders:[]
+    };
+  }
+
+  // on-device rule checker (works offline)
+  function localReview(text){
+    const t=text.toLowerCase(), out=[];
+    if(/(signature|sign)\b[^.]*\b(blank|empty|left|not|missing|unsigned)/.test(t) || /\bunsigned\b/.test(t))
+      out.push({severity:'high',title:'Missing signature',detail:'A required signature field appears blank — forms are often rejected if unsigned.'});
+    if(/\b\d{1,2}\/\d{1,2}\/\d{2,4}\b/.test(text) && /(passport|other|differ|mismatch|doesn'?t match|not match|30\/05|05\/30)/.test(t))
+      out.push({severity:'high',title:'Date may not match',detail:'A date looks inconsistent across documents (e.g. MM/DD vs DD/MM). Make them identical.'});
+    if(/(blank|empty|left blank|not (provided|listed|entered)|no (end )?date|missing|empty)/.test(t))
+      out.push({severity:'medium',title:'Blank or missing field',detail:'Something is described as blank or not listed — confirm whether the form requires it.'});
+    if(/(gap|overlap|no end date|present)/.test(t) && /(address|residence|employment|job|trip|abroad)/.test(t))
+      out.push({severity:'medium',title:'Possible timeline gap',detail:'Check that your address or employment dates have no unexplained gaps or overlaps.'});
+    out.push({severity:'low',title:'Check official instructions',detail:'Requirements vary by form and case — verify against the latest USCIS instructions for '+drForm.value+'.'});
+    return out;
+  }
+
+  /* ================= INTERVIEW PREP SIMULATOR ================= */
+  const ipCase=document.getElementById('ipCase'), ipLang=document.getElementById('ipLang'),
+        ipExample=document.getElementById('ipExample'), ipStart=document.getElementById('ipStart'),
+        ipReadQ=document.getElementById('ipReadQ'), ipChat=document.getElementById('ipChat'),
+        ipInputBar=document.getElementById('ipInputBar'), ipAnswer=document.getElementById('ipAnswer'),
+        ipSend=document.getElementById('ipSend');
+
+  // example question + offline question bank per case type
+  const IP_BANK={
+    'Marriage-based adjustment of status (I-485)':['How did you and your spouse first meet?','When and where did you get married?','Who lives in your household, and what is your typical morning routine together?','Please explain your current address history.','Has either of you been married before?'],
+    'Family-based petition (I-130)':['What is your relationship to the petitioner?','When did the petitioner become a U.S. citizen or permanent resident?','Please explain your current address history.','How often are you in contact with your relative?'],
+    'Employment-based green card':['Describe your current job and your main responsibilities.','How were you recruited for this position?','What are your qualifications for this role?','Please explain your employment history over the past five years.'],
+    'Naturalization / citizenship (N-400)':['How many days have you spent outside the United States in the last five years?','Have you paid your federal taxes?','Can you name one branch of the U.S. government?','Please explain your current address history.'],
+    'Asylum interview':['Please describe, in your own words, why you left your home country.','When did you decide you could not return?','Did you report what happened to any authorities?','Is there anyone who can corroborate your account?']
+  };
+  function exampleFor(c){ const b=IP_BANK[c]; return b?b[0]:'Please explain your current address history.'; }
+  ipCase.addEventListener('change',()=>{ if(ipCase.value) ipExample.textContent=exampleFor(ipCase.value); });
+
+  // fill the language menu with every language (English + each), reusing the ISO map
+  (function fillIpLangs(){
+    Object.keys(ISO).filter(n=>n!=='English').sort().forEach(n=>{
+      const o=document.createElement('option');
+      o.value='English + '+n; o.textContent='English + '+n; ipLang.appendChild(o);
+    });
+  })();
+
+  let ipHistory=[], ipActive=false, ipQCount=0, ipLastQuestion='';
+
+  function bubble(role, html){
+    const d=document.createElement('div');
+    d.className='bubble '+(role==='officer'?'officer':'me');
+    d.innerHTML = role==='officer' ? '<span class="who">Interviewer</span>'+html : html;
+    ipChat.appendChild(d); ipChat.scrollTop=ipChat.scrollHeight; return d;
+  }
+  function coachCard(level, note){
+    const map={'clear':['clear','● Clear'],'clarify':['clarify','● Needs clarification'],'help':['help','● Consider asking for help']};
+    const m=map[level]||map.clarify;
+    const d=document.createElement('div');
+    d.className='coach-card '+m[0];
+    d.innerHTML='<div class="ctag">'+m[1]+'</div><p>'+esc(note)+'</p>';
+    ipChat.appendChild(d); ipChat.scrollTop=ipChat.scrollHeight;
+  }
+  function typing(){
+    const d=document.createElement('div'); d.className='ip-typing'; d.id='ipTyping';
+    d.innerHTML='Interviewer is typing <i></i><i></i><i></i>';
+    ipChat.appendChild(d); ipChat.scrollTop=ipChat.scrollHeight; return d;
+  }
+  function clearTyping(){ const t=document.getElementById('ipTyping'); if(t) t.remove(); }
+
+  ipStart.addEventListener('click',async()=>{
+    if(!ipCase.value){ ipExample.textContent='Please choose a case type first.'; return; }
+    ipActive=true; ipQCount=0; ipHistory=[];
+    ipChat.innerHTML=''; ipInputBar.hidden=false;
+    bubble('officer','Hello, and thank you for coming in today. This is a practice interview for your <b>'+esc(ipCase.value)+'</b>. Answer naturally — I’ll give you feedback after each response. Let’s begin.');
+    await askNext('');   // first question
+  });
+
+  ipSend.addEventListener('click',sendAnswer);
+  ipAnswer.addEventListener('keydown',e=>{ if(e.key==='Enter'&&!e.shiftKey){ e.preventDefault(); sendAnswer(); }});
+  ipAnswer.addEventListener('input',()=>{ ipAnswer.style.height='auto'; ipAnswer.style.height=Math.min(ipAnswer.scrollHeight,120)+'px'; });
+
+  async function sendAnswer(){
+    const a=ipAnswer.value.trim(); if(!a||!ipActive) return;
+    bubble('me', esc(a)); ipAnswer.value=''; ipAnswer.style.height='auto';
+    ipSend.disabled=true;
+    await askNext(a);
+    ipSend.disabled=false; ipAnswer.focus();
+  }
+
+  async function askNext(userAnswer){
+    const t=typing();
+    try{
+      const r=await interviewAI(userAnswer);
+      clearTyping();
+      if(userAnswer && r.coaching) coachCard(r.coaching.level, r.coaching.note);
+      if(r.done){
+        bubble('officer', esc(r.next_question || 'That’s the end of this practice session. Well done — review the feedback above and try again anytime.'));
+        if(r.summary) coachCard('clear', r.summary);
+        endSession(); return;
+      }
+      ipLastQuestion=r.next_question||exampleFor(ipCase.value);
+      bubble('officer', esc(ipLastQuestion));
+      ipQCount++;
+      if(ipQCount>=8){ // cap the session
+        bubble('officer','That’s all the questions for this practice round. Review your feedback above — you can start again with another scenario anytime.');
+        endSession();
+      }
+    }catch(e){
+      clearTyping();
+      // offline fallback: heuristic coach + scripted question bank
+      if(userAnswer) { const c=localCoach(userAnswer); coachCard(c.level,c.note); }
+      const bank=IP_BANK[ipCase.value]||IP_BANK['Marriage-based adjustment of status (I-485)'];
+      if(ipQCount>=bank.length){ bubble('officer','That completes this practice round. Review your feedback above — start again anytime.'); endSession(); return; }
+      ipLastQuestion=bank[ipQCount++];
+      bubble('officer', esc(ipLastQuestion));
+    }
+  }
+
+  function endSession(){ ipActive=false; ipInputBar.hidden=true;
+    const d=document.createElement('div'); d.className='ip-done'; d.textContent='Practice session complete.'; ipChat.appendChild(d);
+    ipChat.scrollTop=ipChat.scrollHeight;
+  }
+
+  async function interviewAI(userAnswer){
+    // Calls the Python /api/interview endpoint (GreenPath interview-simulator prompt).
+    // ipHistory is the running transcript in {role:'applicant'|'officer'} form.
+    if(userAnswer) ipHistory.push({role:'applicant',content:userAnswer});
+    const res=await fetch('/api/interview',{
+      method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({pathway:ipCase.value, transcript:ipHistory, answer:userAnswer||''})
+    });
+    if(!res.ok) throw new Error('api '+res.status);
+    const data=await res.json();
+    if(data.error) throw new Error(data.error);
+    const q=data.nextQuestion||'';
+    if(q) ipHistory.push({role:'officer',content:q});
+    // normalize to the field names the rest of the UI already uses
+    return {coaching:data.coaching||null, next_question:q, done:!!data.done, summary:data.summary||null};
+  }
+
+  // offline heuristic coach
+  function localCoach(a){
+    const words=a.trim().split(/\s+/).length;
+    if(/\b(i don'?t know|not sure|no se|unsure)\b/i.test(a)) return {level:'help',note:'It’s okay not to know — in a real interview you can politely ask the officer to repeat or clarify.'};
+    if(words<6) return {level:'clarify',note:'A bit brief. Add specific details like dates, places, or names so your answer is clear.'};
+    if(words>120) return {level:'clarify',note:'Strong detail, but try to be more concise and answer the exact question asked.'};
+    return {level:'clear',note:'Clear and specific — that’s the kind of direct answer officers look for.'};
+  }
+
+  // Read the current question aloud
+  ipReadQ.addEventListener('click',()=>{
+    if(!('speechSynthesis' in window)) return;
+    const q=ipLastQuestion || ipExample.textContent;
+    if(!q) return;
+    window.speechSynthesis.cancel();
+    const u=new SpeechSynthesisUtterance(q); u.rate=0.95; window.speechSynthesis.speak(u);
+  });
+
+  /* ================= GLOBAL SITE LANGUAGE ================= */
+  const siteLang=document.getElementById('siteLang');
+  // populate the header picker from the ISO map (English first)
+  (function fillSiteLangs(){
+    siteLang.innerHTML='';
+    const en=document.createElement('option'); en.value='English'; en.textContent='English'; siteLang.appendChild(en);
+    Object.keys(ISO).filter(n=>n!=='English').sort().forEach(n=>{
+      const o=document.createElement('option'); o.value=n; o.textContent=n; siteLang.appendChild(o);
+    });
+  })();
+
+  // collect translatable text nodes once, remembering the English original
+  let i18nNodes=null;
+  function collectNodes(){
+    if(i18nNodes) return i18nNodes;
+    i18nNodes=[];
+    const SKIP=new Set(['SCRIPT','STYLE','OPTION','TEXTAREA','INPUT','SELECT']);
+    const walker=document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT, {
+      acceptNode(n){
+        if(!n.nodeValue || !n.nodeValue.trim()) return NodeFilter.FILTER_REJECT;
+        let p=n.parentElement;
+        while(p){ if(SKIP.has(p.tagName) || p.classList.contains('no-i18n')) return NodeFilter.FILTER_REJECT; p=p.parentElement; }
+        return NodeFilter.FILTER_ACCEPT;
+      }
+    });
+    let node; while((node=walker.nextNode())){ i18nNodes.push({node, en:node.nodeValue}); }
+    return i18nNodes;
+  }
+
+  // translate an array of strings using few, parallel requests
+  async function translateBatch(strings, to){
+    const SEP=' ~|~ ';
+    const out=new Array(strings.length);
+    // build chunks (bigger cap = fewer requests)
+    const chunks=[]; let batch=[], idx=[], len=0;
+    for(let i=0;i<strings.length;i++){
+      const s=strings[i];
+      if(batch.length && len+s.length>4500){ chunks.push({batch,idx}); batch=[]; idx=[]; len=0; }
+      batch.push(s); idx.push(i); len+=s.length+SEP.length;
+    }
+    if(batch.length) chunks.push({batch,idx});
+
+    // run all chunks in parallel
+    await Promise.all(chunks.map(async ({batch,idx})=>{
+      try{
+        const res=await translateFree(batch.join(SEP),'auto',to);
+        const parts=res.split(/\s*~\s*\|\s*~\s*/);
+        if(parts.length===batch.length){ parts.forEach((p,k)=>out[idx[k]]=p.trim()); return; }
+      }catch(e){ /* fall through to per-item */ }
+      // fallback: translate this chunk's items in parallel individually
+      await Promise.all(batch.map(async (s,k)=>{
+        try{ out[idx[k]]=await translateFree(s,'auto',to); }catch(_){ out[idx[k]]=s; }
+      }));
+    }));
+    return out;
+  }
+
+  let i18nBusy=false, i18nCache={};
+  async function setSiteLanguage(lang){
+    if(i18nBusy) return; 
+    const nodes=collectNodes();
+    if(lang==='English'){ nodes.forEach(n=>{ n.node.nodeValue=n.en; }); return; }
+    i18nBusy=true;
+    const bar=document.createElement('div'); bar.className='lang-loading'; document.body.appendChild(bar);
+    try{
+      let values;
+      if(i18nCache[lang]){ values=i18nCache[lang]; }
+      else { values=await translateBatch(nodes.map(n=>n.en), lang); i18nCache[lang]=values; }
+      nodes.forEach((n,i)=>{ if(values[i]) n.node.nodeValue=values[i]; });
+      document.documentElement.lang=(ISO[lang]||'en').split('-')[0];
+    }catch(e){
+      // leave English in place on hard failure
+      siteLang.value='English';
+    }finally{
+      i18nBusy=false; bar.remove();
+    }
+  }
+  siteLang.addEventListener('change',()=>setSiteLanguage(siteLang.value));
+
+  /* ================= PATHWAY FINDER (AI) — /api/pathway ================= */
+  (function(){
+    const pwInput=document.getElementById('pwInput'),
+          pwFind=document.getElementById('pwFind'),
+          pwResult=document.getElementById('pwResult');
+    if(!pwFind) return;
+    const CONF={high:'High confidence',medium:'Medium confidence',low:'Low confidence'};
+    pwFind.addEventListener('click',async()=>{
+      const text=pwInput.value.trim();
+      if(!text){ pwResult.innerHTML='<p class="dr-placeholder">Describe your situation first.</p>'; return; }
+      pwResult.innerHTML='<div class="dr-loading"><div class="dr-spin"></div>Finding your most likely pathway…</div>';
+      pwFind.disabled=true;
+      try{
+        const res=await fetch('/api/pathway',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({intake:text})});
+        if(!res.ok) throw new Error('api '+res.status);
+        const d=await res.json();
+        if(d.error) throw new Error(d.error);
+        const steps=(d.nextSteps||[]).map(s=>`<div class="issue blu"><div class="idot"></div><div><p>${esc(s)}</p></div></div>`).join('');
+        const alts=(d.alternativePathways||[]).length
+          ? '<div class="dr-summary" style="margin-top:16px">Other options to explore:</div>'+
+            (d.alternativePathways||[]).map(a=>`<div class="issue amb"><div class="idot"></div><div><p>${esc(a)}</p></div></div>`).join('')
+          : '';
+        pwResult.innerHTML=
+          `<div class="dr-summary"><b>${esc(d.primaryPathway||'Pathway')}</b>${d.subcategory?' — '+esc(d.subcategory):''} · ${esc(CONF[d.confidence]||d.confidence||'')}</div>`+
+          `<div class="issue blu"><div class="idot"></div><div><p>${esc(d.reasoning||'')}</p></div></div>`+
+          (steps?'<div class="dr-summary" style="margin-top:16px">Suggested next steps:</div>'+steps:'')+
+          alts+
+          `<div class="legal-row"><button class="btn-legal" data-go="qa">Ask a question about this</button><small>Not legal advice. Complex cases: consult an accredited attorney.</small></div>`;
+        pwResult.querySelectorAll('[data-go]').forEach(b=>b.addEventListener('click',()=>show(b.dataset.go)));
+      }catch(e){
+        pwResult.innerHTML='<div class="dr-summary">Could not reach the AI service right now. Check your connection (or that the local server is running) and try again.</div>';
+      }finally{ pwFind.disabled=false; }
+    });
+  })();
+
+  /* ================= STAGE Q&A (AI) — /api/stage-qa ================= */
+  (function(){
+    const qaPathway=document.getElementById('qaPathway'),
+          qaStage=document.getElementById('qaStage'),
+          qaInput=document.getElementById('qaInput'),
+          qaAsk=document.getElementById('qaAsk'),
+          qaAnswer=document.getElementById('qaAnswer');
+    if(!qaAsk) return;
+    qaAsk.addEventListener('click',async()=>{
+      const q=qaInput.value.trim();
+      if(!q){ qaAnswer.innerHTML='<p class="dr-placeholder">Type a question first.</p>'; return; }
+      qaAnswer.innerHTML='<div class="dr-loading"><div class="dr-spin"></div>Finding a clear answer…</div>';
+      qaAsk.disabled=true;
+      try{
+        const res=await fetch('/api/stage-qa',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({pathway:qaPathway.value,stage:qaStage.value,question:q})});
+        if(!res.ok) throw new Error('api '+res.status);
+        const d=await res.json();
+        if(d.error) throw new Error(d.error);
+        const paras=(d.answer||'').split(/\n+/).filter(Boolean).map(p=>`<p style="margin:0 0 10px">${esc(p)}</p>`).join('');
+        qaAnswer.innerHTML=`<div class="dr-summary" style="line-height:1.6">${paras||esc(d.answer||'')}</div>`;
+      }catch(e){
+        qaAnswer.innerHTML='<div class="dr-summary">Could not reach the AI service right now. Check your connection (or that the local server is running) and try again.</div>';
+      }finally{ qaAsk.disabled=false; }
+    });
+  })();
+</script>
+</body>
+</html>

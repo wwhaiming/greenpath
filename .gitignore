@@ -1,0 +1,10 @@
+.env
+.env.*
+node_modules/
+.netlify/
+.venv/
+__pycache__/
+*.pyc
+.DS_Store
+*.bak
+*.bak.*

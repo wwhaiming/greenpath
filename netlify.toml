@@ -1,0 +1,13 @@
+[build]
+  # Only this folder is published as the public site — keeps .env, node_modules,
+  # python, and source files OFF the public web.
+  publish = "public"
+
+[functions]
+  node_bundler = "esbuild"
+
+# Make the site's /api/chat calls resolve to the serverless function.
+[[redirects]]
+  from = "/api/chat"
+  to = "/.netlify/functions/chat"
+  status = 200

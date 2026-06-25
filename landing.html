@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GreenPath - AI immigration navigator</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#050507;
+    --bg-soft:#0b0d12;
+    --panel:#10131a;
+    --panel-2:#161a22;
+    --line:rgba(255,255,255,.12);
+    --line-strong:rgba(255,255,255,.2);
+    --ink:#fbfbf5;
+    --ink-soft:#d7dbd3;
+    --muted:#8d958c;
+    --green:#49f6b2;
+    --green-2:#18c98f;
+    --cyan:#21f6ff;
+    --pink:#ff3ca6;
+    --gold:#f5cb61;
+    --red:#ff5f6d;
+    --shadow:0 28px 80px rgba(0,0,0,.48);
+    --glow:0 0 60px rgba(73,246,178,.24);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth;background:var(--bg)}
+  html.lenis,html.lenis body{height:auto}
+  .lenis.lenis-smooth{scroll-behavior:auto!important}
+  body{
+    min-width:320px;
+    font-family:Inter,system-ui,sans-serif;
+    color:var(--ink);
+    background:var(--bg);
+    -webkit-font-smoothing:antialiased;
+    line-height:1.5;
+    overflow-x:hidden;
+  }
+  a{color:inherit}
+  .serif{font-family:"Instrument Serif",Georgia,serif;font-weight:400}
+  .it{font-style:italic}
+  .backdrop{position:fixed;inset:0;z-index:-3;
+    background:
+      radial-gradient(900px 620px at 88% 8%,rgba(255,60,166,.22),transparent 58%),
+      radial-gradient(760px 640px at 10% 0%,rgba(33,246,255,.18),transparent 55%),
+      radial-gradient(920px 700px at 50% 110%,rgba(73,246,178,.18),transparent 58%),
+      linear-gradient(180deg,#060607 0%,#06080c 42%,#050507 100%)}
+  .grain{position:fixed;inset:0;z-index:-2;pointer-events:none;opacity:.22;
+    background-image:linear-gradient(rgba(255,255,255,.04) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.04) 1px,transparent 1px);
+    background-size:42px 42px;mask-image:radial-gradient(circle at 50% 18%,#000,transparent 72%)}
+  .vignette{position:fixed;inset:0;z-index:-1;pointer-events:none;
+    background:radial-gradient(130% 110% at 50% 28%,transparent 45%,rgba(0,0,0,.76) 100%)}
+  .scrollbar{position:fixed;left:0;top:0;width:100%;height:3px;transform:scaleX(0);transform-origin:left;z-index:80;
+    background:linear-gradient(90deg,var(--cyan),var(--pink),var(--green))}
+
+  .nav{position:fixed;top:18px;left:24px;right:24px;z-index:70;display:flex;align-items:center;justify-content:space-between;gap:18px;
+    pointer-events:none}
+  .brand,.nav-cta{pointer-events:auto}
+  .brand{display:inline-flex;align-items:center;gap:10px;padding:10px 14px;border:1px solid var(--line);border-radius:999px;
+    background:rgba(5,5,7,.46);backdrop-filter:blur(18px);box-shadow:0 12px 34px rgba(0,0,0,.22)}
+  .brand i{width:10px;height:10px;border-radius:50%;background:var(--green);box-shadow:0 0 18px var(--green)}
+  .brand b{font-size:14px;letter-spacing:.01em}
+  .nav-cta{display:inline-flex;align-items:center;gap:10px;text-decoration:none;background:rgba(255,255,255,.08);
+    border:1px solid var(--line-strong);border-radius:999px;padding:10px 16px;font-size:13px;font-weight:800;
+    backdrop-filter:blur(18px);transition:transform .18s,border-color .18s,background .18s}
+  .nav-cta:hover{transform:translateY(-2px);border-color:rgba(73,246,178,.55);background:rgba(73,246,178,.12)}
+
+  section{position:relative;padding-left:28px;padding-right:28px}
+  .wrap{max-width:1180px;margin:0 auto}
+  .hero{min-height:100svh;display:grid;align-items:center;padding-top:110px;padding-bottom:70px}
+  .hero-grid{display:grid;grid-template-columns:minmax(0,1.04fr) minmax(330px,.72fr);gap:56px;align-items:center}
+  .hero-text{min-width:0}
+  .kicker{display:inline-flex;align-items:center;gap:10px;width:max-content;border:1px solid rgba(73,246,178,.32);
+    background:rgba(73,246,178,.09);color:var(--green);border-radius:999px;padding:10px 14px;font-size:12px;font-weight:900;
+    letter-spacing:.12em;text-transform:uppercase}
+  .kicker:before{content:"";width:8px;height:8px;border-radius:50%;background:currentColor;box-shadow:0 0 14px currentColor}
+  h1{margin-top:24px;font-size:clamp(3.4rem,8.8vw,8.9rem);line-height:.88;letter-spacing:-.055em;max-width:980px}
+  h1 .line{display:block;overflow:hidden;padding-bottom:.05em}
+  h1 .line span{display:inline-block}
+  .hero-copy{max-width:680px;margin-top:30px;color:var(--ink-soft);font-size:clamp(1.05rem,1.7vw,1.34rem)}
+  .hero-actions{display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin-top:34px}
+  .btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;min-height:54px;border-radius:999px;padding:0 24px;
+    text-decoration:none;font-size:15px;font-weight:900;border:1px solid transparent;transition:transform .18s,box-shadow .18s,background .18s,border-color .18s}
+  .btn-primary{background:linear-gradient(135deg,var(--cyan),var(--pink) 48%,var(--green));color:#020306;
+    box-shadow:0 20px 70px -22px rgba(255,60,166,.78),0 0 0 1px rgba(255,255,255,.22) inset}
+  .btn-primary:hover{transform:translateY(-3px);box-shadow:0 28px 80px -22px rgba(73,246,178,.72)}
+  .btn-ghost{background:rgba(255,255,255,.06);color:var(--ink);border-color:var(--line)}
+  .btn-ghost:hover{transform:translateY(-3px);border-color:rgba(255,255,255,.35);background:rgba(255,255,255,.1)}
+  .receipt{display:flex;gap:12px;align-items:center;margin-top:24px;color:var(--muted);font-size:13px;font-weight:700}
+  .avatars{display:flex}
+  .avatars i{width:28px;height:28px;border-radius:50%;border:2px solid var(--bg);margin-left:-7px}
+  .avatars i:first-child{margin-left:0;background:var(--cyan)}.avatars i:nth-child(2){background:var(--pink)}.avatars i:nth-child(3){background:var(--green)}
+
+  .phone-wrap{position:relative;min-height:650px;display:grid;place-items:center}
+  .aura{position:absolute;width:min(520px,88vw);aspect-ratio:1;border-radius:50%;filter:blur(3px);
+    background:conic-gradient(from 210deg,var(--cyan),var(--pink),var(--green),var(--cyan));opacity:.2;animation:spin 14s linear infinite}
+  @keyframes spin{to{transform:rotate(360deg)}}
+  .phone{position:relative;width:min(360px,82vw);aspect-ratio:9/18.9;border-radius:42px;padding:12px;background:#06070a;
+    border:1px solid rgba(255,255,255,.22);box-shadow:var(--shadow),var(--glow);transform:rotate(2deg)}
+  .phone:before{content:"";position:absolute;left:50%;top:12px;transform:translateX(-50%);width:92px;height:24px;border-radius:0 0 18px 18px;background:#050507;z-index:4}
+  .phone-screen{position:relative;height:100%;overflow:hidden;border-radius:32px;background:
+      radial-gradient(360px 380px at 80% 4%,rgba(255,60,166,.24),transparent 58%),
+      linear-gradient(180deg,#151923,#080a0f 62%,#06070a);
+    border:1px solid rgba(255,255,255,.1)}
+  .reel-top{display:flex;justify-content:space-between;align-items:center;padding:38px 18px 14px;color:#fff;font-size:12px;font-weight:900}
+  .live-pill{background:var(--pink);color:#fff;border-radius:999px;padding:6px 9px;font-size:10px;letter-spacing:.08em}
+  .screen-card{margin:6px 14px;border-radius:24px;padding:18px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.14);
+    backdrop-filter:blur(16px);box-shadow:0 18px 50px rgba(0,0,0,.2)}
+  .screen-card h3{font-size:24px;line-height:1;letter-spacing:-.04em}
+  .screen-card p{margin-top:8px;color:var(--ink-soft);font-size:13px}
+  .meter{height:10px;border-radius:999px;background:rgba(255,255,255,.12);overflow:hidden;margin-top:16px}
+  .meter i{display:block;height:100%;width:64%;border-radius:inherit;background:linear-gradient(90deg,var(--cyan),var(--green))}
+  .todo{display:grid;gap:9px;margin:14px}
+  .todo span{display:flex;align-items:center;gap:9px;padding:11px 12px;border-radius:16px;background:rgba(255,255,255,.07);font-size:12px;font-weight:800}
+  .todo i{width:18px;height:18px;border-radius:7px;background:var(--green);box-shadow:0 0 18px rgba(73,246,178,.35)}
+  .phone-caption{position:absolute;left:18px;right:18px;bottom:22px}
+  .caption-line{display:inline;background:rgba(0,0,0,.56);box-decoration-break:clone;-webkit-box-decoration-break:clone;
+    padding:4px 7px;border-radius:7px;font-size:25px;line-height:1.35;font-weight:900;letter-spacing:-.03em}
+  .side-actions{position:absolute;right:13px;bottom:128px;display:grid;gap:13px}
+  .side-actions i{width:40px;height:40px;border-radius:50%;display:grid;place-items:center;background:rgba(255,255,255,.12);
+    border:1px solid rgba(255,255,255,.15);font-style:normal;font-weight:900;font-size:14px}
+  .float-card{position:absolute;z-index:3;border-radius:22px;padding:16px 18px;background:rgba(11,13,18,.8);
+    border:1px solid var(--line-strong);backdrop-filter:blur(18px);box-shadow:0 18px 44px rgba(0,0,0,.34)}
+  .float-card b{display:block;font-size:13px}.float-card span{display:block;color:var(--muted);font-size:12px;margin-top:2px}
+  .float-a{left:0;top:86px}.float-b{right:0;bottom:94px}
+  .float-a b{color:var(--cyan)}.float-b b{color:var(--green)}
+
+  .marquee{overflow:hidden;border-top:1px solid var(--line);border-bottom:1px solid var(--line);background:rgba(255,255,255,.03)}
+  .marquee-track{display:flex;width:max-content;animation:marq 28s linear infinite}
+  .marquee span{display:inline-flex;align-items:center;gap:12px;padding:18px 22px;color:var(--ink-soft);font-size:13px;font-weight:900;letter-spacing:.1em;text-transform:uppercase;white-space:nowrap}
+  .marquee i{width:7px;height:7px;border-radius:50%;background:var(--pink);box-shadow:0 0 16px var(--pink)}
+  @keyframes marq{to{transform:translateX(-50%)}}
+
+  .story{padding-top:15vh;padding-bottom:15vh}
+  .section-head{max-width:790px;margin-bottom:64px}
+  .section-head .tag{color:var(--green);font-size:13px;font-weight:900;letter-spacing:.12em;text-transform:uppercase}
+  .section-head h2{margin-top:16px;font-size:clamp(2.5rem,5.7vw,5.8rem);line-height:.92;letter-spacing:-.055em}
+  .section-head p{margin-top:22px;color:var(--muted);font-size:1.12rem;max-width:58ch}
+  .reels{display:grid;gap:24px}
+  .reel{position:sticky;top:96px;min-height:520px;border:1px solid var(--line);border-radius:34px;overflow:hidden;
+    background:linear-gradient(135deg,rgba(255,255,255,.1),rgba(255,255,255,.03));box-shadow:0 26px 80px rgba(0,0,0,.26)}
+  .reel:nth-child(2){top:116px}.reel:nth-child(3){top:136px}
+  .reel-inner{display:grid;grid-template-columns:.92fr 1.08fr;gap:28px;min-height:520px;padding:34px}
+  .reel-copy{display:flex;flex-direction:column;justify-content:space-between}
+  .reel-num{font-family:"Instrument Serif",Georgia,serif;font-size:84px;line-height:.8;color:var(--green)}
+  .reel h3{font-size:clamp(2.2rem,4vw,4.35rem);line-height:.92;letter-spacing:-.05em;max-width:560px}
+  .reel p{color:var(--ink-soft);font-size:1.06rem;max-width:48ch;margin-top:18px}
+  .chip-row{display:flex;gap:10px;flex-wrap:wrap;margin-top:28px}
+  .chip{border:1px solid var(--line);background:rgba(255,255,255,.07);border-radius:999px;padding:9px 12px;font-size:12px;font-weight:900;color:var(--ink-soft)}
+  .visual{position:relative;border-radius:28px;min-height:440px;overflow:hidden;background:#080a0f;border:1px solid rgba(255,255,255,.13)}
+  .visual:before{content:"";position:absolute;inset:0;background:radial-gradient(420px 300px at 72% 8%,var(--wash),transparent 65%);opacity:.9}
+  .v1{--wash:rgba(33,246,255,.24)}.v2{--wash:rgba(255,60,166,.22)}.v3{--wash:rgba(73,246,178,.22)}
+  .feed-card{position:absolute;border-radius:22px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.14);backdrop-filter:blur(14px);padding:18px;box-shadow:0 24px 60px rgba(0,0,0,.28)}
+  .feed-card h4{font-size:18px;letter-spacing:-.02em}.feed-card small{display:block;color:var(--muted);margin-top:4px;font-weight:700}
+  .feed-card.one{left:34px;top:38px;width:58%}.feed-card.two{right:34px;top:146px;width:48%}.feed-card.three{left:54px;bottom:42px;width:64%}
+  .check-row{display:flex;gap:10px;margin-top:14px;flex-wrap:wrap}
+  .check-row i{width:32px;height:32px;border-radius:11px;background:linear-gradient(135deg,var(--cyan),var(--green));box-shadow:0 0 22px rgba(73,246,178,.25)}
+  .timeline-mini{position:absolute;left:48px;right:48px;bottom:46px;height:10px;border-radius:999px;background:rgba(255,255,255,.12);overflow:hidden}
+  .timeline-mini i{display:block;width:76%;height:100%;background:linear-gradient(90deg,var(--pink),var(--gold),var(--green))}
+  .chat{position:absolute;left:36px;right:36px;bottom:38px;display:grid;gap:12px}
+  .bubble{max-width:82%;padding:13px 15px;border-radius:20px;background:rgba(255,255,255,.11);border:1px solid rgba(255,255,255,.12);font-size:14px}
+  .bubble.me{margin-left:auto;background:linear-gradient(135deg,var(--green),var(--cyan));color:#020306;font-weight:800}
+
+  .proof{padding:4vh 28px 15vh}
+  .proof-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:18px}
+  .proof-card{border:1px solid var(--line);border-radius:26px;padding:24px;background:rgba(255,255,255,.055)}
+  .proof-card b{font-size:clamp(2.6rem,5vw,4.6rem);line-height:1;letter-spacing:-.05em}
+  .proof-card span{display:block;margin-top:12px;color:var(--muted);font-weight:800}
+
+  .cta{min-height:92svh;display:grid;place-items:center;text-align:center;padding-top:90px;padding-bottom:90px}
+  .cta-inner{max-width:920px}
+  .cta h2{font-size:clamp(3rem,7.5vw,7.4rem);line-height:.9;letter-spacing:-.06em}
+  .cta p{max-width:56ch;margin:26px auto 36px;color:var(--ink-soft);font-size:1.15rem}
+  .legal{display:block;margin-top:22px;color:var(--muted);font-size:13px;font-weight:700}
+  footer{display:flex;justify-content:space-between;gap:20px;max-width:1180px;margin:0 auto;padding:30px 28px 42px;color:var(--muted);font-size:13px;border-top:1px solid var(--line)}
+  footer b{color:var(--green);font-family:"Instrument Serif",Georgia,serif;font-size:20px;font-weight:400}
+
+  .reveal{opacity:0;transform:translateY(44px)}
+  @media(max-width:940px){
+    .hero-grid,.reel-inner{grid-template-columns:minmax(0,1fr)}
+    .phone-wrap{min-height:590px}
+    .float-a{left:2px}.float-b{right:2px}
+    .reel{position:relative;top:auto!important}
+    .proof-grid{grid-template-columns:1fr}
+  }
+  @media(max-width:620px){
+    body{overflow-x:hidden}
+    section{padding-left:18px;padding-right:18px}
+    .wrap{width:100%;max-width:100%;overflow:hidden}
+    .nav{top:12px;left:14px;right:14px;justify-content:flex-start}
+    .brand{padding:9px 11px}.nav-cta{padding:9px 12px;font-size:12px}
+    .nav-cta{display:none}
+    .hero{padding-top:92px}
+    h1{font-size:clamp(2.85rem,13.5vw,4.2rem);line-height:.94;letter-spacing:-.045em;max-width:100%}
+    .hero-copy{font-size:1rem;max-width:min(100%,340px)}
+    .hero-actions{align-items:stretch}.btn{width:100%}
+    .hero-actions,.receipt{width:min(100%,340px)}
+    .receipt{align-items:flex-start;font-size:12px;line-height:1.35;max-width:340px}
+    .receipt > span:last-child{min-width:0;overflow-wrap:anywhere}
+    .phone{width:min(310px,86vw)}
+    .float-card{display:none}
+    .reel-inner{padding:22px}
+    .visual{min-height:390px}
+    .feed-card.one,.feed-card.two,.feed-card.three{left:18px;right:18px;width:auto}
+    .feed-card.two{top:142px}.feed-card.three{bottom:30px}
+    .caption-line{font-size:21px}
+    footer{flex-direction:column;padding-left:18px;padding-right:18px}
+  }
+  @media (prefers-reduced-motion: reduce){
+    *{animation:none!important;transition:none!important;scroll-behavior:auto!important}
+    .reveal,.kicker,h1 .line span,.hero-copy,.hero-actions,.receipt{opacity:1!important;transform:none!important}
+    .scrollbar{transform:scaleX(1)!important}
+  }
+</style>
+</head>
+<body>
+<div class="backdrop"></div>
+<div class="grain"></div>
+<div class="vignette"></div>
+<div class="scrollbar" id="scrollbar"></div>
+
+<nav class="nav" aria-label="Primary">
+  <div class="brand"><i></i><b>GreenPath</b></div>
+  <a class="nav-cta" href="index.html">Open app</a>
+</nav>
+
+<section class="hero">
+  <div class="wrap hero-grid">
+    <div class="hero-text">
+      <div class="kicker">AI immigration navigator</div>
+      <h1>
+        <span class="line"><span>Green card</span></span>
+        <span class="line"><span>help that</span></span>
+        <span class="line"><span>moves fast.</span></span>
+      </h1>
+      <p class="hero-copy">GreenPath turns the messy USCIS journey into a swipeable path: forms, deadlines, translations, document checks, and interview prep in one place.</p>
+      <div class="hero-actions">
+        <a class="btn btn-primary" href="index.html">Start my walkthrough</a>
+        <a class="btn btn-ghost" href="#story">See the product</a>
+      </div>
+      <div class="receipt">
+        <span class="avatars"><i></i><i></i><i></i></span>
+        <span>Built for families, students, workers, and sponsors who need the next step now.</span>
+      </div>
+    </div>
+
+    <div class="phone-wrap" aria-label="GreenPath app preview">
+      <div class="aura"></div>
+      <div class="float-card float-a"><b>RFE risk found</b><span>Missing translation note</span></div>
+      <div class="float-card float-b"><b>64% ready</b><span>Interview prep unlocked</span></div>
+      <div class="phone">
+        <div class="phone-screen">
+          <div class="reel-top"><span>For You</span><span class="live-pill">LIVE PATH</span></div>
+          <div class="screen-card">
+            <h3>Your I-485 path is active.</h3>
+            <p>Next: upload birth certificate translation and confirm address history.</p>
+            <div class="meter"><i></i></div>
+          </div>
+          <div class="todo">
+            <span><i></i> Translate document</span>
+            <span><i></i> Review filing packet</span>
+            <span><i></i> Practice interview</span>
+          </div>
+          <div class="side-actions"><i>+1</i><i>AI</i><i>OK</i></div>
+          <div class="phone-caption"><span class="caption-line">The whole green-card process, broken into the next right move.</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="marquee" aria-hidden="true">
+  <div class="marquee-track">
+    <span><i></i> Guided walkthrough</span><span><i></i> Deadline alerts</span><span><i></i> Document review</span><span><i></i> Language tools</span><span><i></i> Interview prep</span><span><i></i> Progress tracking</span>
+    <span><i></i> Guided walkthrough</span><span><i></i> Deadline alerts</span><span><i></i> Document review</span><span><i></i> Language tools</span><span><i></i> Interview prep</span><span><i></i> Progress tracking</span>
+  </div>
+</div>
+
+<section class="story" id="story">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <span class="tag">Built like a feed, not a filing cabinet</span>
+      <h2>Every scroll reveals the thing you need next.</h2>
+      <p>The TikTok-style energy is intentional: fast visual hierarchy, big captions, sticky story cards, and product previews that make a stressful process feel navigable.</p>
+    </div>
+
+    <div class="reels">
+      <article class="reel">
+        <div class="reel-inner">
+          <div class="reel-copy">
+            <div class="reel-num">01</div>
+            <div>
+              <h3>Answer plain questions.</h3>
+              <p>No immigration vocabulary required. GreenPath asks what happened in normal language, then turns it into a likely filing path.</p>
+              <div class="chip-row"><span class="chip">Family</span><span class="chip">Work</span><span class="chip">Student</span><span class="chip">Asylum</span></div>
+            </div>
+          </div>
+          <div class="visual v1">
+            <div class="feed-card one"><h4>What is your current status?</h4><small>Choose one. You can change it later.</small><div class="check-row"><i></i><i></i><i></i></div></div>
+            <div class="feed-card two"><h4>AI summary</h4><small>Most likely adjustment pathway detected.</small></div>
+            <div class="feed-card three"><h4>Next best action</h4><small>Collect I-94 and passport stamp before forms.</small></div>
+          </div>
+        </div>
+      </article>
+
+      <article class="reel">
+        <div class="reel-inner">
+          <div class="reel-copy">
+            <div class="reel-num">02</div>
+            <div>
+              <h3>Watch the path fill in.</h3>
+              <p>Checklist, dates, document status, and official-source notes stay visible so nothing disappears into a spreadsheet.</p>
+              <div class="chip-row"><span class="chip">Forms</span><span class="chip">Dates</span><span class="chip">Evidence</span><span class="chip">Sources</span></div>
+            </div>
+          </div>
+          <div class="visual v2">
+            <div class="feed-card one"><h4>Packet health</h4><small>7 of 11 required items complete.</small></div>
+            <div class="feed-card two"><h4>Deadline alert</h4><small>Medical exam expires in 46 days.</small></div>
+            <div class="timeline-mini"><i></i></div>
+          </div>
+        </div>
+      </article>
+
+      <article class="reel">
+        <div class="reel-inner">
+          <div class="reel-copy">
+            <div class="reel-num">03</div>
+            <div>
+              <h3>Get help before panic.</h3>
+              <p>Translate a page, scan for missing details, rehearse interview questions, and know when a real lawyer should step in.</p>
+              <div class="chip-row"><span class="chip">Translate</span><span class="chip">Scan</span><span class="chip">Practice</span><span class="chip">Escalate</span></div>
+            </div>
+          </div>
+          <div class="visual v3">
+            <div class="chat">
+              <div class="bubble">Ask me an interview question about our marriage timeline.</div>
+              <div class="bubble me">Question 1: When did you first meet?</div>
+              <div class="bubble">Flag this case for legal review if there was a prior denial.</div>
+            </div>
+          </div>
+        </div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<section class="proof">
+  <div class="wrap proof-grid">
+    <div class="proof-card reveal"><b>6</b><span>core tools in one app</span></div>
+    <div class="proof-card reveal"><b>100+</b><span>steps made visible</span></div>
+    <div class="proof-card reveal"><b>1</b><span>clear next action</span></div>
+  </div>
+</section>
+
+<section class="cta">
+  <div class="cta-inner reveal">
+    <div class="kicker">Ready when you are</div>
+    <h2>Stop guessing. Start moving.</h2>
+    <p>Open GreenPath and turn your situation into a checklist, timeline, document review, and practice plan.</p>
+    <a class="btn btn-primary" href="index.html">Open GreenPath</a>
+    <span class="legal">General information only. GreenPath does not provide legal advice.</span>
+  </div>
+</section>
+
+<footer>
+  <span>General information only. Not legal advice.</span>
+  <b>GreenPath</b>
+</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<script src="https://unpkg.com/lenis@1.1.14/dist/lenis.min.js"></script>
+<script>
+(function(){
+  const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if(reduce || !window.gsap || !window.ScrollTrigger){ return; }
+
+  gsap.registerPlugin(ScrollTrigger);
+
+  if(window.Lenis){
+    const lenis = new Lenis({ lerp:0.09, smoothWheel:true });
+    lenis.on('scroll', ScrollTrigger.update);
+    gsap.ticker.add((t)=>lenis.raf(t*1000));
+    gsap.ticker.lagSmoothing(0);
+  }
+
+  gsap.to('#scrollbar',{scaleX:1,ease:'none',scrollTrigger:{trigger:document.body,start:'top top',end:'bottom bottom',scrub:true}});
+
+  const intro = gsap.timeline({defaults:{ease:'power4.out'}});
+  intro.from('h1 .line span',{yPercent:112,duration:1.05,stagger:.08})
+    .from('.kicker',{opacity:0,y:18,duration:.7},'-=.85')
+    .from('.hero-copy',{opacity:0,y:24,duration:.8},'-=.62')
+    .from('.hero-actions',{opacity:0,y:20,duration:.7},'-=.55')
+    .from('.receipt',{opacity:0,y:14,duration:.65},'-=.45')
+    .from('.phone',{opacity:0,y:80,rotate:-5,duration:1.05},'-=.9')
+    .from('.float-card',{opacity:0,scale:.86,y:24,duration:.7,stagger:.1},'-=.55');
+
+  gsap.to('.phone',{y:-28,rotate:-1,ease:'none',scrollTrigger:{trigger:'.hero',start:'top top',end:'bottom top',scrub:true}});
+  gsap.to('.aura',{scale:1.18,opacity:.34,ease:'none',scrollTrigger:{trigger:'.hero',start:'top top',end:'bottom top',scrub:true}});
+
+  gsap.utils.toArray('.reveal').forEach((el)=>{
+    gsap.to(el,{opacity:1,y:0,duration:.85,ease:'power3.out',scrollTrigger:{trigger:el,start:'top 82%'}});
+  });
+
+  gsap.utils.toArray('.reel').forEach((card,i)=>{
+    gsap.from(card,{opacity:0,y:80,scale:.96,duration:.85,ease:'power3.out',
+      scrollTrigger:{trigger:card,start:'top 84%'}});
+    gsap.to(card.querySelectorAll('.feed-card,.bubble'),{y:(idx)=>idx%2?-18:18,ease:'none',
+      scrollTrigger:{trigger:card,start:'top bottom',end:'bottom top',scrub:true}});
+  });
+
+  gsap.from('.proof-card b',{textShadow:'0 0 0 rgba(73,246,178,0)',duration:.8,stagger:.12,
+    scrollTrigger:{trigger:'.proof-grid',start:'top 76%'}});
+
+  window.addEventListener('load',()=>ScrollTrigger.refresh());
+})();
+</script>
+</body>
+</html>
