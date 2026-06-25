@@ -797,6 +797,397 @@
   .safety-callout h3::before{content:"";width:9px;height:9px;border-radius:50%;background:var(--gold-leaf);flex:none}
   .safety-callout p{font-size:14.5px;line-height:1.65;color:var(--ink);margin:0 0 8px}
   .safety-callout p:last-child{margin-bottom:0}
+/* per-section scroll-story art */
+.pr-terrain{fill:var(--soft-green);opacity:calc(.25 + var(--p1)*.75);transform-box:fill-box;transform-origin:center bottom;transform:scaleY(clamp(.4,calc(.4 + var(--p1)*.6),1))}
+.pr-ridge{fill:none;stroke:var(--pill-green);stroke-width:2;opacity:calc(var(--p1)*.8)}
+.pr-roadbed{fill:none;stroke:var(--amber-bg);stroke-width:13;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:100;stroke-dashoffset:calc(100 - var(--p1)*100)}
+.pr-road{fill:none;stroke:var(--green-deep);stroke-width:5.5;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:100;stroke-dashoffset:calc(100 - var(--p1)*100)}
+.pr-dash{fill:none;stroke:var(--gold-bright);stroke-width:1.8;stroke-linecap:round;stroke-dasharray:2 5;opacity:clamp(0,calc(var(--p1)*3 - 2.2),.95)}
+.pr-pin{transform-box:fill-box;transform-origin:center bottom}
+.pr-origin{transform-box:fill-box;transform-origin:center;opacity:var(--p1);transform:scale(clamp(.2,calc(var(--p1)*1.2),1))}
+.pr-p1{opacity:clamp(0,calc(var(--p2)*2.2),1);transform:translateY(calc((1 - clamp(0,calc(var(--p2)*2.2),1))*-22px)) scale(clamp(.3,calc(var(--p2)*2.2),1))}
+.pr-p2{opacity:clamp(0,calc(var(--p2)*2.2 - .7),1);transform:translateY(calc((1 - clamp(0,calc(var(--p2)*2.2 - .7),1))*-22px)) scale(clamp(.3,calc(var(--p2)*2.2 - .7),1))}
+.pr-p3{opacity:clamp(0,calc(var(--p3)*2.2),1);transform:translateY(calc((1 - clamp(0,calc(var(--p3)*2.2),1))*-22px)) scale(clamp(.3,calc(var(--p3)*2.2),1))}
+.pr-p4{opacity:clamp(0,calc(var(--p3)*2.2 - .7),1);transform:translateY(calc((1 - clamp(0,calc(var(--p3)*2.2 - .7),1))*-22px)) scale(clamp(.3,calc(var(--p3)*2.2 - .7),1))}
+.pr-p5{opacity:clamp(0,calc(var(--p4)*2.2),1);transform:translateY(calc((1 - clamp(0,calc(var(--p4)*2.2),1))*-22px)) scale(clamp(.3,calc(var(--p4)*2.2),1))}
+.pr-p6{opacity:clamp(0,calc(var(--p4)*2.2 - .5),1);transform:translateY(calc((1 - clamp(0,calc(var(--p4)*2.2 - .5),1))*-22px)) scale(clamp(.3,calc(var(--p4)*2.2 - .5),1))}
+.pr-glow{fill:var(--gold-bright);transform-box:fill-box;transform-origin:center}
+.pr-glow1{opacity:clamp(0,calc(var(--p2)*1.6 - .6),.55);transform:scale(clamp(.2,calc(var(--p2)*2),1.5))}
+.pr-glow2{opacity:clamp(0,calc(var(--p3)*1.6 - .6),.55);transform:scale(clamp(.2,calc(var(--p3)*2),1.5))}
+.pr-glow3{opacity:clamp(0,calc(var(--p4)*1.6 - .6),.55);transform:scale(clamp(.2,calc(var(--p4)*2),1.5))}
+.pr-flagpole{transform-box:fill-box;transform-origin:center bottom;opacity:clamp(0,calc(var(--p4)*2 - .4),1);transform:scaleY(clamp(0,calc(var(--p4)*1.6 - .2),1))}
+.pr-flag{fill:var(--terra);transform-box:fill-box;transform-origin:left center;opacity:clamp(0,calc(var(--p4)*2.4 - 1.4),1);transform:scaleX(clamp(0,calc(var(--p4)*2.4 - 1.2),1))}
+.pr-star{fill:var(--gold-bright);stroke:var(--gold);stroke-width:1;transform-box:fill-box;transform-origin:center;opacity:clamp(0,calc(var(--p4)*3 - 2),1);transform:scale(clamp(.2,calc(var(--p4)*2 - 1),1)) rotate(calc((1 - var(--p4))*160deg))}
+.pr-burst{fill:none;stroke:var(--gold-leaf);stroke-width:1.6;stroke-linecap:round;opacity:clamp(0,calc(var(--p4)*3.5 - 2.6),.9);transform-box:fill-box;transform-origin:center;transform:scale(clamp(.2,calc(var(--p4)*1.5),1.15))}
+.pr-label{font-family:var(--font-mono);fill:var(--green-mid);letter-spacing:.16em;font-size:10px;opacity:clamp(0,calc(var(--p4)*3 - 2.2),1)}
+.al-bg{fill:url(#al-paper);stroke:var(--line-strong);stroke-width:1.2;
+  opacity:calc(.25 + var(--p1)*.75)}
+
+.al-spine{fill:none;stroke:url(#al-spineg);stroke-width:4;stroke-linecap:round;
+  stroke-dasharray:100;
+  stroke-dashoffset:calc(100 - (var(--p1) + var(--p2) + var(--p3) + var(--p4))*25)}
+.al-cap{fill:var(--green-deep);transform-box:fill-box;transform-origin:center;
+  transform:scale(clamp(0,calc(var(--p1)*3),1))}
+.al-cap2{fill:var(--green-mid);transform:scale(clamp(0,calc(var(--p4)*3 - 1.4),1))}
+
+.al-conn{fill:none;stroke:var(--gold-leaf);stroke-width:2;stroke-linecap:round;
+  stroke-dasharray:100}
+.al-conn1{stroke-dashoffset:calc(100 - var(--p1)*100)}
+.al-conn2{stroke-dashoffset:calc(100 - var(--p2)*100)}
+.al-conn3{stroke-dashoffset:calc(100 - var(--p3)*100)}
+.al-conn4{stroke-dashoffset:calc(100 - var(--p4)*100)}
+
+.al-node{fill:var(--card);stroke:var(--green-deep);stroke-width:3;
+  transform-box:fill-box;transform-origin:center}
+.al-node1{transform:scale(clamp(0,calc(var(--p1)*2.6 - .3),1))}
+.al-node2{transform:scale(clamp(0,calc(var(--p2)*2.6 - .3),1))}
+.al-node3{transform:scale(clamp(0,calc(var(--p3)*2.6 - .3),1))}
+.al-node4{transform:scale(clamp(0,calc(var(--p4)*2.6 - .3),1))}
+
+.al-chip{transform-box:fill-box;transform-origin:center}
+.al-chipinner{transform-box:fill-box;transform-origin:center}
+.al-chip1{opacity:clamp(0,calc(var(--p1)*2.4),1);
+  transform:translate(calc((1 - var(--p1))*112px), calc((1 - var(--p1))*-74px))}
+.al-chip1 .al-chipinner{transform:rotate(calc((1 - var(--p1))*16deg))}
+.al-chip2{opacity:clamp(0,calc(var(--p2)*2.4),1);
+  transform:translate(calc((1 - var(--p2))*-122px), calc((1 - var(--p2))*62px))}
+.al-chip2 .al-chipinner{transform:rotate(calc((1 - var(--p2))*-15deg))}
+.al-chip3{opacity:clamp(0,calc(var(--p3)*2.4),1);
+  transform:translate(calc((1 - var(--p3))*120px), calc((1 - var(--p3))*68px))}
+.al-chip3 .al-chipinner{transform:rotate(calc((1 - var(--p3))*14deg))}
+.al-chip4{opacity:clamp(0,calc(var(--p4)*2.4),1);
+  transform:translate(calc((1 - var(--p4))*-118px), calc((1 - var(--p4))*-72px))}
+.al-chip4 .al-chipinner{transform:rotate(calc((1 - var(--p4))*-17deg))}
+
+.al-card{fill:var(--card);stroke:var(--line-strong);stroke-width:1.2}
+.al-strip{fill:var(--green-deep)}
+.al-stripsq{fill:var(--green-deep)}
+.al-ring{fill:var(--gold-leaf)}
+.al-day{font-family:var(--font-mono);fill:var(--green-ink);font-size:18px;
+  font-weight:700;letter-spacing:.02em}
+.al-mon{font-family:var(--font-mono);fill:var(--terra);font-size:8px;letter-spacing:.18em}
+.al-bar{fill:var(--pill-green)}
+
+.al-bell{transform-box:fill-box;transform-origin:center;
+  opacity:clamp(0,calc(var(--p4)*2 - .6),1)}
+.al-bellswing{transform-box:fill-box;transform-origin:230px 14px;
+  transform:rotate(calc((1 - var(--p4))*-26deg))}
+.al-bellbody{fill:var(--gold-leaf);stroke:var(--gold);stroke-width:1.4;
+  stroke-linejoin:round}
+.al-bellclap{fill:var(--gold)}
+.al-belltop{fill:var(--gold)}
+.al-ring1,.al-ring2{fill:none;stroke:var(--gold-bright);stroke-width:2;
+  stroke-linecap:round;opacity:clamp(0,calc(var(--p4)*3 - 2),1)}
+.ln-b{transform-box:fill-box;transform-origin:center}
+.ln-shell{transform-box:fill-box;transform-origin:center}
+.ln-glyph{font-family:var(--font-mono);font-size:26px;font-weight:700}
+.ln-b1{opacity:clamp(0,calc(var(--p1)*2.6),1);
+  transform:translate(calc((1 - var(--p1))*-120px),calc((1 - var(--p1))*-86px)) scale(calc(.5 + var(--p1)*.5))}
+.ln-b2{opacity:clamp(0,calc(var(--p1)*2.6 - .6),1);
+  transform:translate(calc((1 - var(--p1))*128px),calc((1 - var(--p1))*-92px)) scale(calc(.5 + var(--p1)*.5))}
+.ln-b3{opacity:clamp(0,calc(var(--p2)*3 - .12),1);
+  transform:translate(calc((1 - var(--p2))*-140px),calc((1 - var(--p2))*10px)) scale(calc(.5 + var(--p2)*.5))}
+.ln-b4{opacity:clamp(0,calc(var(--p2)*3 - .7),1);
+  transform:translate(calc((1 - var(--p2))*140px),calc((1 - var(--p2))*16px)) scale(calc(.5 + var(--p2)*.5))}
+.ln-b5{opacity:clamp(0,calc(var(--p3)*2.6),1);
+  transform:translate(0,calc((1 - var(--p3))*96px)) scale(calc(.5 + var(--p3)*.5))}
+.ln-ray{stroke-dashoffset:calc(100 - var(--p3)*100);
+  opacity:clamp(0,calc(var(--p3)*1.4 - .15),.85)}
+.ln-ray2{stroke-dashoffset:calc(100 - clamp(0,calc(var(--p3)*1.3 - .1),1)*100)}
+.ln-ray3{stroke-dashoffset:calc(100 - clamp(0,calc(var(--p3)*1.3 - .2),1)*100)}
+.ln-ray4{stroke-dashoffset:calc(100 - clamp(0,calc(var(--p3)*1.3 - .3),1)*100)}
+.ln-ray5{stroke-dashoffset:calc(100 - clamp(0,calc(var(--p3)*1.3 - .4),1)*100)}
+.ln-glow{transform-box:fill-box;transform-origin:center;
+  opacity:clamp(0,calc(var(--p4)*1.4),1);
+  transform:scale(calc(.4 + var(--p4)*.6))}
+.ln-core-g{transform-box:fill-box;transform-origin:230px 150px;
+  opacity:clamp(0,calc(var(--p3)*1.8 - .4),1);
+  transform:scale(clamp(.2,calc(.55 + var(--p3)*.2 + var(--p4)*.25),1)) rotate(calc((1 - var(--p4))*-14deg))}
+.ln-core-shell{transform-box:fill-box;transform-origin:center}
+.ln-core-ring{stroke-dashoffset:calc(100 - clamp(0,calc(var(--p3)*1.5 - .2),1)*100)}
+.ln-heart{transform-box:fill-box;transform-origin:center;
+  opacity:clamp(0,calc(var(--p4)*2.2 - .3),1);
+  transform:scale(clamp(.2,calc(var(--p4)*1.15),1))}
+.ln-check{stroke-dashoffset:calc(100 - clamp(0,calc(var(--p4)*1.5 - .35),1)*100)}
+.rv-badge,.rv-x,.rv-check,.rv-seal,.rv-seal-star,.rv-band-dot,.rv-ink-clean,.rv-ink-draft{transform-box:fill-box;transform-origin:center}
+
+.rv-sheet{opacity:calc(.12 + var(--p1)*.88);transform-box:fill-box;transform-origin:center;
+  transform:translateY(calc((1 - var(--p1))*26px)) scale(calc(.96 + var(--p1)*.04))}
+.rv-sheet-bg{fill:url(#rv-paper);stroke:var(--line-strong);stroke-width:1.5}
+.rv-hole{fill:var(--soft-green);stroke:var(--line-strong);stroke-width:1}
+.rv-margin{stroke:var(--terra);stroke-width:1.4;opacity:.5}
+
+.rv-head{opacity:var(--p1)}
+.rv-band{fill:var(--green-deep);transform-box:fill-box;transform-origin:left center;transform:scaleX(var(--p1))}
+.rv-band-t{font-family:var(--font-mono);fill:var(--gold-bright);letter-spacing:.2em;font-size:12px;
+  opacity:clamp(0,calc(var(--p1)*2 - .9),1)}
+.rv-band-dot{fill:var(--gold-leaf);opacity:clamp(0,calc(var(--p1)*2 - 1),1)}
+
+.rv-ink{height:7px}
+.rv-ink-draft{fill:var(--terra);transform-box:fill-box;transform-origin:left center}
+.rv-ink-clean{fill:var(--green-mid);transform-box:fill-box;transform-origin:left center}
+.rv-ink2{fill:var(--pill-green);transform-box:fill-box;transform-origin:left center}
+
+.rv-ink1{transform:scaleX(clamp(0,calc(var(--p1)*1.6 - .1),1))}
+.rv-row1 .rv-ink-draft{opacity:calc((1 - var(--p1))*.9)}
+.rv-ink2a{transform:scaleX(clamp(0,calc(var(--p1)*1.6 - .35),1))}
+.rv-badge1{opacity:calc(.35 + var(--p1)*.65)}
+.rv-x1{opacity:clamp(0,calc(1 - var(--p1)*2.2),1)}
+.rv-check1{stroke-dashoffset:calc(100 - clamp(0,calc(var(--p1)*2 - .9),1)*100);opacity:clamp(0,calc(var(--p1)*3 - 1.6),1)}
+
+.rv-ink2c{transform:scaleX(clamp(0,calc(var(--p2)*1.6 - .1),1))}
+.rv-row2 .rv-ink-draft{opacity:calc((1 - var(--p2))*.9)}
+.rv-ink2b{transform:scaleX(clamp(0,calc(var(--p2)*1.6 - .35),1))}
+.rv-badge2{opacity:calc(.35 + var(--p2)*.65)}
+.rv-x2{opacity:clamp(0,calc(1 - var(--p2)*2.2),1)}
+.rv-check2{stroke-dashoffset:calc(100 - clamp(0,calc(var(--p2)*2 - .9),1)*100);opacity:clamp(0,calc(var(--p2)*3 - 1.6),1)}
+
+.rv-ink3a{transform:scaleX(clamp(0,calc(var(--p3)*1.8 - .1),1))}
+.rv-row3 .rv-ink-draft{opacity:calc((1 - var(--p3))*.9)}
+.rv-ink2c2{transform:scaleX(clamp(0,calc(var(--p3)*1.8 - .35),1))}
+.rv-badge3{opacity:calc(.35 + var(--p3)*.65)}
+.rv-x3{opacity:clamp(0,calc(1 - var(--p3)*2.4),1)}
+.rv-check3{stroke-dashoffset:calc(100 - clamp(0,calc(var(--p3)*2 - .7),1)*100);opacity:clamp(0,calc(var(--p3)*3 - 1.4),1)}
+
+.rv-ink4a{transform:scaleX(clamp(0,calc(var(--p3)*1.8 - .8),1))}
+.rv-row4 .rv-ink-draft{opacity:clamp(0,calc((1 - var(--p3)*1.5)*.9),1)}
+.rv-ink2d{transform:scaleX(clamp(0,calc(var(--p3)*1.8 - 1),1))}
+.rv-badge4{opacity:calc(.35 + var(--p3)*.65)}
+.rv-x4{opacity:clamp(0,calc(1 - var(--p3)*2.6 + .3),1)}
+.rv-check4{stroke-dashoffset:calc(100 - clamp(0,calc(var(--p3)*2.4 - 1.4),1)*100);opacity:clamp(0,calc(var(--p3)*3.4 - 2.4),1)}
+
+.rv-badge{fill:var(--soft-green);stroke:var(--green);stroke-width:1.5}
+.rv-x{fill:none;stroke:var(--terra);stroke-width:2.6;stroke-linecap:round}
+.rv-check{fill:none;stroke:var(--green);stroke-width:3;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:100}
+
+.rv-seal{transform-box:fill-box;transform-origin:center;opacity:var(--p4);
+  transform:scale(clamp(.2,var(--p4),1)) rotate(calc((1 - var(--p4))*-150deg))}
+.rv-seal-ring{fill:none;stroke:var(--gold-leaf);stroke-width:2.6;stroke-dasharray:5 5}
+.rv-seal-disc{fill:var(--gold-leaf)}
+.rv-seal-star{fill:var(--card);opacity:clamp(0,calc(var(--p4)*2 - .8),1)}
+.rv-seal-cap{font-family:var(--font-mono);fill:var(--green-deep);font-size:11px;font-weight:700;letter-spacing:.18em;
+  text-anchor:middle;opacity:clamp(0,calc(var(--p4)*2.4 - 1.3),1)}
+.iv-panel{fill:var(--card);stroke:var(--line-strong);stroke-width:1.5;
+  opacity:calc(.55 + var(--p1)*.45)}
+
+/* microphone (p1) */
+.iv-mic{transform-box:fill-box;transform-origin:96px 130px;
+  opacity:var(--p1);
+  transform:translateY(calc((1 - var(--p1))*-26px)) scale(calc(.86 + var(--p1)*.14))}
+.iv-body{fill:url(#iv-mic);stroke:var(--green-ink);stroke-width:1.5}
+.iv-grille line{stroke:rgba(228,239,229,.5);stroke-width:1.4}
+.iv-collar{fill:var(--green-ink)}
+.iv-pole{fill:var(--green-deep)}
+.iv-base{fill:var(--soft-green);stroke:var(--green-mid);stroke-width:1.5}
+.iv-base-top{fill:none;stroke:var(--green-mid);stroke-width:1.5;opacity:.6}
+
+/* waveform baseline (p2) */
+.iv-axis{stroke:var(--line-strong);stroke-width:1.5;stroke-dasharray:4 4;
+  stroke-dashoffset:calc(100 - var(--p2)*100)}
+
+/* nervous jittery bars: rise with p2, fade out as p3 fills */
+.iv-jitter{opacity:calc(clamp(0, var(--p2)*1.4, 1) * (1 - clamp(0, var(--p3)*1.25, 1)))}
+.iv-jb{fill:var(--terra);transform-box:fill-box;transform-origin:center;
+  transform:scaleY(clamp(.15, var(--p2), 1))}
+
+/* confident steady bars: grow symmetrically with p3 */
+.iv-steady{opacity:clamp(0, var(--p3)*1.4 - .15, 1)}
+.iv-sb{fill:var(--green);transform-box:fill-box;transform-origin:center;
+  transform:scaleY(clamp(.12, var(--p3), 1))}
+
+/* confidence meter (p4) */
+.iv-meter{opacity:calc(.4 + var(--p3)*.3 + var(--p4)*.3)}
+.iv-meter-track{fill:var(--soft-green);stroke:var(--green-mid);stroke-width:1.5}
+.iv-meter-fill{fill:url(#iv-meterfill);transform-box:fill-box;transform-origin:left center;
+  transform:scaleX(var(--p4))}
+.iv-meter-label{font-family:var(--font-mono);fill:var(--green-mid);
+  font-size:9px;letter-spacing:.22em;opacity:clamp(0, var(--p3)*2 - .5, 1)}
+
+/* ready seal (p4) */
+.iv-seal{transform-box:fill-box;transform-origin:center;
+  opacity:clamp(0, var(--p4)*2 - .6, 1);
+  transform:scale(clamp(.2, var(--p4), 1)) rotate(calc((1 - var(--p4))*-140deg))}
+.iv-seal-ring{fill:none;stroke:var(--gold-leaf);stroke-width:2.5;stroke-dasharray:4 5}
+.iv-seal-dot{fill:var(--green)}
+.iv-check{fill:none;stroke:var(--card);stroke-width:3;stroke-linecap:round;stroke-linejoin:round}
+.pw-stage{fill:var(--card);stroke:var(--line-strong);stroke-width:1.5;opacity:var(--p1)}
+.pw-grid{stroke:rgba(25,39,30,.07);stroke-width:1;opacity:calc(var(--p1)*.9)}
+.pw-corner{fill:none;stroke:var(--gold-leaf);stroke-width:1.6;opacity:calc(var(--p1)*.85)}
+.pw-label{font-family:var(--font-mono);letter-spacing:.22em;font-size:8px;fill:var(--gold);
+  opacity:clamp(0,calc(var(--p1)*2 - .7),1)}
+.pw-label-d{font-family:var(--font-mono);letter-spacing:.22em;font-size:8px;fill:var(--green-mid);
+  text-anchor:end;opacity:clamp(0,calc(var(--p4)*2 - .9),1)}
+
+.pw-startring{fill:none;stroke:var(--green-deep);stroke-width:2.4;stroke-dasharray:100;
+  stroke-dashoffset:calc(100 - var(--p1)*100)}
+.pw-startdot{fill:var(--green);transform-box:fill-box;transform-origin:center;opacity:var(--p1);
+  transform:scale(clamp(.2,calc(var(--p1)*1.4),1))}
+.pw-startpulse{fill:none;stroke:var(--green);stroke-width:1.2;transform-box:fill-box;
+  transform-origin:center;opacity:calc((1 - var(--p3))*var(--p1)*.45);
+  transform:scale(calc(1 + var(--p2)*.7))}
+
+.pw-branch{fill:none;stroke-width:1.5;stroke-linecap:round;stroke-dasharray:100;
+  stroke-dashoffset:calc(100 - clamp(0,calc(var(--p2)*1.5 - var(--bd,0)),1)*100);
+  opacity:calc(clamp(0,calc(var(--p2)*2 - .2),1) * (1 - var(--p3)*.84))}
+.pw-b1{--bd:0;stroke:var(--slate)}
+.pw-b2{--bd:.12;stroke:var(--green)}
+.pw-b3{--bd:.22;stroke:var(--terra)}
+.pw-b4{--bd:.30;stroke:var(--gold)}
+.pw-b5{--bd:.16;stroke:var(--green-mid)}
+.pw-b6{--bd:.36;stroke:var(--slate)}
+.pw-b7{--bd:.26;stroke:var(--green)}
+
+.pw-deadend{transform-box:fill-box;transform-origin:center;fill:rgba(25,39,30,.30);
+  opacity:calc(clamp(0,calc(var(--p2)*2 - 1),1) * (1 - var(--p3)));
+  transform:scale(calc(1 - var(--p3)*.7))}
+
+.pw-routeglow{fill:none;stroke:var(--gold-bright);stroke-width:8;stroke-linecap:round;
+  stroke-linejoin:round;stroke-dasharray:100;stroke-dashoffset:calc(100 - var(--p3)*100);
+  opacity:calc(var(--p3)*.35)}
+.pw-route{fill:none;stroke:url(#pw-routegrad);stroke-width:4;stroke-linecap:round;
+  stroke-linejoin:round;stroke-dasharray:100;stroke-dashoffset:calc(100 - var(--p3)*100)}
+.pw-routetick{fill:none;stroke:var(--paper);stroke-width:1.2;stroke-linecap:round;
+  stroke-dasharray:.6 6;stroke-dashoffset:calc(100 - var(--p3)*100);
+  opacity:calc(clamp(0,calc(var(--p3)*1.6 - .5),1)*.85)}
+
+.pw-checkring{fill:var(--card);stroke:var(--green);stroke-width:2;transform-box:fill-box;
+  transform-origin:center;opacity:clamp(0,calc(var(--p3)*1.8 - 1),1);
+  transform:scale(clamp(.2,calc(var(--p3)*1.8 - .9),1))}
+.pw-checkmark{fill:none;stroke:var(--green-deep);stroke-width:1.8;stroke-linecap:round;
+  stroke-linejoin:round;stroke-dasharray:100;
+  stroke-dashoffset:calc(100 - clamp(0,calc(var(--p3)*2 - 1.3),1)*100)}
+
+.pw-pinwrap{transform-box:fill-box;transform-origin:center bottom;
+  opacity:clamp(0,calc(var(--p4)*1.6),1);
+  transform:translateY(calc((1 - var(--p4))*-50px)) scale(clamp(.5,var(--p4),1))}
+.pw-pinbody{fill:var(--terra);stroke:var(--green-ink);stroke-width:1.4}
+.pw-pininner{fill:var(--card)}
+.pw-pinland{fill:none;stroke:var(--gold-leaf);stroke-width:2;transform-box:fill-box;
+  transform-origin:center;
+  opacity:calc(clamp(0,calc(var(--p4)*3 - 2),1) * (1 - clamp(0,calc(var(--p4)*3 - 2.4),1)));
+  transform:scale(calc(.4 + clamp(0,calc(var(--p4)*3 - 2),1)*1.4))}
+.pw-flag{fill:var(--gold-leaf);transform-box:fill-box;transform-origin:left bottom;
+  opacity:clamp(0,calc(var(--p4)*2 - 1.1),1);transform:scaleX(clamp(0,calc(var(--p4)*2 - 1.1),1))}
+.pw-flagpole{stroke:var(--green-ink);stroke-width:1.4;opacity:clamp(0,calc(var(--p4)*2 - 1),1)}
+.qa-rings,.qa-q,.qa-answer,.qa-seal,.qa-sparks{transform-box:fill-box;transform-origin:center}
+
+.qa-ring{fill:none;stroke:var(--line-strong);stroke-width:1;stroke-dasharray:3 7;transform-box:fill-box;transform-origin:center}
+.qa-ring1{opacity:calc(.5*(1 - var(--p4)));transform:scale(calc(1.16 - var(--p2)*.16)) rotate(calc(var(--p3)*38deg))}
+.qa-ring2{opacity:calc(.42*(1 - var(--p4)));transform:scale(calc(1.2 - var(--p2)*.2)) rotate(calc(var(--p3)*-44deg))}
+
+.qa-q{transform-box:fill-box;transform-origin:center}
+.qa-chip{fill:var(--card);stroke:var(--gold-leaf);stroke-width:1.5}
+.qa-qm{font-family:var(--font-mono);font-weight:700;font-size:34px;fill:var(--green-mid);text-anchor:middle}
+
+.qa-q1{opacity:calc((.4 + var(--p1)*.6) * (1 - var(--p3)));
+  transform:translate(calc(74px + (230 - 74)*var(--p2)*1px), calc(58px + (138 - 58)*var(--p2)*1px))
+            scale(calc(1 - var(--p2)*.5 - var(--p3)*.5)) rotate(calc(-15deg + (1 - var(--p1))*-34deg))}
+.qa-q2{opacity:calc((.4 + var(--p1)*.6) * (1 - var(--p3)));
+  transform:translate(calc(388px + (230 - 388)*var(--p2)*1px), calc(64px + (138 - 64)*var(--p2)*1px))
+            scale(calc(1 - var(--p2)*.5 - var(--p3)*.5)) rotate(calc(15deg + (1 - var(--p1))*36deg))}
+
+.qa-q3{opacity:calc((.32 + var(--p2)*.68) * (1 - var(--p3)));
+  transform:translate(calc(80px + (230 - 80)*var(--p2)*1px), calc(212px + (138 - 212)*var(--p2)*1px))
+            scale(calc(1 - var(--p2)*.35 - var(--p3)*.65)) rotate(calc(11deg + (1 - var(--p2))*-30deg))}
+.qa-q4{opacity:calc((.32 + var(--p2)*.68) * (1 - var(--p3)));
+  transform:translate(calc(384px + (230 - 384)*var(--p2)*1px), calc(206px + (138 - 206)*var(--p2)*1px))
+            scale(calc(1 - var(--p2)*.35 - var(--p3)*.65)) rotate(calc(-13deg + (1 - var(--p2))*32deg))}
+.qa-q5{opacity:calc((.3 + var(--p2)*.7) * (1 - var(--p3)));
+  transform:translate(calc(230px + (230 - 230)*var(--p2)*1px), calc(242px + (138 - 242)*var(--p2)*1px))
+            scale(calc(1 - var(--p2)*.4 - var(--p3)*.6)) rotate(calc(5deg + (1 - var(--p2))*26deg))}
+
+.qa-answer{transform-box:fill-box;transform-origin:center;
+  transform:translateY(calc((1 - var(--p2))*10px)) scale(calc(.93 + var(--p2)*.07))}
+
+.qa-halo{fill:url(#qa-glow);transform-box:fill-box;transform-origin:center;
+  opacity:calc(var(--p3)*.55 + var(--p4)*.45);
+  transform:scale(calc(.5 + var(--p3)*.4 + var(--p4)*.16))}
+
+.qa-bubblefill{fill:url(#qa-bubble);stroke:none;opacity:calc(var(--p2)*.4 + var(--p3)*.6)}
+.qa-bubbleline{fill:none;stroke:var(--green-deep);stroke-width:2.5;stroke-linejoin:round;
+  stroke-dasharray:100;stroke-dashoffset:calc(100 - var(--p3)*100)}
+
+.qa-ans{fill:var(--pill-green);transform-box:fill-box;transform-origin:left center}
+.qa-ans1{fill:var(--soft-green);transform:scaleX(clamp(0,calc(var(--p3)*1.8),1))}
+.qa-ans2{transform:scaleX(clamp(0,calc(var(--p3)*1.8 - .3),1))}
+.qa-ans3{fill:var(--amber-bg);transform:scaleX(clamp(0,calc(var(--p3)*1.8 - .6),1))}
+
+.qa-seal{transform-box:fill-box;transform-origin:center;
+  opacity:var(--p4);
+  transform:scale(clamp(.2,var(--p4),1)) rotate(calc((1 - var(--p4))*-150deg))}
+.qa-seal-disc{fill:var(--green-ink)}
+.qa-seal-ring{fill:none;stroke:var(--gold-leaf);stroke-width:2.5;stroke-dasharray:4 5}
+.qa-bulb{fill:var(--gold-bright);stroke:var(--gold-leaf);stroke-width:1.5}
+.qa-bulb-base{fill:var(--gold-leaf)}
+.qa-check{fill:none;stroke:var(--card);stroke-width:3.4;stroke-linecap:round;stroke-linejoin:round;
+  stroke-dasharray:100;stroke-dashoffset:calc(100 - clamp(0,calc(var(--p4)*1.5 - .4),1)*100)}
+.qa-sparks{transform-box:fill-box;transform-origin:center;
+  opacity:clamp(0,calc(var(--p4)*2 - 1),1);transform:scale(clamp(.4,var(--p4),1))}
+.qa-spark{stroke:var(--gold-bright);stroke-width:2.2;stroke-linecap:round}
+
+.qa-cap{font-family:var(--font-mono);fill:var(--green-mid);font-size:11px;letter-spacing:.26em;
+  text-anchor:middle;opacity:clamp(0,calc(var(--p4)*2 - .8),1)}
+/* shared transform setup */
+.vb-frame,.vb-bar,.vb-tk,.vb-cutline,.vb-cuttag,
+.vb-marker,.vb-tag,.vb-badge,.vb-check,.vb-head,.vb-head-ring,
+.vb-stem,.vb-axis-x{transform-box:fill-box}
+
+/* BEAT 1 — panel, frame, header, axes settle in */
+.vb-panel{opacity:var(--p1)}
+.vb-frame{stroke-dasharray:100;stroke-dashoffset:calc(100 - var(--p1)*100)}
+.vb-head{transform-origin:left center;opacity:var(--p1);
+  transform:translateX(calc((1 - var(--p1))*-26px))}
+.vb-head-ring{transform-origin:center;
+  transform:rotate(calc(var(--p1)*180deg)) scale(clamp(.2,var(--p1),1))}
+.vb-axis-y{opacity:var(--p1)}
+.vb-axis-x{transform-origin:left center;transform:scaleX(var(--p1))}
+
+/* BEAT 2 — bars grow from baseline, month ticks fade up */
+.vb-bar{transform-origin:center bottom}
+.vb-bar.b1{transform:scaleY(clamp(0,calc(var(--p2)*1.5),1))}
+.vb-bar.b2{transform:scaleY(clamp(0,calc(var(--p2)*1.5 - .12),1))}
+.vb-bar.b3{transform:scaleY(clamp(0,calc(var(--p2)*1.5 - .24),1))}
+.vb-bar.b4{transform:scaleY(clamp(0,calc(var(--p2)*1.5 - .36),1))}
+.vb-bar.b5{transform:scaleY(clamp(0,calc(var(--p2)*1.5 - .48),1))}
+.vb-tk{transform-origin:center;opacity:var(--p2);
+  transform:translateY(calc((1 - var(--p2))*8px))}
+
+/* BEAT 3 — cutoff line draws left to right, cut-off tag pops */
+.vb-cutline{transform-origin:left center;transform:scaleX(var(--p3))}
+.vb-cuttag{transform-origin:left center;opacity:var(--p3);
+  transform:scale(clamp(.4,var(--p3),1))}
+
+/* MARKER — climbs across all four beats, monotonic up + right.
+   Per-beat staircase: each var contributes part of the journey.
+   At vars=1 the marker dot lands on the cutoff line over the NOW bar. */
+.vb-marker{transform-origin:left bottom;opacity:calc(.35 + var(--p1)*.65);
+  transform:translate(
+    calc(var(--p1)*22px + var(--p2)*70px + var(--p3)*78px + var(--p4)*88px),
+    calc(var(--p1)*-14px + var(--p2)*-26px + var(--p3)*-30px + var(--p4)*-33px)
+  )}
+/* stem stretches downward toward the axis as marker rises */
+.vb-stem{transform-origin:bottom;
+  transform:scaleY(clamp(.4,calc(.4 + (var(--p2)+var(--p3)+var(--p4))*.6),2.4))}
+.vb-tag{transform-origin:center}
+/* tag turns gold -> green on the final beat: green overlay fades in */
+.vb-tag-green{opacity:clamp(0,calc(var(--p4)*2 - .8),1)}
+
+/* BEAT 4 — CURRENT badge scales in with drawn check */
+.vb-badge{transform-origin:center;opacity:clamp(0,calc(var(--p4)*2 - .6),1);
+  transform:scale(clamp(.2,var(--p4),1)) translateY(calc((1 - var(--p4))*10px))}
+.vb-check{stroke-dasharray:100;stroke-dashoffset:calc(100 - var(--p4)*100)}
+.lg-mat{transform-box:fill-box;transform-origin:center;opacity:calc(.25 + var(--p1)*.75);transform:scale(calc(.94 + var(--p1)*.06))}
+.lg-halo{transform-box:fill-box;transform-origin:center;opacity:calc(var(--p3)*.9);transform:scale(calc(.4 + var(--p3)*.6))}
+.lg-base{transform-box:fill-box;transform-origin:230px 257px;opacity:var(--p1);transform:scaleY(clamp(.05,var(--p1),1))}
+.lg-mech{transform-box:fill-box;transform-origin:230px 116px;transform:rotate(calc((1 - var(--p2))*-22deg))}
+.lg-beam{transform-box:fill-box;transform-origin:230px 116px;opacity:calc(.3 + var(--p1)*.7);transform:scaleX(clamp(.1,var(--p1),1))}
+.lg-panL{transform-box:fill-box;transform-origin:142px 116px;opacity:var(--p2);transform:translateY(calc((1 - var(--p2))*26px)) rotate(calc((1 - var(--p2))*16deg))}
+.lg-panR{transform-box:fill-box;transform-origin:318px 116px;opacity:var(--p2);transform:translateY(calc((1 - var(--p2))*-22px)) rotate(calc((1 - var(--p2))*-16deg))}
+.lg-laurel path{stroke-dashoffset:calc(100 - var(--p3)*100);stroke-dasharray:100}
+.lg-laurel g{opacity:var(--p3)}
+.lg-laurel{transform-box:fill-box;transform-origin:230px 240px}
+.lg-shieldG{transform-box:fill-box;transform-origin:356px 235px;opacity:var(--p4);transform:scale(clamp(.2,var(--p4),1)) translateY(calc((1 - var(--p4))*16px))}
+.lg-check{stroke-dashoffset:calc(100 - var(--p4)*100);stroke-dasharray:100}
 </style>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/tesseract.js/5.1.0/tesseract.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
@@ -1154,37 +1545,7 @@
           <div class="scrolly-meter"><span class="scrolly-pct no-i18n">0%</span><small>of the roadmap · keep scrolling</small></div>
         </div>
         <div class="scrolly-card-wrap">
-          <svg class="gc" viewBox="0 0 460 300" role="img" aria-label="Illustration of a progress card assembling step by step">
-            <rect class="gc-face" x="8" y="8" width="444" height="284" rx="20"/>
-            <rect class="gc-border" x="8" y="8" width="444" height="284" rx="20" pathLength="100"/>
-            <g class="gc-band-g">
-              <path class="gc-band" d="M8 28 a20 20 0 0 1 20 -20 h404 a20 20 0 0 1 20 20 v38 h-444 z"/>
-              <text class="gc-band-t no-i18n" x="30" y="44">YOUR ROADMAP</text>
-              <text class="gc-band-t2 no-i18n" x="430" y="44" text-anchor="end">GREENPATH</text>
-            </g>
-            <text class="gc-title no-i18n" x="30" y="95">ONE PATH</text>
-            <g class="gc-photo-g">
-              <rect class="gc-photo" x="30" y="110" width="106" height="136" rx="10"/>
-              <circle class="gc-head" cx="83" cy="158" r="21"/>
-              <path class="gc-shoulders" d="M49 246 v-10 a34 26 0 0 1 68 0 v10 z"/>
-            </g>
-            <g class="gc-lines">
-              <rect class="gc-line l1" x="160" y="120" width="180" height="12" rx="6"/>
-              <rect class="gc-line l2" x="160" y="144" width="232" height="12" rx="6"/>
-              <rect class="gc-line l3" x="160" y="168" width="150" height="12" rx="6"/>
-              <rect class="gc-line l4" x="160" y="192" width="206" height="12" rx="6"/>
-              <rect class="gc-line l5" x="160" y="216" width="120" height="12" rx="6"/>
-            </g>
-            <g class="gc-seal">
-              <circle class="gc-seal-ring" cx="394" cy="224" r="33"/>
-              <circle class="gc-seal-inner" cx="394" cy="224" r="25"/>
-              <path class="gc-star" d="M394 207l4.9 9.9 11 1.6-7.9 7.7 1.9 10.9-9.9-5.2-9.9 5.2 1.9-10.9-7.9-7.7 11-1.6z"/>
-            </g>
-            <g class="gc-stamp">
-              <rect x="172" y="238" width="150" height="40" rx="8"/>
-              <text class="no-i18n" x="247" y="265" text-anchor="middle">ON TRACK</text>
-            </g>
-          </svg>
+          <svg class="gc" viewBox="0 0 460 300" role="img" aria-label="A winding evergreen road climbs across warm paper terrain past six glowing gold milestone pins, ending at a planted flag crowned by a gold star at the destination."><path class="pr-terrain" d="M20 244 Q120 222 210 236 T440 226 L440 272 L20 272 Z"/><path class="pr-ridge" d="M28 240 Q130 216 220 232 T432 222"/><g><path class="pr-roadbed" d="M62 236 C120 232 120 196 158 192 C212 186 196 138 232 142 C292 148 300 110 392 92"/><path class="pr-road" d="M62 236 C120 232 120 196 158 192 C212 186 196 138 232 142 C292 148 300 110 392 92"/><path class="pr-dash" d="M62 236 C120 232 120 196 158 192 C212 186 196 138 232 142 C292 148 300 110 392 92"/></g><g class="pr-origin"><circle cx="62" cy="236" r="8.5" fill="var(--card)" stroke="var(--green-deep)" stroke-width="2.5"/><circle cx="62" cy="236" r="3.4" fill="var(--green)"/></g><g class="pr-pin pr-p1"><ellipse class="pr-glow pr-glow1" cx="78" cy="222" rx="11" ry="5"/><path d="M78 222 C71 214 71 203 78 200 C85 203 85 214 78 222 Z" fill="var(--green-deep)"/><circle cx="78" cy="208" r="5.4" fill="var(--gold-leaf)"/><circle cx="78" cy="208" r="2.2" fill="var(--card)"/></g><g class="pr-pin pr-p2"><ellipse class="pr-glow pr-glow1" cx="150" cy="200" rx="11" ry="5"/><path d="M150 200 C143 192 143 181 150 178 C157 181 157 192 150 200 Z" fill="var(--green-deep)"/><circle cx="150" cy="186" r="5.4" fill="var(--gold-leaf)"/><circle cx="150" cy="186" r="2.2" fill="var(--card)"/></g><g class="pr-pin pr-p3"><ellipse class="pr-glow pr-glow2" cx="200" cy="150" rx="11" ry="5"/><path d="M200 150 C193 142 193 131 200 128 C207 131 207 142 200 150 Z" fill="var(--green-deep)"/><circle cx="200" cy="136" r="5.4" fill="var(--gold-leaf)"/><circle cx="200" cy="136" r="2.2" fill="var(--card)"/></g><g class="pr-pin pr-p4"><ellipse class="pr-glow pr-glow2" cx="262" cy="178" rx="11" ry="5"/><path d="M262 178 C255 170 255 159 262 156 C269 159 269 170 262 178 Z" fill="var(--green-deep)"/><circle cx="262" cy="164" r="5.4" fill="var(--gold-leaf)"/><circle cx="262" cy="164" r="2.2" fill="var(--card)"/></g><g class="pr-pin pr-p5"><ellipse class="pr-glow pr-glow3" cx="330" cy="130" rx="11" ry="5"/><path d="M330 130 C323 122 323 111 330 108 C337 111 337 122 330 130 Z" fill="var(--green-deep)"/><circle cx="330" cy="116" r="5.4" fill="var(--gold-leaf)"/><circle cx="330" cy="116" r="2.2" fill="var(--card)"/></g><g class="pr-pin pr-p6"><ellipse class="pr-glow pr-glow3" cx="392" cy="92" rx="11" ry="5"/><path d="M392 92 C385 84 385 73 392 70 C399 73 399 84 392 92 Z" fill="var(--green-deep)"/><circle cx="392" cy="78" r="5.4" fill="var(--gold-leaf)"/><circle cx="392" cy="78" r="2.2" fill="var(--card)"/></g><g class="pr-flagpole"><rect x="406.5" y="53" width="3" height="42" rx="1.5" fill="var(--green-deep)"/></g><path class="pr-flag" d="M410 55 L437 63 L410 71 Z"/><g transform="translate(408,37)"><path class="pr-burst" d="M0 -16 V-9 M0 16 V9 M-16 0 H-9 M16 0 H9 M-11 -11 L-6 -6 M11 11 L6 6 M11 -11 L6 -6 M-11 11 L-6 6"/><path class="pr-star" d="M0 -11 L2.8 -3.4 L11 -3.4 L4.4 1.5 L6.9 9.5 L0 4.6 L-6.9 9.5 L-4.4 1.5 L-11 -3.4 L-2.8 -3.4 Z"/></g><text class="pr-label no-i18n" x="62" y="260" text-anchor="middle">START</text><text class="pr-label no-i18n" x="392" y="256" text-anchor="middle">APPROVED</text></svg>
         </div>
       </div>
     </div>
@@ -1290,24 +1651,96 @@
           <div class="scrolly-meter"><span class="scrolly-pct no-i18n">0%</span><small>of the dates · keep scrolling</small></div>
         </div>
         <div class="scrolly-card-wrap">
-          <svg class="gc" viewBox="0 0 460 300" role="img" aria-label="Illustration of scattered deadlines assembling into one organized timeline">
-            <rect class="df-sheet df-s1" x="145" y="45" width="170" height="220" rx="10"/>
-            <rect class="df-sheet df-s2" x="145" y="45" width="170" height="220" rx="10"/>
-            <rect class="df-sheet df-s3" x="145" y="45" width="170" height="220" rx="10"/>
-            <g class="df-top">
-              <rect class="df-sheet" x="145" y="45" width="170" height="220" rx="10"/>
-              <path class="df-band" d="M145 55 a10 10 0 0 1 10 -10 h150 a10 10 0 0 1 10 10 v24 h-170 z"/>
-              <text class="df-band-t no-i18n" x="230" y="68" text-anchor="middle">TIMELINE</text>
-              <rect class="gc-line l1" x="165" y="100" width="130" height="10" rx="5"/>
-              <rect class="gc-line l2" x="165" y="122" width="100" height="10" rx="5"/>
-              <rect class="gc-line l3" x="165" y="144" width="118" height="10" rx="5"/>
-              <rect class="gc-line l4" x="165" y="166" width="86" height="10" rx="5"/>
-              <g class="gc-stamp">
-                <rect x="150" y="196" width="160" height="36" rx="8"/>
-                <text class="no-i18n" x="230" y="221" text-anchor="middle">ON TRACK</text>
-              </g>
-            </g>
-          </svg>
+          <svg class="gc" viewBox="0 0 460 300" role="img" aria-label="Scattered calendar date chips fly in and snap onto one vertical timeline spine with node dots, as an alert bell rings at the top">
+  <defs>
+    <linearGradient id="al-paper" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="var(--card)"/>
+      <stop offset="1" stop-color="var(--soft-green)"/>
+    </linearGradient>
+    <linearGradient id="al-spineg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="var(--green-deep)"/>
+      <stop offset="1" stop-color="var(--green-mid)"/>
+    </linearGradient>
+  </defs>
+
+  <rect class="al-bg" x="26" y="22" width="408" height="256" rx="18"/>
+
+  <line class="al-spine" x1="230" y1="54" x2="230" y2="258" pathLength="100"/>
+  <circle class="al-cap" cx="230" cy="54" r="4.5"/>
+  <circle class="al-cap al-cap2" cx="230" cy="258" r="4.5"/>
+
+  <line class="al-conn al-conn1" x1="230" y1="88"  x2="252" y2="88"  pathLength="100"/>
+  <line class="al-conn al-conn2" x1="230" y1="134" x2="208" y2="134" pathLength="100"/>
+  <line class="al-conn al-conn3" x1="230" y1="180" x2="252" y2="180" pathLength="100"/>
+  <line class="al-conn al-conn4" x1="230" y1="226" x2="208" y2="226" pathLength="100"/>
+
+  <circle class="al-node al-node1" cx="230" cy="88"  r="6.5"/>
+  <circle class="al-node al-node2" cx="230" cy="134" r="6.5"/>
+  <circle class="al-node al-node3" cx="230" cy="180" r="6.5"/>
+  <circle class="al-node al-node4" cx="230" cy="226" r="6.5"/>
+
+  <g class="al-chip al-chip1">
+    <g class="al-chipinner">
+      <rect class="al-card" x="262" y="68" width="76" height="40" rx="7"/>
+      <rect class="al-strip" x="262" y="68" width="76" height="13" rx="7"/>
+      <rect class="al-stripsq" x="262" y="74" width="76" height="7"/>
+      <rect class="al-ring" x="276" y="64" width="4" height="9" rx="2"/>
+      <rect class="al-ring" x="320" y="64" width="4" height="9" rx="2"/>
+      <text class="al-day no-i18n" x="280" y="100">14</text>
+      <text class="al-mon no-i18n" x="306" y="91">FEB</text>
+      <rect class="al-bar" x="306" y="96" width="24" height="3.4" rx="1.7"/>
+    </g>
+  </g>
+
+  <g class="al-chip al-chip2">
+    <g class="al-chipinner">
+      <rect class="al-card" x="122" y="114" width="76" height="40" rx="7"/>
+      <rect class="al-strip" x="122" y="114" width="76" height="13" rx="7"/>
+      <rect class="al-stripsq" x="122" y="120" width="76" height="7"/>
+      <rect class="al-ring" x="136" y="110" width="4" height="9" rx="2"/>
+      <rect class="al-ring" x="180" y="110" width="4" height="9" rx="2"/>
+      <text class="al-day no-i18n" x="140" y="146">03</text>
+      <text class="al-mon no-i18n" x="166" y="137">MAY</text>
+      <rect class="al-bar" x="166" y="142" width="24" height="3.4" rx="1.7"/>
+    </g>
+  </g>
+
+  <g class="al-chip al-chip3">
+    <g class="al-chipinner">
+      <rect class="al-card" x="262" y="160" width="76" height="40" rx="7"/>
+      <rect class="al-strip" x="262" y="160" width="76" height="13" rx="7"/>
+      <rect class="al-stripsq" x="262" y="166" width="76" height="7"/>
+      <rect class="al-ring" x="276" y="156" width="4" height="9" rx="2"/>
+      <rect class="al-ring" x="320" y="156" width="4" height="9" rx="2"/>
+      <text class="al-day no-i18n" x="280" y="192">21</text>
+      <text class="al-mon no-i18n" x="306" y="183">AUG</text>
+      <rect class="al-bar" x="306" y="188" width="24" height="3.4" rx="1.7"/>
+    </g>
+  </g>
+
+  <g class="al-chip al-chip4">
+    <g class="al-chipinner">
+      <rect class="al-card" x="122" y="206" width="76" height="40" rx="7"/>
+      <rect class="al-strip" x="122" y="206" width="76" height="13" rx="7"/>
+      <rect class="al-stripsq" x="122" y="212" width="76" height="7"/>
+      <rect class="al-ring" x="136" y="202" width="4" height="9" rx="2"/>
+      <rect class="al-ring" x="180" y="202" width="4" height="9" rx="2"/>
+      <text class="al-day no-i18n" x="140" y="238">30</text>
+      <text class="al-mon no-i18n" x="166" y="229">NOV</text>
+      <rect class="al-bar" x="166" y="234" width="24" height="3.4" rx="1.7"/>
+    </g>
+  </g>
+
+  <g class="al-bell">
+    <g class="al-bellswing">
+      <path class="al-bellbody" d="M230 16 c-9 0 -15 6 -15 16 c0 8 -3 11 -6 14 h42 c-3 -3 -6 -6 -6 -14 c0 -10 -6 -16 -15 -16 Z"/>
+      <rect class="al-bellclap" x="226" y="46" width="8" height="6" rx="3"/>
+      <circle class="al-belltop" cx="230" cy="14" r="3"/>
+    </g>
+    <path class="al-ring1" d="M250 26 q8 8 0 18"/>
+    <path class="al-ring2" d="M210 26 q-8 8 0 18"/>
+  </g>
+</svg>
         </div>
       </div>
     </div>
@@ -1400,18 +1833,7 @@
           <div class="scrolly-meter"><span class="scrolly-pct no-i18n">0%</span><small>of the languages · keep scrolling</small></div>
         </div>
         <div class="scrolly-card-wrap">
-          <svg class="gc" viewBox="0 0 460 300" role="img" aria-label="Illustration of many languages assembling into one unified meaning">
-            <path class="sh-piece sh-1" d="M230 44L140 76V150H230Z"/>
-            <path class="sh-piece sh-2" d="M230 44L320 76V150H230Z"/>
-            <path class="sh-piece sh-3" d="M140 150V160Q146 190 162 206H230V150Z"/>
-            <path class="sh-piece sh-4" d="M230 150H320V160Q314 190 298 206H230Z"/>
-            <path class="sh-piece sh-5" d="M162 206H230V262Q190 236 162 206Z"/>
-            <path class="sh-piece sh-6" d="M230 206H298Q270 236 230 262Z"/>
-            <path class="sh-uni" d="M230 44L320 76V160Q316 224 230 262Q144 224 140 160V76Z"/>
-            <path class="sh-outline" d="M230 44L320 76V160Q316 224 230 262Q144 224 140 160V76Z" pathLength="100"/>
-            <path class="sh-star" d="M230 99l10.8 22 24.2 3.5-17.5 17 4.1 24.1-21.6-11.4-21.6 11.4 4.1-24.1-17.5-17 24.2-3.5z"/>
-            <text class="sh-word no-i18n" x="230" y="208" text-anchor="middle">ONE MEANING</text>
-          </svg>
+          <svg class="gc" viewBox="0 0 460 300" role="img" aria-label="Five speech bubbles carrying different scripts drift inward and merge into one central bubble holding a shared heart and check, showing many languages becoming one meaning."><defs><radialGradient id="ln-glow" cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="var(--gold-bright)" stop-opacity=".55"/><stop offset="60%" stop-color="var(--gold-leaf)" stop-opacity=".12"/><stop offset="100%" stop-color="var(--gold-leaf)" stop-opacity="0"/></radialGradient><linearGradient id="ln-core" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="var(--card)"/><stop offset="100%" stop-color="var(--soft-green)"/></linearGradient></defs><g class="ln-rays" fill="none" stroke="var(--gold-leaf)" stroke-width="1.4" stroke-linecap="round" stroke-dasharray="3 5"><path class="ln-ray ln-ray1" pathLength="100" d="M92 70 L230 150"/><path class="ln-ray ln-ray2" pathLength="100" d="M372 64 L230 150"/><path class="ln-ray ln-ray3" pathLength="100" d="M66 168 L230 150"/><path class="ln-ray ln-ray4" pathLength="100" d="M398 176 L230 150"/><path class="ln-ray ln-ray5" pathLength="100" d="M214 246 L230 150"/></g><circle class="ln-glow" cx="230" cy="146" r="86" fill="url(#ln-glow)"/><g class="ln-b ln-b1"><path class="ln-shell" d="M58 44 h64 a13 13 0 0 1 13 13 v30 a13 13 0 0 1 -13 13 h-30 l-12 13 l-2 -13 h-20 a13 13 0 0 1 -13 -13 v-30 a13 13 0 0 1 13 -13 z" fill="var(--card)" stroke="var(--green-mid)" stroke-width="2.2"/><text class="ln-glyph no-i18n" x="90" y="84" text-anchor="middle" fill="var(--green-deep)">A</text></g><g class="ln-b ln-b2"><path class="ln-shell" d="M338 38 h64 a13 13 0 0 1 13 13 v30 a13 13 0 0 1 -13 13 h-22 l-2 13 l-12 -13 h-28 a13 13 0 0 1 -13 -13 v-30 a13 13 0 0 1 13 -13 z" fill="var(--card)" stroke="var(--terra)" stroke-width="2.2"/><text class="ln-glyph no-i18n" x="370" y="78" text-anchor="middle" fill="var(--terra)">文</text></g><g class="ln-b ln-b3"><path class="ln-shell" d="M30 142 h64 a13 13 0 0 1 13 13 v30 a13 13 0 0 1 -13 13 h-30 l-12 13 l-2 -13 h-20 a13 13 0 0 1 -13 -13 v-30 a13 13 0 0 1 13 -13 z" fill="var(--card)" stroke="var(--gold)" stroke-width="2.2"/><text class="ln-glyph no-i18n" x="62" y="182" text-anchor="middle" fill="var(--gold)">अ</text></g><g class="ln-b ln-b4"><path class="ln-shell" d="M366 150 h64 a13 13 0 0 1 13 13 v30 a13 13 0 0 1 -13 13 h-22 l-2 13 l-12 -13 h-28 a13 13 0 0 1 -13 -13 v-30 a13 13 0 0 1 13 -13 z" fill="var(--card)" stroke="var(--slate)" stroke-width="2.2"/><text class="ln-glyph no-i18n" x="398" y="190" text-anchor="middle" fill="var(--slate)">ع</text></g><g class="ln-b ln-b5"><path class="ln-shell" d="M180 226 h64 a13 13 0 0 1 13 13 v30 a13 13 0 0 1 -13 13 h-28 l-12 13 l-2 -13 h-22 a13 13 0 0 1 -13 -13 v-30 a13 13 0 0 1 13 -13 z" fill="var(--card)" stroke="var(--green)" stroke-width="2.2"/><text class="ln-glyph no-i18n" x="212" y="266" text-anchor="middle" fill="var(--green)">ñ</text></g><g class="ln-core-g"><path class="ln-core-shell" d="M158 96 h144 a22 22 0 0 1 22 22 v44 a22 22 0 0 1 -22 22 h-52 l-22 24 l-6 -24 h-58 a22 22 0 0 1 -22 -22 v-44 a22 22 0 0 1 22 -22 z" fill="url(#ln-core)" stroke="var(--green-deep)" stroke-width="2.8"/><path class="ln-core-ring" pathLength="100" d="M158 96 h144 a22 22 0 0 1 22 22 v44 a22 22 0 0 1 -22 22 h-52 l-22 24 l-6 -24 h-58 a22 22 0 0 1 -22 -22 v-44 a22 22 0 0 1 22 -22 z" fill="none" stroke="var(--gold-leaf)" stroke-width="2.2" stroke-dasharray="100"/><path class="ln-heart" d="M214 132 c0 -9 -14 -13 -14 -2 c0 8 14 16 14 16 c0 0 14 -8 14 -16 c0 -11 -14 -7 -14 2 z" fill="var(--terra)"/><path class="ln-check" pathLength="100" d="M240 142 l11 12 l24 -26" fill="none" stroke="var(--green-deep)" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="100"/></g></svg>
         </div>
       </div>
     </div>
@@ -1480,37 +1902,74 @@
           <div class="scrolly-meter"><span class="scrolly-pct no-i18n">0%</span><small>of the review · keep scrolling</small></div>
         </div>
         <div class="scrolly-card-wrap">
-          <svg class="gc" viewBox="0 0 460 300" role="img" aria-label="Illustration of a clean filing card assembling step by step">
-            <rect class="gc-face" x="8" y="8" width="444" height="284" rx="20"/>
-            <rect class="gc-border" x="8" y="8" width="444" height="284" rx="20" pathLength="100"/>
-            <g class="gc-band-g">
-              <path class="gc-band" d="M8 28 a20 20 0 0 1 20 -20 h404 a20 20 0 0 1 20 20 v38 h-444 z"/>
-              <text class="gc-band-t no-i18n" x="30" y="44">FORM REVIEW</text>
-              <text class="gc-band-t2 no-i18n" x="430" y="44" text-anchor="end">CHECKED</text>
-            </g>
-            <text class="gc-title no-i18n" x="30" y="95">CLEAN FILING</text>
-            <g class="gc-photo-g">
-              <rect class="gc-photo" x="30" y="110" width="106" height="136" rx="10"/>
-              <circle class="gc-head" cx="83" cy="158" r="21"/>
-              <path class="gc-shoulders" d="M49 246 v-10 a34 26 0 0 1 68 0 v10 z"/>
-            </g>
-            <g class="gc-lines">
-              <rect class="gc-line l1" x="160" y="120" width="180" height="12" rx="6"/>
-              <rect class="gc-line l2" x="160" y="144" width="232" height="12" rx="6"/>
-              <rect class="gc-line l3" x="160" y="168" width="150" height="12" rx="6"/>
-              <rect class="gc-line l4" x="160" y="192" width="206" height="12" rx="6"/>
-              <rect class="gc-line l5" x="160" y="216" width="120" height="12" rx="6"/>
-            </g>
-            <g class="gc-seal">
-              <circle class="gc-seal-ring" cx="394" cy="224" r="33"/>
-              <circle class="gc-seal-inner" cx="394" cy="224" r="25"/>
-              <path class="gc-star" d="M394 207l4.9 9.9 11 1.6-7.9 7.7 1.9 10.9-9.9-5.2-9.9 5.2 1.9-10.9-7.9-7.7 11-1.6z"/>
-            </g>
-            <g class="gc-stamp">
-              <rect x="172" y="238" width="150" height="40" rx="8"/>
-              <text class="no-i18n" x="247" y="265" text-anchor="middle">CLEAN</text>
-            </g>
-          </svg>
+          <svg class="gc" viewBox="0 0 460 300" role="img" aria-label="A draft immigration form whose red error X marks turn into green check marks line by line, finished with a gold approval seal.">
+  <defs>
+    <linearGradient id="rv-paper" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="var(--card)"/>
+      <stop offset="1" stop-color="var(--paper)"/>
+    </linearGradient>
+    <clipPath id="rv-sheetclip">
+      <path d="M70 30 H388 a8 8 0 0 1 8 8 V262 a8 8 0 0 1 -8 8 H78 a8 8 0 0 1 -8 -8 V38 a8 8 0 0 1 8 -8 Z"/>
+    </clipPath>
+  </defs>
+
+  <g class="rv-sheet">
+    <path class="rv-sheet-bg" d="M70 30 H388 a8 8 0 0 1 8 8 V262 a8 8 0 0 1 -8 8 H78 a8 8 0 0 1 -8 -8 V38 a8 8 0 0 1 8 -8 Z"/>
+    <circle class="rv-hole" cx="86" cy="74" r="3.2"/>
+    <circle class="rv-hole" cx="86" cy="150" r="3.2"/>
+    <circle class="rv-hole" cx="86" cy="226" r="3.2"/>
+    <line class="rv-margin" x1="104" y1="30" x2="104" y2="270"/>
+  </g>
+
+  <g class="rv-head" clip-path="url(#rv-sheetclip)">
+    <rect class="rv-band" x="70" y="30" width="326" height="34"/>
+    <text class="rv-band-t no-i18n" x="120" y="52">FORM I-485 · REVIEW</text>
+    <circle class="rv-band-dot" cx="378" cy="47" r="6"/>
+  </g>
+
+  <g class="rv-row rv-row1">
+    <rect class="rv-ink rv-ink-draft" x="128" y="92" width="200" height="7" rx="3.5"/>
+    <rect class="rv-ink rv-ink-clean rv-ink1" x="128" y="92" width="200" height="7" rx="3.5"/>
+    <rect class="rv-ink2 rv-ink2a" x="128" y="104" width="138" height="6" rx="3"/>
+    <circle class="rv-badge rv-badge1" cx="362" cy="99" r="13"/>
+    <path class="rv-x rv-x1" d="M357 94 L367 104 M367 94 L357 104"/>
+    <path class="rv-check rv-check1" pathLength="100" d="M356 99 l4 5 l8 -10"/>
+  </g>
+
+  <g class="rv-row rv-row2">
+    <rect class="rv-ink rv-ink-draft" x="128" y="132" width="184" height="7" rx="3.5"/>
+    <rect class="rv-ink rv-ink-clean rv-ink2c" x="128" y="132" width="184" height="7" rx="3.5"/>
+    <rect class="rv-ink2 rv-ink2b" x="128" y="144" width="156" height="6" rx="3"/>
+    <circle class="rv-badge rv-badge2" cx="362" cy="139" r="13"/>
+    <path class="rv-x rv-x2" d="M357 134 L367 144 M367 134 L357 144"/>
+    <path class="rv-check rv-check2" pathLength="100" d="M356 139 l4 5 l8 -10"/>
+  </g>
+
+  <g class="rv-row rv-row3">
+    <rect class="rv-ink rv-ink-draft" x="128" y="172" width="208" height="7" rx="3.5"/>
+    <rect class="rv-ink rv-ink-clean rv-ink3a" x="128" y="172" width="208" height="7" rx="3.5"/>
+    <rect class="rv-ink2 rv-ink2c2" x="128" y="184" width="120" height="6" rx="3"/>
+    <circle class="rv-badge rv-badge3" cx="362" cy="179" r="13"/>
+    <path class="rv-x rv-x3" d="M357 174 L367 184 M367 174 L357 184"/>
+    <path class="rv-check rv-check3" pathLength="100" d="M356 179 l4 5 l8 -10"/>
+  </g>
+
+  <g class="rv-row rv-row4">
+    <rect class="rv-ink rv-ink-draft" x="128" y="212" width="170" height="7" rx="3.5"/>
+    <rect class="rv-ink rv-ink-clean rv-ink4a" x="128" y="212" width="170" height="7" rx="3.5"/>
+    <rect class="rv-ink2 rv-ink2d" x="128" y="224" width="148" height="6" rx="3"/>
+    <circle class="rv-badge rv-badge4" cx="362" cy="219" r="13"/>
+    <path class="rv-x rv-x4" d="M357 214 L367 224 M367 214 L357 224"/>
+    <path class="rv-check rv-check4" pathLength="100" d="M356 219 l4 5 l8 -10"/>
+  </g>
+
+  <g class="rv-seal">
+    <circle class="rv-seal-ring" cx="170" cy="240" r="29"/>
+    <circle class="rv-seal-disc" cx="170" cy="240" r="21"/>
+    <path class="rv-seal-star" d="M170 226 l4.1 8.4 9.2 1.3 -6.7 6.5 1.6 9.2 -8.2 -4.3 -8.2 4.3 1.6 -9.2 -6.7 -6.5 9.2 -1.3 Z"/>
+    <text class="rv-seal-cap no-i18n" x="170" y="279">APPROVED</text>
+  </g>
+</svg>
         </div>
       </div>
     </div>
@@ -1592,24 +2051,98 @@
           <div class="scrolly-meter"><span class="scrolly-pct no-i18n">0%</span><small>of the rehearsal · keep scrolling</small></div>
         </div>
         <div class="scrolly-card-wrap">
-          <svg class="gc" viewBox="0 0 460 300" role="img" aria-label="Illustration of practice answers assembling into one confident interview prep sheet">
-            <rect class="df-sheet df-s1" x="145" y="45" width="170" height="220" rx="10"/>
-            <rect class="df-sheet df-s2" x="145" y="45" width="170" height="220" rx="10"/>
-            <rect class="df-sheet df-s3" x="145" y="45" width="170" height="220" rx="10"/>
-            <g class="df-top">
-              <rect class="df-sheet" x="145" y="45" width="170" height="220" rx="10"/>
-              <path class="df-band" d="M145 55 a10 10 0 0 1 10 -10 h150 a10 10 0 0 1 10 10 v24 h-170 z"/>
-              <text class="df-band-t no-i18n" x="230" y="68" text-anchor="middle">INTERVIEW PREP</text>
-              <rect class="gc-line l1" x="165" y="100" width="130" height="10" rx="5"/>
-              <rect class="gc-line l2" x="165" y="122" width="100" height="10" rx="5"/>
-              <rect class="gc-line l3" x="165" y="144" width="118" height="10" rx="5"/>
-              <rect class="gc-line l4" x="165" y="166" width="86" height="10" rx="5"/>
-              <g class="gc-stamp">
-                <rect x="150" y="196" width="160" height="36" rx="8"/>
-                <text class="no-i18n" x="230" y="221" text-anchor="middle">READY</text>
-              </g>
-            </g>
-          </svg>
+          <svg class="gc" viewBox="0 0 460 300" role="img" aria-label="A microphone whose jittery red sound waveform steadies into an even confident green wave as a confidence meter fills">
+  <defs>
+    <linearGradient id="iv-mic" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="var(--green)"/>
+      <stop offset="1" stop-color="var(--green-deep)"/>
+    </linearGradient>
+    <linearGradient id="iv-meterfill" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="var(--green-mid)"/>
+      <stop offset="1" stop-color="var(--green)"/>
+    </linearGradient>
+    <clipPath id="iv-meterclip"><rect x="156" y="246" width="248" height="16" rx="8"/></clipPath>
+    <clipPath id="iv-grilleclip"><rect x="68" y="58" width="56" height="74" rx="28"/></clipPath>
+  </defs>
+
+  <rect class="iv-panel" x="28" y="34" width="404" height="232" rx="18"/>
+
+  <g class="iv-mic">
+    <rect class="iv-pole" x="93" y="150" width="6" height="58" rx="3"/>
+    <ellipse class="iv-base" cx="96" cy="214" rx="42" ry="11"/>
+    <path class="iv-base-top" d="M58 214 q38 -16 76 0"/>
+    <rect class="iv-body" x="66" y="56" width="60" height="100" rx="30"/>
+    <g class="iv-grille" clip-path="url(#iv-grilleclip)">
+      <line x1="66" y1="70" x2="126" y2="70"/>
+      <line x1="66" y1="82" x2="126" y2="82"/>
+      <line x1="66" y1="94" x2="126" y2="94"/>
+      <line x1="66" y1="106" x2="126" y2="106"/>
+      <line x1="66" y1="118" x2="126" y2="118"/>
+      <line x1="80" y1="58" x2="80" y2="132"/>
+      <line x1="96" y1="58" x2="96" y2="132"/>
+      <line x1="112" y1="58" x2="112" y2="132"/>
+    </g>
+    <rect class="iv-collar" x="80" y="150" width="32" height="9" rx="4"/>
+  </g>
+
+  <line class="iv-axis" x1="150" y1="150" x2="410" y2="150" pathLength="100"/>
+
+  <g class="iv-jitter">
+    <rect class="iv-jb" x="158" y="138" width="6" height="24" rx="3"/>
+    <rect class="iv-jb" x="172" y="118" width="6" height="64" rx="3"/>
+    <rect class="iv-jb" x="186" y="143" width="6" height="14" rx="3"/>
+    <rect class="iv-jb" x="200" y="108" width="6" height="84" rx="3"/>
+    <rect class="iv-jb" x="214" y="146" width="6" height="8" rx="3"/>
+    <rect class="iv-jb" x="228" y="126" width="6" height="48" rx="3"/>
+    <rect class="iv-jb" x="242" y="141" width="6" height="18" rx="3"/>
+    <rect class="iv-jb" x="256" y="113" width="6" height="74" rx="3"/>
+    <rect class="iv-jb" x="270" y="145" width="6" height="10" rx="3"/>
+    <rect class="iv-jb" x="284" y="122" width="6" height="56" rx="3"/>
+    <rect class="iv-jb" x="298" y="139" width="6" height="22" rx="3"/>
+    <rect class="iv-jb" x="312" y="116" width="6" height="68" rx="3"/>
+    <rect class="iv-jb" x="326" y="144" width="6" height="12" rx="3"/>
+    <rect class="iv-jb" x="340" y="120" width="6" height="60" rx="3"/>
+    <rect class="iv-jb" x="354" y="142" width="6" height="16" rx="3"/>
+    <rect class="iv-jb" x="368" y="111" width="6" height="78" rx="3"/>
+    <rect class="iv-jb" x="382" y="146" width="6" height="8" rx="3"/>
+    <rect class="iv-jb" x="396" y="130" width="6" height="40" rx="3"/>
+  </g>
+
+  <g class="iv-steady">
+    <rect class="iv-sb" x="158" y="135" width="6" height="30" rx="3"/>
+    <rect class="iv-sb" x="172" y="128" width="6" height="44" rx="3"/>
+    <rect class="iv-sb" x="186" y="121" width="6" height="58" rx="3"/>
+    <rect class="iv-sb" x="200" y="115" width="6" height="70" rx="3"/>
+    <rect class="iv-sb" x="214" y="111" width="6" height="78" rx="3"/>
+    <rect class="iv-sb" x="228" y="115" width="6" height="70" rx="3"/>
+    <rect class="iv-sb" x="242" y="119" width="6" height="62" rx="3"/>
+    <rect class="iv-sb" x="256" y="113" width="6" height="74" rx="3"/>
+    <rect class="iv-sb" x="270" y="109" width="6" height="82" rx="3"/>
+    <rect class="iv-sb" x="284" y="113" width="6" height="74" rx="3"/>
+    <rect class="iv-sb" x="298" y="119" width="6" height="62" rx="3"/>
+    <rect class="iv-sb" x="312" y="115" width="6" height="70" rx="3"/>
+    <rect class="iv-sb" x="326" y="111" width="6" height="78" rx="3"/>
+    <rect class="iv-sb" x="340" y="115" width="6" height="70" rx="3"/>
+    <rect class="iv-sb" x="354" y="121" width="6" height="58" rx="3"/>
+    <rect class="iv-sb" x="368" y="128" width="6" height="44" rx="3"/>
+    <rect class="iv-sb" x="382" y="135" width="6" height="30" rx="3"/>
+    <rect class="iv-sb" x="396" y="139" width="6" height="22" rx="3"/>
+  </g>
+
+  <g class="iv-meter">
+    <rect class="iv-meter-track" x="156" y="246" width="248" height="16" rx="8"/>
+    <g clip-path="url(#iv-meterclip)">
+      <rect class="iv-meter-fill" x="156" y="246" width="248" height="16"/>
+    </g>
+    <text class="iv-meter-label no-i18n" x="156" y="234">CONFIDENCE</text>
+  </g>
+
+  <g class="iv-seal">
+    <circle class="iv-seal-ring" cx="404" cy="64" r="22"/>
+    <circle class="iv-seal-dot" cx="404" cy="64" r="15"/>
+    <path class="iv-check" d="M396 64 l6 7 11 -14"/>
+  </g>
+</svg>
         </div>
       </div>
     </div>
@@ -1668,18 +2201,73 @@
           <div class="scrolly-meter"><span class="scrolly-pct no-i18n">0%</span><small>of the map · keep scrolling</small></div>
         </div>
         <div class="scrolly-card-wrap">
-          <svg class="gc" viewBox="0 0 460 300" role="img" aria-label="Illustration of scattered options assembling into one unified route">
-            <path class="sh-piece sh-1" d="M230 44L140 76V150H230Z"/>
-            <path class="sh-piece sh-2" d="M230 44L320 76V150H230Z"/>
-            <path class="sh-piece sh-3" d="M140 150V160Q146 190 162 206H230V150Z"/>
-            <path class="sh-piece sh-4" d="M230 150H320V160Q314 190 298 206H230Z"/>
-            <path class="sh-piece sh-5" d="M162 206H230V262Q190 236 162 206Z"/>
-            <path class="sh-piece sh-6" d="M230 206H298Q270 236 230 262Z"/>
-            <path class="sh-uni" d="M230 44L320 76V160Q316 224 230 262Q144 224 140 160V76Z"/>
-            <path class="sh-outline" d="M230 44L320 76V160Q316 224 230 262Q144 224 140 160V76Z" pathLength="100"/>
-            <path class="sh-star" d="M230 99l10.8 22 24.2 3.5-17.5 17 4.1 24.1-21.6-11.4-21.6 11.4 4.1-24.1-17.5-17 24.2-3.5z"/>
-            <text class="sh-word no-i18n" x="230" y="208" text-anchor="middle">ONE ROUTE</text>
-          </svg>
+          <svg class="gc" viewBox="0 0 460 300" role="img" aria-label="From a start node a tangle of faint forking branches resolves into one clean evergreen-and-gold route through a checkpoint to a destination pin marked approved">
+  <defs>
+    <linearGradient id="pw-routegrad" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="var(--green-deep)"/>
+      <stop offset=".5" stop-color="var(--green)"/>
+      <stop offset="1" stop-color="var(--gold-leaf)"/>
+    </linearGradient>
+  </defs>
+
+  <rect class="pw-stage" x="26" y="30" width="408" height="240" rx="10"/>
+  <g class="pw-grid">
+    <line x1="26" y1="90" x2="434" y2="90"/>
+    <line x1="26" y1="150" x2="434" y2="150"/>
+    <line x1="26" y1="210" x2="434" y2="210"/>
+    <line x1="98" y1="30" x2="98" y2="270"/>
+    <line x1="166" y1="30" x2="166" y2="270"/>
+    <line x1="234" y1="30" x2="234" y2="270"/>
+    <line x1="302" y1="30" x2="302" y2="270"/>
+    <line x1="370" y1="30" x2="370" y2="270"/>
+  </g>
+  <path class="pw-corner" d="M40 44 h14 M40 44 v14"/>
+  <path class="pw-corner" d="M420 256 h-14 M420 256 v-14"/>
+  <text class="pw-label no-i18n" x="46" y="58">START</text>
+  <text class="pw-label-d no-i18n" x="414" y="252">APPROVED</text>
+
+  <g>
+    <path class="pw-branch pw-b1" pathLength="100" d="M70 150 C 110 110, 150 92, 196 100 S 262 84, 312 74"/>
+    <path class="pw-branch pw-b2" pathLength="100" d="M70 150 C 120 152, 156 204, 214 198 S 306 232, 356 214"/>
+    <path class="pw-branch pw-b3" pathLength="100" d="M70 150 C 102 128, 162 132, 182 174 S 214 236, 272 244"/>
+    <path class="pw-branch pw-b4" pathLength="100" d="M70 150 C 132 116, 182 140, 200 108 S 256 116, 302 138"/>
+    <path class="pw-branch pw-b5" pathLength="100" d="M70 150 C 96 186, 154 170, 200 198 S 272 176, 330 192"/>
+    <path class="pw-branch pw-b6" pathLength="100" d="M70 150 C 126 144, 156 94, 218 116 S 300 96, 348 108"/>
+    <path class="pw-branch pw-b7" pathLength="100" d="M70 150 C 102 194, 138 226, 200 224 S 256 198, 316 226"/>
+  </g>
+  <g>
+    <circle class="pw-deadend" cx="312" cy="74" r="2.6"/>
+    <circle class="pw-deadend" cx="356" cy="214" r="2.6"/>
+    <circle class="pw-deadend" cx="272" cy="244" r="2.6"/>
+    <circle class="pw-deadend" cx="302" cy="138" r="2.6"/>
+    <circle class="pw-deadend" cx="330" cy="192" r="2.6"/>
+    <circle class="pw-deadend" cx="348" cy="108" r="2.6"/>
+    <circle class="pw-deadend" cx="316" cy="226" r="2.6"/>
+  </g>
+
+  <circle class="pw-startpulse" cx="70" cy="150" r="11"/>
+  <circle class="pw-startring" pathLength="100" cx="70" cy="150" r="10"/>
+  <circle class="pw-startdot" cx="70" cy="150" r="5.4"/>
+
+  <path class="pw-routeglow" pathLength="100" d="M70 150 C 120 150, 158 146, 196 142 C 250 136, 280 168, 320 188 C 352 204, 380 210, 404 214"/>
+  <path class="pw-route"     pathLength="100" d="M70 150 C 120 150, 158 146, 196 142 C 250 136, 280 168, 320 188 C 352 204, 380 210, 404 214"/>
+  <path class="pw-routetick" pathLength="100" d="M70 150 C 120 150, 158 146, 196 142 C 250 136, 280 168, 320 188 C 352 204, 380 210, 404 214"/>
+
+  <g>
+    <circle class="pw-checkring" cx="196" cy="142" r="7.5"/>
+    <path class="pw-checkmark" pathLength="100" d="M192.5 142 l2.4 2.6 l4.4 -5"/>
+  </g>
+
+  <g>
+    <ellipse class="pw-pinland" cx="404" cy="214" rx="13" ry="5"/>
+    <g class="pw-pinwrap">
+      <path class="pw-pinbody" d="M404 188 C 392 188, 388 198, 392 206 L 404 222 L 416 206 C 420 198, 416 188, 404 188 Z"/>
+      <circle class="pw-pininner" cx="404" cy="199" r="4.4"/>
+    </g>
+    <line class="pw-flagpole" x1="404" y1="222" x2="404" y2="204"/>
+    <path class="pw-flag" d="M404 205 L 419 209 L 404 213 Z"/>
+  </g>
+</svg>
         </div>
       </div>
     </div>
@@ -1754,37 +2342,69 @@
           <div class="scrolly-meter"><span class="scrolly-pct no-i18n">0%</span><small>of the question · keep scrolling</small></div>
         </div>
         <div class="scrolly-card-wrap">
-          <svg class="gc" viewBox="0 0 460 300" role="img" aria-label="Illustration of a clear answer card assembling step by step">
-            <rect class="gc-face" x="8" y="8" width="444" height="284" rx="20"/>
-            <rect class="gc-border" x="8" y="8" width="444" height="284" rx="20" pathLength="100"/>
-            <g class="gc-band-g">
-              <path class="gc-band" d="M8 28 a20 20 0 0 1 20 -20 h404 a20 20 0 0 1 20 20 v38 h-444 z"/>
-              <text class="gc-band-t no-i18n" x="30" y="44">GREENPATH ANSWER</text>
-              <text class="gc-band-t2 no-i18n" x="430" y="44" text-anchor="end">CITED</text>
-            </g>
-            <text class="gc-title no-i18n" x="30" y="95">CLEAR GUIDANCE</text>
-            <g class="gc-photo-g">
-              <rect class="gc-photo" x="30" y="110" width="106" height="136" rx="10"/>
-              <circle class="gc-head" cx="83" cy="158" r="21"/>
-              <path class="gc-shoulders" d="M49 246 v-10 a34 26 0 0 1 68 0 v10 z"/>
-            </g>
-            <g class="gc-lines">
-              <rect class="gc-line l1" x="160" y="120" width="180" height="12" rx="6"/>
-              <rect class="gc-line l2" x="160" y="144" width="232" height="12" rx="6"/>
-              <rect class="gc-line l3" x="160" y="168" width="150" height="12" rx="6"/>
-              <rect class="gc-line l4" x="160" y="192" width="206" height="12" rx="6"/>
-              <rect class="gc-line l5" x="160" y="216" width="120" height="12" rx="6"/>
-            </g>
-            <g class="gc-seal">
-              <circle class="gc-seal-ring" cx="394" cy="224" r="33"/>
-              <circle class="gc-seal-inner" cx="394" cy="224" r="25"/>
-              <path class="gc-star" d="M394 207l4.9 9.9 11 1.6-7.9 7.7 1.9 10.9-9.9-5.2-9.9 5.2 1.9-10.9-7.9-7.7 11-1.6z"/>
-            </g>
-            <g class="gc-stamp">
-              <rect x="172" y="238" width="150" height="40" rx="8"/>
-              <text class="no-i18n" x="247" y="265" text-anchor="middle">ANSWERED</text>
-            </g>
-          </svg>
+          <svg class="gc" viewBox="0 0 460 300" role="img" aria-label="Several scattered question marks shrink and fade as they converge into one clear answer bubble that reveals a gold check and a lit idea bulb">
+  <defs>
+    <radialGradient id="qa-glow" cx="50%" cy="42%" r="62%">
+      <stop offset="0%" stop-color="var(--gold-bright)" stop-opacity=".9"/>
+      <stop offset="55%" stop-color="var(--gold-leaf)" stop-opacity=".28"/>
+      <stop offset="100%" stop-color="var(--gold-leaf)" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="qa-bubble" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="var(--card)"/>
+      <stop offset="100%" stop-color="#f4efdf"/>
+    </linearGradient>
+  </defs>
+
+  <g class="qa-rings">
+    <circle class="qa-ring qa-ring1" cx="230" cy="138" r="120"/>
+    <circle class="qa-ring qa-ring2" cx="230" cy="138" r="94"/>
+  </g>
+
+  <g class="qa-q qa-q1">
+    <rect class="qa-chip" x="-22" y="-26" width="44" height="52" rx="9"/>
+    <text class="qa-qm no-i18n" x="0" y="14">?</text>
+  </g>
+  <g class="qa-q qa-q2">
+    <rect class="qa-chip" x="-22" y="-26" width="44" height="52" rx="9"/>
+    <text class="qa-qm no-i18n" x="0" y="14">?</text>
+  </g>
+  <g class="qa-q qa-q3">
+    <rect class="qa-chip" x="-22" y="-26" width="44" height="52" rx="9"/>
+    <text class="qa-qm no-i18n" x="0" y="14">?</text>
+  </g>
+  <g class="qa-q qa-q4">
+    <rect class="qa-chip" x="-22" y="-26" width="44" height="52" rx="9"/>
+    <text class="qa-qm no-i18n" x="0" y="14">?</text>
+  </g>
+  <g class="qa-q qa-q5">
+    <rect class="qa-chip" x="-22" y="-26" width="44" height="52" rx="9"/>
+    <text class="qa-qm no-i18n" x="0" y="14">?</text>
+  </g>
+
+  <g class="qa-answer">
+    <circle class="qa-halo" cx="230" cy="132" r="98"/>
+    <path class="qa-bubblefill" d="M118 78 q0 -16 16 -16 h192 q16 0 16 16 v92 q0 16 -16 16 h-96 l-26 28 v-28 h-60 q-16 0 -16 -16 z"/>
+    <path class="qa-bubbleline" pathLength="100" d="M118 78 q0 -16 16 -16 h192 q16 0 16 16 v92 q0 16 -16 16 h-96 l-26 28 v-28 h-60 q-16 0 -16 -16 z"/>
+    <rect class="qa-ans qa-ans1" x="150" y="86" width="150" height="9" rx="4.5"/>
+    <rect class="qa-ans qa-ans2" x="150" y="105" width="120" height="9" rx="4.5"/>
+    <rect class="qa-ans qa-ans3" x="150" y="124" width="86" height="9" rx="4.5"/>
+
+    <g class="qa-seal">
+      <circle class="qa-seal-disc" cx="300" cy="132" r="30"/>
+      <circle class="qa-seal-ring" cx="300" cy="132" r="34"/>
+      <path class="qa-bulb" d="M300 115 a13 13 0 0 1 7 24 v6 h-14 v-6 a13 13 0 0 1 7 -24 z"/>
+      <rect class="qa-bulb-base" x="294" y="145" width="12" height="5" rx="1.6"/>
+      <path class="qa-check" pathLength="100" d="M290 132 l7 8 14 -16"/>
+      <g class="qa-sparks">
+        <line class="qa-spark" x1="300" y1="94" x2="300" y2="86"/>
+        <line class="qa-spark" x1="278" y1="110" x2="272" y2="105"/>
+        <line class="qa-spark" x1="322" y1="110" x2="328" y2="105"/>
+      </g>
+    </g>
+  </g>
+
+  <text class="qa-cap no-i18n" x="230" y="214">ONE CLEAR ANSWER</text>
+</svg>
         </div>
       </div>
     </div>
@@ -1871,24 +2491,79 @@
           <div class="scrolly-meter"><span class="scrolly-pct no-i18n">0%</span><small>of the bulletin · keep scrolling</small></div>
         </div>
         <div class="scrolly-card-wrap">
-          <svg class="gc" viewBox="0 0 460 300" role="img" aria-label="Illustration of priority dates assembling into one organized bulletin record">
-            <rect class="df-sheet df-s1" x="145" y="45" width="170" height="220" rx="10"/>
-            <rect class="df-sheet df-s2" x="145" y="45" width="170" height="220" rx="10"/>
-            <rect class="df-sheet df-s3" x="145" y="45" width="170" height="220" rx="10"/>
-            <g class="df-top">
-              <rect class="df-sheet" x="145" y="45" width="170" height="220" rx="10"/>
-              <path class="df-band" d="M145 55 a10 10 0 0 1 10 -10 h150 a10 10 0 0 1 10 10 v24 h-170 z"/>
-              <text class="df-band-t no-i18n" x="230" y="68" text-anchor="middle">VISA BULLETIN</text>
-              <rect class="gc-line l1" x="165" y="100" width="130" height="10" rx="5"/>
-              <rect class="gc-line l2" x="165" y="122" width="100" height="10" rx="5"/>
-              <rect class="gc-line l3" x="165" y="144" width="118" height="10" rx="5"/>
-              <rect class="gc-line l4" x="165" y="166" width="86" height="10" rx="5"/>
-              <g class="gc-stamp">
-                <rect x="150" y="196" width="160" height="36" rx="8"/>
-                <text class="no-i18n" x="230" y="221" text-anchor="middle">CURRENT</text>
-              </g>
-            </g>
-          </svg>
+          <svg class="gc" viewBox="0 0 460 300" role="img" aria-label="A visa-bulletin chart: ascending bars build up, a dashed cutoff line draws across, and a priority-date marker climbs beat by beat until it reaches the line and turns green, reading CURRENT.">
+  <defs>
+    <linearGradient id="vb-paper" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="var(--card)"/>
+      <stop offset="1" stop-color="var(--paper)"/>
+    </linearGradient>
+    <linearGradient id="vb-bar" x1="0" y1="1" x2="0" y2="0">
+      <stop offset="0" stop-color="var(--soft-green)"/>
+      <stop offset="1" stop-color="var(--pill-green)"/>
+    </linearGradient>
+  </defs>
+
+  <!-- panel + frame (beat 1) -->
+  <rect class="vb-panel" x="22" y="20" width="416" height="260" rx="14" fill="url(#vb-paper)" stroke="var(--line-strong)" stroke-width="1.5"/>
+  <rect class="vb-frame" x="22" y="20" width="416" height="260" rx="14" fill="none" stroke="var(--green-deep)" stroke-width="2" pathLength="100"/>
+
+  <!-- header tab (beat 1) -->
+  <g class="vb-head">
+    <rect x="40" y="34" width="150" height="22" rx="6" fill="var(--green-deep)"/>
+    <text class="vb-head-t no-i18n" x="52" y="49" font-family="var(--font-mono)" font-size="11" letter-spacing=".16em" fill="var(--gold-bright)">VISA BULLETIN</text>
+    <circle class="vb-head-dot" cx="408" cy="45" r="6" fill="var(--gold-leaf)"/>
+    <circle class="vb-head-ring" cx="408" cy="45" r="10" fill="none" stroke="var(--gold-leaf)" stroke-width="1.5" stroke-dasharray="2 3"/>
+  </g>
+
+  <!-- axes (beat 1) -->
+  <line class="vb-axis-y" x1="62" y1="74" x2="62" y2="252" stroke="var(--line-strong)" stroke-width="1.5"/>
+  <line class="vb-axis-x" x1="62" y1="252" x2="418" y2="252" stroke="var(--line-strong)" stroke-width="1.5" pathLength="100"/>
+
+  <!-- ascending bars (beat 2) -->
+  <g class="vb-bars">
+    <rect class="vb-bar b1" x="84"  y="222" width="40" height="30"  rx="3" fill="url(#vb-bar)" stroke="var(--green)" stroke-width="1"/>
+    <rect class="vb-bar b2" x="146" y="200" width="40" height="52"  rx="3" fill="url(#vb-bar)" stroke="var(--green)" stroke-width="1"/>
+    <rect class="vb-bar b3" x="208" y="172" width="40" height="80"  rx="3" fill="url(#vb-bar)" stroke="var(--green)" stroke-width="1"/>
+    <rect class="vb-bar b4" x="270" y="146" width="40" height="106" rx="3" fill="url(#vb-bar)" stroke="var(--green)" stroke-width="1"/>
+    <rect class="vb-bar b5" x="332" y="120" width="40" height="132" rx="3" fill="url(#vb-bar)" stroke="var(--green)" stroke-width="1"/>
+  </g>
+
+  <!-- month ticks (beat 2) -->
+  <g class="vb-ticks no-i18n" font-family="var(--font-mono)" font-size="9" letter-spacing=".06em" fill="var(--green-mid)" text-anchor="middle">
+    <text class="vb-tk t1" x="104" y="266">OCT</text>
+    <text class="vb-tk t2" x="166" y="266">DEC</text>
+    <text class="vb-tk t3" x="228" y="266">FEB</text>
+    <text class="vb-tk t4" x="290" y="266">APR</text>
+    <text class="vb-tk t5" x="352" y="266">NOW</text>
+  </g>
+
+  <!-- cutoff dashed line + label (beat 3) -->
+  <g class="vb-cut">
+    <line class="vb-cutline" x1="62" y1="96" x2="408" y2="96" stroke="var(--terra)" stroke-width="2" stroke-dasharray="7 5"/>
+    <g class="vb-cuttag">
+      <rect x="68" y="84" width="58" height="20" rx="5" fill="var(--amber-bg)" stroke="var(--terra)" stroke-width="1"/>
+      <text class="vb-cuttag-t no-i18n" x="97" y="98" font-family="var(--font-mono)" font-size="9" letter-spacing=".08em" fill="var(--terra)" text-anchor="middle">CUT-OFF</text>
+    </g>
+  </g>
+
+  <!-- climbing priority-date marker (travels beats 1-4, turns green beat 4) -->
+  <g class="vb-marker">
+    <line class="vb-stem" x1="104" y1="252" x2="104" y2="206" stroke="var(--gold-leaf)" stroke-width="2" stroke-dasharray="3 3"/>
+    <g class="vb-tag">
+      <rect class="vb-tag-gold" x="80" y="186" width="78" height="26" rx="7" fill="var(--gold-leaf)" stroke="var(--card)" stroke-width="1.5"/>
+      <rect class="vb-tag-green" x="80" y="186" width="78" height="26" rx="7" fill="var(--green)" stroke="var(--card)" stroke-width="1.5"/>
+      <circle class="vb-tag-dot" cx="94" cy="199" r="5" fill="var(--card)"/>
+      <text class="vb-tag-t no-i18n" x="106" y="203" font-family="var(--font-mono)" font-size="10" letter-spacing=".05em" fill="var(--card)">PD 22</text>
+    </g>
+  </g>
+
+  <!-- CURRENT badge appears on final beat, fixed above the landed marker -->
+  <g class="vb-badge">
+    <rect x="300" y="58" width="96" height="24" rx="12" fill="var(--green)" stroke="var(--card)" stroke-width="1.5"/>
+    <path class="vb-check" d="M313 70 l6 6 l11 -13" fill="none" stroke="var(--card)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" pathLength="100"/>
+    <text class="vb-badge-t no-i18n" x="337" y="74" font-family="var(--font-mono)" font-size="10" letter-spacing=".12em" fill="var(--card)">CURRENT</text>
+  </g>
+</svg>
         </div>
       </div>
     </div>
@@ -1958,18 +2633,7 @@
           <div class="scrolly-meter"><span class="scrolly-pct no-i18n">0%</span><small>of the safeguard · keep scrolling</small></div>
         </div>
         <div class="scrolly-card-wrap">
-          <svg class="gc" viewBox="0 0 460 300" role="img" aria-label="Illustration of scattered fragments assembling into one protective shield">
-            <path class="sh-piece sh-1" d="M230 44L140 76V150H230Z"/>
-            <path class="sh-piece sh-2" d="M230 44L320 76V150H230Z"/>
-            <path class="sh-piece sh-3" d="M140 150V160Q146 190 162 206H230V150Z"/>
-            <path class="sh-piece sh-4" d="M230 150H320V160Q314 190 298 206H230Z"/>
-            <path class="sh-piece sh-5" d="M162 206H230V262Q190 236 162 206Z"/>
-            <path class="sh-piece sh-6" d="M230 206H298Q270 236 230 262Z"/>
-            <path class="sh-uni" d="M230 44L320 76V160Q316 224 230 262Q144 224 140 160V76Z"/>
-            <path class="sh-outline" d="M230 44L320 76V160Q316 224 230 262Q144 224 140 160V76Z" pathLength="100"/>
-            <path class="sh-star" d="M230 99l10.8 22 24.2 3.5-17.5 17 4.1 24.1-21.6-11.4-21.6 11.4 4.1-24.1-17.5-17 24.2-3.5z"/>
-            <text class="sh-word no-i18n" x="230" y="208" text-anchor="middle">PROTECTED</text>
-          </svg>
+          <svg class="gc" viewBox="0 0 460 300" role="img" aria-label="Scales of justice that start tilted then settle into balance, with a gold verified shield appearing for trusted legal help"><defs><linearGradient id="lg-post" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="var(--gold-bright)"/><stop offset="1" stop-color="var(--gold-leaf)"/></linearGradient><linearGradient id="lg-beam" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="var(--gold-leaf)"/><stop offset=".5" stop-color="var(--gold-bright)"/><stop offset="1" stop-color="var(--gold-leaf)"/></linearGradient><radialGradient id="lg-halo" cx="0.5" cy="0.5" r="0.5"><stop offset="0" stop-color="var(--gold-bright)" stop-opacity=".55"/><stop offset="1" stop-color="var(--gold-bright)" stop-opacity="0"/></radialGradient><linearGradient id="lg-shield" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="var(--green)"/><stop offset="1" stop-color="var(--green-deep)"/></linearGradient></defs><rect class="lg-mat" x="38" y="44" width="384" height="212" rx="14" fill="var(--card)" stroke="var(--line-strong)" stroke-width="1.4"/><circle class="lg-halo" cx="230" cy="150" r="118" fill="url(#lg-halo)"/><g class="lg-base"><rect x="196" y="244" width="68" height="13" rx="4" fill="var(--gold-leaf)"/><rect x="205" y="236" width="50" height="11" rx="3" fill="var(--gold-bright)"/><rect x="223" y="118" width="14" height="122" rx="5" fill="url(#lg-post)"/></g><g class="lg-laurel"><path d="M214 248 q-26 -8 -34 -34" fill="none" stroke="var(--green-mid)" stroke-width="2.4" stroke-linecap="round" pathLength="100"/><path d="M246 248 q26 -8 34 -34" fill="none" stroke="var(--green-mid)" stroke-width="2.4" stroke-linecap="round" pathLength="100"/><g fill="var(--green)"><ellipse cx="188" cy="226" rx="6" ry="3.2" transform="rotate(-42 188 226)"/><ellipse cx="197" cy="237" rx="6" ry="3.2" transform="rotate(-30 197 237)"/><ellipse cx="272" cy="226" rx="6" ry="3.2" transform="rotate(42 272 226)"/><ellipse cx="263" cy="237" rx="6" ry="3.2" transform="rotate(30 263 237)"/></g></g><g class="lg-mech"><circle cx="230" cy="116" r="9" fill="var(--gold-bright)" stroke="var(--gold)" stroke-width="1.6"/><circle cx="230" cy="116" r="3" fill="var(--green-ink)"/><g class="lg-beam"><rect x="138" y="113" width="184" height="6.5" rx="3.2" fill="url(#lg-beam)"/><circle cx="142" cy="116" r="4.5" fill="var(--gold-leaf)"/><circle cx="318" cy="116" r="4.5" fill="var(--gold-leaf)"/></g><g class="lg-panL"><line x1="142" y1="119" x2="124" y2="158" stroke="var(--gold-leaf)" stroke-width="1.6"/><line x1="142" y1="119" x2="160" y2="158" stroke="var(--gold-leaf)" stroke-width="1.6"/><path d="M114 158 a28 14 0 0 0 56 0 z" fill="var(--soft-green)" stroke="var(--green-mid)" stroke-width="1.6"/><ellipse cx="142" cy="158" rx="28" ry="6" fill="var(--pill-green)" stroke="var(--green-mid)" stroke-width="1.4"/></g><g class="lg-panR"><line x1="318" y1="119" x2="300" y2="158" stroke="var(--gold-leaf)" stroke-width="1.6"/><line x1="318" y1="119" x2="336" y2="158" stroke="var(--gold-leaf)" stroke-width="1.6"/><path d="M290 158 a28 14 0 0 0 56 0 z" fill="var(--soft-green)" stroke="var(--green-mid)" stroke-width="1.6"/><ellipse cx="318" cy="158" rx="28" ry="6" fill="var(--pill-green)" stroke="var(--green-mid)" stroke-width="1.4"/></g></g><g class="lg-shieldG"><path class="lg-shield" d="M356 196 l30 7 v22 q0 26 -30 39 q-30 -13 -30 -39 v-22 z" fill="url(#lg-shield)" stroke="var(--gold-bright)" stroke-width="2.2"/><path class="lg-check" d="M343 226 l9 10 17 -20" fill="none" stroke="var(--gold-bright)" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" pathLength="100"/></g></svg>
         </div>
       </div>
     </div>
