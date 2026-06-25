@@ -1679,6 +1679,15 @@
     const ms=new Date(d+'T00:00:00')-new Date(today.toDateString());
     return Math.round(ms/86400000);
   }
+  // True only for a real calendar date in YYYY-MM-DD form. The regex alone passes
+  // impossible dates like 2024-13-45, which yield an Invalid Date and render as
+  // 'undefined'/NaN downstream; round-tripping through the Date constructor rejects them.
+  function isValidISODate(s){
+    if(typeof s!=='string' || !/^\d{4}-\d{2}-\d{2}$/.test(s)) return false;
+    const [y,m,d]=s.split('-').map(Number);
+    const dt=new Date(y,m-1,d);
+    return !isNaN(dt) && dt.getFullYear()===y && dt.getMonth()===m-1 && dt.getDate()===d;
+  }
   function awayText(n){
     if(n<0) return Math.abs(n)+' days ago';
     if(n===0) return 'Today';
@@ -1719,7 +1728,7 @@
   }
 
   function addReminder(date,label,note){
-    if(!date||!label) return false;
+    if(!date||!label||!isValidISODate(date)) return false; // reject invalid calendar dates (e.g. 2024-13-45)
     reminders.push({id:nextId++,date,label,note:note||''});
     return true;
   }
@@ -1770,9 +1779,9 @@
   });
 
   // ===== AI via server proxy (key NEVER reaches the browser) =====
-  // /api/chat resolves to the Netlify function in production (see netlify.toml
-  // redirect) and to greenpath_ai.py (Flask) for local dev. Both hold
-  // OPENAI_API_KEY server-side. The browser sends no credentials.
+  // /api/chat is handled by server.py (Flask) deployed on Render, which holds
+  // OPENAI_API_KEY server-side. The same server.py serves this page for local dev.
+  // The browser sends no credentials.
   const AI_ENDPOINT='/api/chat';
   const AI_MODEL='gpt-4o-mini';
 
@@ -1859,7 +1868,9 @@
     try{
       const rf={type:'json_schema',json_schema:{name:schema.name,strict:true,schema:schema.schema}};
       const txt=await aiChat(prompt, system, {...opts, response_format:rf});
-      return JSON.parse(txt);
+      // Use the loose parser even on the strict path: if the proxy/model wrapped the
+      // JSON in fences or prose, salvage it here instead of paying for a second request.
+      return parseLooseJSON(txt);
     }catch(e){
       return aiJSON(prompt, system, opts); // graceful degrade if response_format unsupported
     }
@@ -1869,10 +1880,18 @@
   async function aiStream(messages, onToken, opts={}){
     const full=await aiChatMessages(messages, opts);
     const step=Math.max(1, Math.round(full.length/90));
+    // Coalesce the per-tick render to one paint per frame: callers rebuild full HTML
+    // in onToken, so firing it ~90x in tight succession is O(n^2). rAF caps it to the
+    // visible frame rate while keeping the typewriter feel. The final flush below
+    // always runs synchronously so the complete output is rendered.
+    let pending=null, scheduled=false;
+    const flush=()=>{ scheduled=false; if(pending){ onToken(pending.delta, pending.soFar); pending=null; } };
     for(let i=0;i<full.length;i+=step){
-      onToken(full.slice(i,i+step), full.slice(0,i+step));
+      pending={delta:full.slice(i,i+step), soFar:full.slice(0,i+step)};
+      if(!scheduled){ scheduled=true; requestAnimationFrame(flush); }
       await new Promise(r=>setTimeout(r,16));
     }
+    pending=null; // drop any coalesced-but-unpainted partial; final render below is authoritative
     onToken('', full);
     return full;
   }
@@ -1986,7 +2005,7 @@ Today's date is ${todayStr}. The user wrote:
 Return ONLY a JSON array (no prose, no markdown fences). Each element: {"date":"YYYY-MM-DD","label":"short title (max 6 words)","note":"short context (max 8 words)"}.
 Rules: resolve relative dates against today. If a year is missing, choose the next upcoming occurrence. Do not invent a fixed I-693 expiration for exams signed on or after November 1, 2023; current USCIS policy ties validity to the pending application. For I-693 text without a clear deadline, add no date. Skip anything with no determinable date. If none, return [].`;
     const arr=await claudeJSON(prompt);
-    return Array.isArray(arr)?arr.filter(x=>x&&/^\d{4}-\d{2}-\d{2}$/.test(x.date)):[];
+    return Array.isArray(arr)?arr.filter(x=>x&&isValidISODate(x.date)):[];
   }
 
   // crude offline fallback: finds "Month Day" patterns
@@ -2166,9 +2185,11 @@ Rules: resolve relative dates against today. If a year is missing, choose the ne
     window.speechSynthesis.cancel();
     window.speechSynthesis.speak(u);
   });
-  ltSpeed.addEventListener('change',()=>{ if(speaking){ window.speechSynthesis.cancel(); ltRead.click(); }});
+  // defer the restart click so onend can clear `speaking` first (else the click hits
+  // the if(speaking){cancel;return} guard and playback just stops instead of restarting)
+  ltSpeed.addEventListener('change',()=>{ if(speaking){ window.speechSynthesis.cancel(); setTimeout(()=>ltRead.click(),0); }});
   // changing the mood mid-playback restarts with the new voice
-  ltVoice.addEventListener('change',()=>{ if(speaking){ window.speechSynthesis.cancel(); ltRead.click(); }});
+  ltVoice.addEventListener('change',()=>{ if(speaking){ window.speechSynthesis.cancel(); setTimeout(()=>ltRead.click(),0); }});
 
   // configure PDF.js worker
   if(window.pdfjsLib){ pdfjsLib.GlobalWorkerOptions.workerSrc='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js'; }
@@ -2781,8 +2802,15 @@ Set "done":true and provide a short "summary" only when the interview should end
         if(r.top<innerHeight*0.92 && r.bottom>40) el.classList.add('in');
       });
     }
-    addEventListener('scroll',scanReveal,{passive:true});
-    addEventListener('resize',scanReveal);
+    // Coalesce layout reads to one per frame so raw scroll events don't thrash reflow.
+    let revealTicking=false;
+    function scheduleReveal(){
+      if(revealTicking) return;
+      revealTicking=true;
+      requestAnimationFrame(()=>{ scanReveal(); revealTicking=false; });
+    }
+    addEventListener('scroll',scheduleReveal,{passive:true});
+    addEventListener('resize',scheduleReveal);
     document.addEventListener('click',e=>{ if(e.target.closest('[data-go]')) setTimeout(scanReveal,60); });
     setTimeout(scanReveal,80);
 

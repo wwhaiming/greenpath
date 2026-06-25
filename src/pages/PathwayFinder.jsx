@@ -17,8 +17,10 @@ export default function PathwayFinder({ navigate }) {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
 
+  // Debounce persistence so a full re-serialize doesn't run on every keystroke.
   useEffect(() => {
-    savePathwayData({ intake, result })
+    const t = setTimeout(() => savePathwayData({ intake, result }), 400)
+    return () => clearTimeout(t)
   }, [intake, result])
 
   async function handleFind() {

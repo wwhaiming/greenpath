@@ -30,6 +30,10 @@ OUT = HERE / "datasets" / "forecasts.json"
 COUNTRY = {"china": "China", "india": "India", "mexico": "Mexico",
            "philippines": "Philippines", "row": "Rest of world"}
 WINDOW_YEARS = 4
+# Single source of truth for the stall threshold lives in visa_data.py (stdlib-only).
+# Importing it here keeps the build-time forecast and the runtime brief/tool from
+# ever disagreeing about what counts as "stalled/retrogressing".
+from visa_data import STALL_SLOPE, STALL_DAYS_PER_YEAR  # noqa: E402
 
 
 def load():
@@ -39,6 +43,10 @@ def load():
         df = pd.read_csv(f)
         df["country"] = COUNTRY.get(key, key)
         frames.append(df)
+    if not frames:
+        raise SystemExit(
+            f"No *_eb_backlog.csv files found in {VB}. "
+            "Run datasets/download.sh to fetch the Visa Bulletin CSVs first.")
     df = pd.concat(frames, ignore_index=True)
     df["pd"] = pd.to_datetime(df["final_action_dates"], errors="coerce")
     df["bull"] = pd.to_datetime(df["visa_bulletin_date"], errors="coerce")
@@ -64,17 +72,21 @@ def fit(g):
     ss_tot = float(((y - y.mean()) ** 2).sum()) or 1.0
     r2 = 1 - ss_res / ss_tot
     latest = g.iloc[-1]
+    # Anchor projections on the furthest-advanced priority date the queue has reached,
+    # not the latest bulletin's row: on a positive-slope series a retrogression month
+    # would otherwise understate progress.
+    latest_pd = g["pd"].max()
     return {"slope_per_day": round(float(slope), 4),
             "advance_days_per_year": round(float(slope) * 365.25, 1),
             "r2": round(float(r2), 2),
-            "latest_pd": latest["pd"].date().isoformat(),
+            "latest_pd": latest_pd.date().isoformat(),
             "latest_bulletin": latest["bull"].date().isoformat()}
 
 
 def status(slope):
     if slope >= 0.95:
         return "keeping pace (queue clears about as fast as time passes)"
-    if slope > 0.05:
+    if slope > STALL_SLOPE:
         return "advancing slowly (backlog growing)"
     return "stalled or retrogressing (no reliable forecast)"
 
@@ -82,7 +94,7 @@ def status(slope):
 def project_years(rate, priority_date):
     """Years until `priority_date` (ISO str) becomes current, or None if indeterminate."""
     slope = rate["slope_per_day"]
-    if slope <= 0.05:
+    if slope <= STALL_SLOPE:
         return None
     latest = date.fromisoformat(rate["latest_pd"])
     target = date.fromisoformat(priority_date)

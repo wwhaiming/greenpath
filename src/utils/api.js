@@ -1,7 +1,6 @@
-const today = new Date()
-
 export async function extractWithAI(text) {
-  const todayStr = today.toISOString().slice(0, 10)
+  // Compute at call time so long-lived SPA sessions don't anchor to load time.
+  const todayStr = new Date().toISOString().slice(0, 10)
   const prompt = `You extract immigration-related deadlines from a user's plain-language description and return them as JSON.
 Today's date is ${todayStr}. The user wrote:
 """${text}"""

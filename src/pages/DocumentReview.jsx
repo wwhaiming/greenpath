@@ -39,8 +39,10 @@ export default function DocumentReview({ navigate }) {
   const [loading, setLoading] = useState(false)
   const [offlineNote, setOfflineNote] = useState('')
 
+  // Debounce persistence so a full re-serialize doesn't run on every keystroke.
   useEffect(() => {
-    saveDocumentReviewData({ formType, inputText })
+    const t = setTimeout(() => saveDocumentReviewData({ formType, inputText }), 400)
+    return () => clearTimeout(t)
   }, [formType, inputText])
 
   async function handleReview() {

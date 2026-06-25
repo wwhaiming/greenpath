@@ -1,14 +1,13 @@
 services:
   - type: web
     name: greenpath
-    runtime: static
-    # Frontend is the greenpath-new self-contained single-page app (public/) — no build step.
-    # NOTE: this static service has no Python backend; /api/* runs only when server.py is
-    # hosted (e.g. a Render web service / local). The frontend degrades gracefully offline.
-    buildCommand: "echo 'static single-page frontend (public/) - no build step'"
-    staticPublishPath: ./public
+    runtime: python
+    # Flask backend (server.py exposes `app`): serves public/ as static root AND all /api/* routes.
+    # OPENAI_API_KEY is read from the env var below; it can also be loaded from the committed
+    # .env via load_dotenv() in server.py.
+    buildCommand: pip install -r requirements.txt
+    startCommand: gunicorn server:app --bind 0.0.0.0:$PORT --timeout 60 --workers 2
     pullRequestPreviewsEnabled: true
-    routes:
-      - type: rewrite
-        source: /*
-        destination: /index.html
+    envVars:
+      - key: OPENAI_API_KEY
+        sync: false

@@ -26,6 +26,18 @@ export default function InterviewPrep() {
   const [qCount, setQCount] = useState(0)
   const chatRef = useRef()
   const answerRef = useRef()
+  const endedRef = useRef(false) // guards end-of-session so it fires exactly once
+
+  // Append the closing messages and deactivate. Guarded so StrictMode's double
+  // invoke (or two termination sources) can't produce duplicate 'done' bubbles.
+  function endSession(closingLine, summary) {
+    if (endedRef.current) return
+    endedRef.current = true
+    addMsg({ type: 'officer', content: closingLine })
+    if (summary) addMsg({ type: 'coach', level: 'clear', content: summary })
+    addMsg({ type: 'done' })
+    setActive(false)
+  }
 
   useEffect(() => {
     if (chatRef.current) chatRef.current.scrollTop = chatRef.current.scrollHeight
@@ -44,24 +56,22 @@ export default function InterviewPrep() {
         addMsg({ type: 'coach', level: r.coaching.level, content: r.coaching.note })
       }
       if (r.done) {
-        addMsg({ type: 'officer', content: r.nextQuestion || "That's the end of this practice session. Review the feedback above and try again anytime." })
-        if (r.summary) addMsg({ type: 'coach', level: 'clear', content: r.summary })
-        addMsg({ type: 'done' })
-        setActive(false)
+        endSession(
+          r.nextQuestion || "That's the end of this practice session. Review the feedback above and try again anytime.",
+          r.summary,
+        )
         return
       }
       const q = r.nextQuestion || exampleFor(caseType)
       setLastQ(q)
       setTranscript(prev => [...prev, { role: 'officer', content: q }])
       addMsg({ type: 'officer', content: q })
-      setQCount(n => {
-        if (n + 1 >= 8) {
-          addMsg({ type: 'officer', content: "That's all the questions for this practice round. Review your feedback above — you can start again with another scenario anytime." })
-          addMsg({ type: 'done' })
-          setActive(false)
-        }
-        return n + 1
-      })
+      // Compute the new count outside the updater; the updater only sets state.
+      const newCount = qCount + 1
+      setQCount(newCount)
+      if (newCount >= 8) {
+        endSession("That's all the questions for this practice round. Review your feedback above — you can start again with another scenario anytime.")
+      }
     } catch (_) {
       setTyping(false)
       if (userAnswer) {
@@ -69,18 +79,14 @@ export default function InterviewPrep() {
         addMsg({ type: 'coach', level: c.level, content: c.note })
       }
       const bank = IP_BANK[caseType] || IP_BANK['Marriage-based adjustment of status (I-485)']
-      setQCount(n => {
-        if (n >= bank.length) {
-          addMsg({ type: 'officer', content: 'That completes this practice round. Review your feedback above — start again anytime.' })
-          addMsg({ type: 'done' })
-          setActive(false)
-          return n
-        }
-        const q = bank[n]
-        setLastQ(q)
-        addMsg({ type: 'officer', content: q })
-        return n + 1
-      })
+      if (qCount >= bank.length) {
+        endSession('That completes this practice round. Review your feedback above — start again anytime.')
+        return
+      }
+      const q = bank[qCount]
+      setLastQ(q)
+      addMsg({ type: 'officer', content: q })
+      setQCount(qCount + 1)
     }
   }
 
@@ -91,7 +97,13 @@ export default function InterviewPrep() {
     setQCount(0)
     setLastQ('')
     setActive(true)
-    addMsg({ type: 'officer', html: true, content: `Hello, and thank you for coming in today. This is a practice interview for your <b>${caseType}</b>. Answer naturally — I'll give you feedback after each response. Let's begin.` })
+    endedRef.current = false
+    addMsg({
+      type: 'officer',
+      caseType,
+      pre: 'Hello, and thank you for coming in today. This is a practice interview for your ',
+      post: ". Answer naturally — I'll give you feedback after each response. Let's begin.",
+    })
     await askNext('')
   }
 
@@ -162,7 +174,9 @@ export default function InterviewPrep() {
               if (msg.type === 'officer') return (
                 <div key={i} className="bubble officer">
                   <span className="who">Interviewer</span>
-                  {msg.html ? <span dangerouslySetInnerHTML={{ __html: msg.content }} /> : <span>{msg.content}</span>}
+                  {msg.caseType
+                    ? <span>{msg.pre}<b>{msg.caseType}</b>{msg.post}</span>
+                    : <span>{msg.content}</span>}
                 </div>
               )
               if (msg.type === 'me') return (

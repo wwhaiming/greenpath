@@ -31,6 +31,10 @@ def load_visa_bulletin():
         df = pd.read_csv(f)
         df["country"] = COUNTRY.get(key, key)
         frames.append(df)
+    if not frames:
+        raise FileNotFoundError(
+            f"No *_eb_backlog.csv files found in {VB}. "
+            "Run datasets/download.sh to fetch the Visa Bulletin CSVs first.")
     df = pd.concat(frames, ignore_index=True)
     df = df.rename(columns={"final_action_dates": "final_action_date",
                             "visa_bulletin_date": "bulletin_date",

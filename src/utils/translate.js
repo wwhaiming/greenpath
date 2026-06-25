@@ -24,23 +24,41 @@ export async function translateFree(text, from, to) {
   return (data[0] || []).map(seg => seg[0]).join('').trim()
 }
 
+// Newline-delimited numbered sentinels survive translation far better than an
+// inline punctuation separator (the service often mangles ` ~|~ `), so batch
+// realignment succeeds and we avoid N per-string fallback calls.
+const segMarker = (i) => `[[SEG_${i}]]`
+// Tolerate whitespace the service may inject around the digits/brackets.
+const SEG_RE = /\[\[\s*SEG_(\d+)\s*\]\]/g
+
 export async function translateBatch(strings, to) {
-  const SEP = ' ~|~ '
   const out = new Array(strings.length)
   const chunks = []
   let batch = [], idx = [], len = 0
   for (let i = 0; i < strings.length; i++) {
     const s = strings[i]
     if (batch.length && len + s.length > 4500) { chunks.push({ batch, idx }); batch = []; idx = []; len = 0 }
-    batch.push(s); idx.push(i); len += s.length + SEP.length
+    batch.push(s); idx.push(i); len += s.length + 16
   }
   if (batch.length) chunks.push({ batch, idx })
 
   await Promise.all(chunks.map(async ({ batch, idx }) => {
     try {
-      const res = await translateFree(batch.join(SEP), 'auto', to)
-      const parts = res.split(/\s*~\s*\|\s*~\s*/)
-      if (parts.length === batch.length) { parts.forEach((p, k) => out[idx[k]] = p.trim()); return }
+      const joined = batch.map((s, k) => `${segMarker(k)}\n${s}`).join('\n')
+      const res = await translateFree(joined, 'auto', to)
+      // Realign by marker number rather than positional order: walk the
+      // sentinels in the translated text and slice each segment between them.
+      const parts = new Array(batch.length)
+      let m, last = null, lastIdx = -1, count = 0
+      SEG_RE.lastIndex = 0
+      while ((m = SEG_RE.exec(res)) !== null) {
+        if (last !== null) parts[lastIdx] = res.slice(last, m.index).trim()
+        lastIdx = Number(m[1]); last = SEG_RE.lastIndex; count++
+      }
+      if (last !== null) parts[lastIdx] = res.slice(last).trim()
+      if (count === batch.length && parts.every(p => p != null)) {
+        parts.forEach((p, k) => { out[idx[k]] = p }); return
+      }
     } catch (_) { /* fall through */ }
     await Promise.all(batch.map(async (s, k) => {
       try { out[idx[k]] = await translateFree(s, 'auto', to) } catch (_) { out[idx[k]] = s }
@@ -64,6 +82,9 @@ export function detectLang(t) {
 // --- Full-page DOM translation ---
 
 let i18nNodes = null
+// Per-language Map<englishText, translatedText>. Keying by source string (not
+// positional index) means a cached translation always applies to the matching
+// node, even after navigation changes the node set's shape/order.
 let i18nCache = {}
 let i18nBusy = false
 
@@ -87,11 +108,6 @@ function collectNodes() {
   return i18nNodes
 }
 
-// Call after each navigation to invalidate the node cache so new page content gets picked up
-export function resetI18nCache() {
-  i18nNodes = null
-}
-
 export async function setSiteLanguage(lang) {
   if (i18nBusy) return
   // Reset node cache so we pick up newly rendered page content
@@ -103,10 +119,19 @@ export async function setSiteLanguage(lang) {
   bar.className = 'lang-loading'
   document.body.appendChild(bar)
   try {
-    let values
-    if (i18nCache[lang]) { values = i18nCache[lang] }
-    else { values = await translateBatch(nodes.map(n => n.en), lang); i18nCache[lang] = values }
-    nodes.forEach((n, i) => { if (values[i]) n.node.nodeValue = values[i] })
+    const cache = i18nCache[lang] || (i18nCache[lang] = new Map())
+    // Only translate distinct strings not already cached for this language.
+    const seen = new Set()
+    const missing = []
+    for (const n of nodes) {
+      if (!cache.has(n.en) && !seen.has(n.en)) { seen.add(n.en); missing.push(n.en) }
+    }
+    if (missing.length) {
+      const values = await translateBatch(missing, lang)
+      missing.forEach((en, i) => { if (values[i]) cache.set(en, values[i]) })
+    }
+    // Apply by each node's own source text, never by positional index.
+    nodes.forEach(n => { const t = cache.get(n.en); if (t) n.node.nodeValue = t })
     document.documentElement.lang = (ISO[lang] || 'en').split('-')[0]
   } catch (_) {
     // leave English on hard failure

@@ -17,6 +17,14 @@ _JSON = _DIR / "visa_waits.json"
 _FC = _DIR / "forecasts.json"
 _ORDER = ["India", "China", "Mexico", "Philippines", "Rest of world"]
 
+# Single shared stall threshold so the brief and the projection tool can never
+# contradict. STALL_SLOPE is PD-days cleared per real-day (used on slope_per_day);
+# STALL_DAYS_PER_YEAR is the same threshold expressed per year (used on
+# advance_days_per_year). forecast.py imports both. A queue at or below the
+# threshold is treated as stalled/retrogressing with no reliable forecast.
+STALL_SLOPE = 0.05
+STALL_DAYS_PER_YEAR = STALL_SLOPE * 365.25  # ~18.3 days/yr
+
 
 def _load(path):
     try:
@@ -50,7 +58,7 @@ def project_current(country, eb, priority_date):
     if not fc:
         return None
     slope = fc.get("slope_per_day", 0)
-    if slope <= 0.05:
+    if slope <= STALL_SLOPE:
         return {"status": fc.get("status"), "years": None,
                 "note": "queue has stalled or retrogressed - no reliable forecast"}
     try:
@@ -73,7 +81,7 @@ def _forecast_line(country, fc_countries):
         if not r:
             continue
         rate = r.get("advance_days_per_year", 0)
-        if rate <= 20:
+        if rate <= STALL_DAYS_PER_YEAR:
             parts.append(f"{eb} no reliable forecast (stalled/retrogressing)")
         else:
             parts.append(f"{eb} advancing ~{rate:.0f} priority-date days/yr")
@@ -112,7 +120,12 @@ def build_brief(max_chars=2600):
         fline = _forecast_line(c, fc_countries)
         if fline:
             lines.append(fline)
-    return "\n".join(lines)[:max_chars]
+    brief = "\n".join(lines)
+    if len(brief) <= max_chars:
+        return brief
+    # Truncate on a line boundary so no partial factual line reaches the LLM prompt.
+    cut = brief.rfind("\n", 0, max_chars)
+    return brief[:cut] if cut > 0 else brief[:max_chars]
 
 
 if __name__ == "__main__":

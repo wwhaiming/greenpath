@@ -42,12 +42,28 @@ export default function App() {
     saveLanguage(lang)
   }
 
-  // Re-apply translation whenever the page or language changes
+  // Re-apply translation whenever the page or language changes. English is a
+  // no-op. For non-English we translate on the next frame and then watch the
+  // <main> container so async AI-rendered content gets translated as it appears
+  // (a fixed timeout raced slow renders and left late content in English).
   useEffect(() => {
-    if (siteLang !== 'English') {
-      // Small delay lets React finish rendering before the DOM walker runs
-      const t = setTimeout(() => setSiteLanguage(siteLang), 80)
-      return () => clearTimeout(t)
+    if (siteLang === 'English') return
+    let raf = 0, debounce = 0
+    const run = () => setSiteLanguage(siteLang)
+    raf = requestAnimationFrame(run)
+    const main = document.querySelector('main')
+    let observer
+    if (main && 'MutationObserver' in window) {
+      observer = new MutationObserver(() => {
+        clearTimeout(debounce)
+        debounce = setTimeout(run, 150)
+      })
+      observer.observe(main, { childList: true, subtree: true, characterData: true })
+    }
+    return () => {
+      cancelAnimationFrame(raf)
+      clearTimeout(debounce)
+      if (observer) observer.disconnect()
     }
   }, [page, siteLang])
 

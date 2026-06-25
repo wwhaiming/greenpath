@@ -5,9 +5,10 @@ import LegalDisclaimer from '../components/LegalDisclaimer.jsx'
 const PALETTE = ['c-terra', 'c-amber', 'c-slate', 'c-green']
 const DATEPILL = { 'c-terra': 'd-terra', 'c-amber': 'd-amber', 'c-slate': 'd-slate', 'c-green': 'd-green' }
 const MON = ['JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC']
-const today = new Date()
 
 function daysAway(d) {
+  // Compute "now" at call time so a long-lived SPA session doesn't drift.
+  const today = new Date()
   return Math.round((new Date(d + 'T00:00:00') - new Date(today.toDateString())) / 86400000)
 }
 function awayText(n) {
@@ -21,6 +22,7 @@ function localParse(text) {
   const months = {january:0,february:1,march:2,april:3,may:4,june:5,july:6,august:7,september:8,october:9,november:10,december:11,
     jan:0,feb:1,mar:2,apr:3,jun:5,jul:6,aug:7,sep:8,sept:8,oct:9,nov:10,dec:11}
   const out = []
+  const today = new Date()
   const re = /([a-z]+)\s+(\d{1,2})(?:,?\s*(\d{4}))?/gi
   let m
   while ((m = re.exec(text))) {
