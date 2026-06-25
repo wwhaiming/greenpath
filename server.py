@@ -24,6 +24,9 @@ client = OpenAI(api_key=os.environ.get('OPENAI_API_KEY'), timeout=30.0)
 
 CHAT_MODEL    = 'gpt-4o-mini'
 QUALITY_MODEL = 'gpt-4o-mini'
+# Honor a caller-requested model when it's on the allowlist, so the frontend's
+# "route hard tasks to gpt-4o" actually takes effect (it was previously ignored).
+ALLOWED_CHAT_MODELS = {'gpt-4o-mini', 'gpt-4o'}
 
 MAX_FIELD_CHARS = 6000
 MAX_CHAT_MESSAGES = 20
@@ -127,6 +130,7 @@ def api_chat():
         if not isinstance(raw_messages, list) or not raw_messages:
             return jsonify({'error': 'messages required'}), 400
         clean = []
+        caller_system = []
         for m in raw_messages:
             if not isinstance(m, dict):
                 return jsonify({'error': 'invalid message'}), 400
@@ -134,17 +138,27 @@ def api_chat():
             content = m.get('content')
             if role not in _ALLOWED_ROLES or not isinstance(content, str):
                 return jsonify({'error': 'invalid message'}), 400
-            # Drop any caller-provided system messages; we set our own guardrail.
+            content = content[:MAX_CHAT_MESSAGE_CHARS]
+            # Keep caller-provided system messages — the frontend ships its
+            # feature grounding + official-source rules this way — but place them
+            # AFTER our fixed guardrail so the guardrail always wins.
             if role == 'system':
+                caller_system.append({'role': 'system', 'content': content})
                 continue
-            clean.append({'role': role, 'content': content[:MAX_CHAT_MESSAGE_CHARS]})
+            clean.append({'role': role, 'content': content})
         if not clean:
             return jsonify({'error': 'messages required'}), 400
-        # Prepend fixed server-side guardrail and cap message count/cost.
-        messages = [{'role': 'system', 'content': GUARDRAIL_SYSTEM}] + clean[-MAX_CHAT_MESSAGES:]
+        # Guardrail first, then the caller's grounding prompts, then the
+        # conversation (capped for cost).
+        messages = ([{'role': 'system', 'content': GUARDRAIL_SYSTEM}]
+                    + caller_system[:4]
+                    + clean[-MAX_CHAT_MESSAGES:])
+
+        requested_model = data.get('model')
+        model = requested_model if requested_model in ALLOWED_CHAT_MODELS else CHAT_MODEL
 
         create_kwargs = {
-            'model': CHAT_MODEL,
+            'model': model,
             'max_tokens': mt,
             'temperature': temperature,
             'messages': messages,
@@ -161,7 +175,7 @@ def api_chat():
         return jsonify({
             'content': [{'type': 'text', 'text': text}],
             'choices': [{'message': {'role': 'assistant', 'content': text}}],
-            'model': CHAT_MODEL,
+            'model': model,
         })
     except openai.BadRequestError:
         return jsonify({'error': 'invalid AI request'}), 400
@@ -456,6 +470,64 @@ def api_stage_qa():
         return jsonify({'error': str(e)}), 400
     except openai.APITimeoutError:
         return jsonify({'error': 'upstream timeout'}), 504
+    except Exception:
+        app.logger.exception('route error')
+        return jsonify({'error': 'internal server error'}), 500
+
+
+# ── MAIN ─────────────────────────────────────────────────────────────────────
+
+# ── /api/visa-estimate  (deterministic — computed from the real dataset, no LLM) ─
+
+_VE_COUNTRY = {'china': 'China', 'india': 'India', 'mexico': 'Mexico',
+               'philippines': 'Philippines'}
+
+
+def _ve_country(name):
+    n = (name or '').lower()
+    for key, val in _VE_COUNTRY.items():
+        if key in n:
+            return val
+    return 'Rest of world'
+
+
+def _ve_eb(category):
+    c = (category or '').upper()
+    for n in ('1', '2', '3', '4'):
+        if 'EB-' + n in c or 'EB' + n in c:
+            return 'EB' + n
+    return None
+
+
+@app.route('/api/visa-estimate', methods=['POST'])
+def api_visa_estimate():
+    """Deterministic green-card wait estimate computed directly from the real
+    Visa Bulletin dataset (no LLM). Body: {category, country, priority_date}."""
+    try:
+        data = request.get_json(silent=True)
+        if not isinstance(data, dict):
+            return jsonify({'error': 'invalid JSON body'}), 400
+        category = _text_field(data, 'category', '', max_chars=120)
+        country = _ve_country(_text_field(data, 'country', '', max_chars=120))
+        priority_date = _text_field(data, 'priority_date', '', max_chars=20)
+        eb = _ve_eb(category)
+        if not eb:
+            return jsonify({'available': False,
+                            'reason': 'Deterministic estimates cover employment-based EB-1 to EB-4 only. For family categories, check the official Visa Bulletin.'}), 200
+        try:
+            from visa_data import project_current
+        except Exception:
+            return jsonify({'available': False, 'reason': 'estimator unavailable'}), 200
+        est = project_current(country, eb, priority_date) if priority_date else None
+        if not est:
+            return jsonify({'available': False, 'country': country, 'category': eb,
+                            'reason': 'No dataset coverage for that country/category, or no priority date provided.'}), 200
+        out = {'available': True, 'country': country, 'category': eb,
+               'source': 'U.S. Dept. of State Visa Bulletin history (datasets/visa_waits.json + forecasts.json)'}
+        out.update(est)
+        return jsonify(out)
+    except RequestValidationError as e:
+        return jsonify({'error': str(e)}), 400
     except Exception:
         app.logger.exception('route error')
         return jsonify({'error': 'internal server error'}), 500

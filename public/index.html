@@ -2844,18 +2844,63 @@ Set "done":true and provide a short "summary" only when the interview should end
       result.replaceChildren();
       result.insertAdjacentHTML('beforeend','<p class="dr-placeholder">'+esc(msg)+'</p>');
     }
+    const SOURCE_NOTE='Computed from real DOS Visa Bulletin history (through the Dec 2025 bulletin). Cutoffs change monthly — always confirm the current official bulletin.';
+    // Build a deterministic estimate card with safe DOM (textContent, never innerHTML).
+    // Mirrors the renderParas idiom above so no untrusted data is ever parsed as markup.
+    function buildEstimateCard(d){
+      const card=document.createElement('div');
+      card.className='issue blu'; card.setAttribute('role','status'); card.style.marginBottom='14px';
+      const dot=document.createElement('span'); dot.className='idot'; card.appendChild(dot);
+      const body=document.createElement('div');
+      const head=document.createElement('b'); const sub=document.createElement('p'); sub.style.marginTop='4px';
+      if(d && d.available===true && d.years===0){
+        head.textContent='Likely current now';
+        sub.textContent='Your priority date is on or before the latest final-action date in the dataset ('+(d.latest_pd||'latest available')+').';
+      } else if(d && d.available===true && typeof d.years==='number' && d.years>0){
+        head.textContent='~'+d.years+' years to current (rough estimate)';
+        let t=(d.status?d.status+'. ':'')+'Based on the recent advancement rate for '+(d.country||country.value)+' '+(d.category||cat.value)+'.';
+        if(typeof d.r2==='number') t+=' (trend fit r²='+d.r2+')';
+        sub.textContent=t;
+      } else if(d && d.available===true && d.years===null){
+        head.textContent='No reliable estimate';
+        sub.textContent=d.note||d.status||'This queue has stalled or retrogressed, so a forward projection is not meaningful.';
+      } else {
+        head.textContent='No data-backed estimate for this case';
+        sub.textContent=(d&&d.reason)||'This category or country is not covered by the Visa Bulletin forecast dataset.';
+      }
+      body.appendChild(head); body.appendChild(sub);
+      const note=document.createElement('small'); note.className='tiny'; note.style.display='block'; note.textContent=SOURCE_NOTE;
+      body.appendChild(note);
+      card.appendChild(body);
+      return card;
+    }
     check.addEventListener('click',async()=>{
       if(!date.value){ placeholder('Pick your priority date first.'); return; }
       result.replaceChildren();
-      result.insertAdjacentHTML('beforeend','<div class="dr-loading"><div class="dr-spin"></div>Checking how the bulletin works for you…</div>');
+      result.insertAdjacentHTML('beforeend','<div class="dr-loading"><div class="dr-spin"></div>Checking the real Visa Bulletin data…</div>');
       check.disabled=true;
+      // Deterministic, data-backed estimate from the real Visa Bulletin dataset.
+      // Wrapped in its own try/catch so a failure here NEVER blocks the AI explanation.
+      let estCard=null;
+      try{
+        const er=await fetch('/api/visa-estimate',{
+          method:'POST',
+          headers:{'Content-Type':'application/json'},
+          body:JSON.stringify({category:cat.value,country:country.value,priority_date:date.value})
+        });
+        if(er.ok){ estCard=buildEstimateCard(await er.json()); }
+      }catch(_e){ /* estimate is optional; AI explanation continues regardless */ }
       try{
         const q='visa bulletin priority date '+cat.value+' '+country.value;
         const sys=`You explain the U.S. State Department Visa Bulletin in clear, plain language for one person's case. You are not a lawyer and give general information only.\n\n${GROUNDING_RULE}\nCRITICAL: cutoff dates change every month and you do NOT have access to the current month's bulletin. NEVER state, estimate, or guess a specific current cutoff date or a number of months/years of wait. Instead explain how to read the bulletin for their category and country and tell them to check the official bulletin (linked separately) for the exact current cutoff.\nOFFICIAL SOURCES:\n${sourcesPrompt(q)}`;
         const pr=`Category: ${cat.value}\nCountry of chargeability: ${country.value}\nTheir priority date: ${date.value}\n\nExplain in 2-3 short plain-text paragraphs: (1) what a priority date is and why theirs matters, (2) how to compare their date against Chart A (Final Action Dates) and Chart B (Dates for Filing) in the current bulletin, (3) general context for oversubscribed countries (especially India and China) without giving any specific cutoff or wait length. Do not state any specific current cutoff date.`;
         const box=document.createElement('div');
         box.className='dr-summary ai-pop stream-caret'; box.style.lineHeight='1.6';
-        result.replaceChildren(box);
+        // Show the deterministic estimate card first (the trustworthy headline),
+        // then append the AI explanation below it so both stay visible.
+        result.replaceChildren();
+        if(estCard) result.appendChild(estCard);
+        result.appendChild(box);
         await aiStream(
           [{role:'system',content:sys},{role:'user',content:pr}],
           (tok,full)=>renderParas(box, full),
@@ -2865,6 +2910,7 @@ Set "done":true and provide a short "summary" only when the interview should end
         result.insertAdjacentHTML('beforeend', citationsHTML(q));
       }catch(e){
         result.replaceChildren();
+        if(estCard) result.appendChild(estCard);
         result.insertAdjacentHTML('beforeend', aiErrorHTML(e));
       }finally{ check.disabled=false; }
     });
