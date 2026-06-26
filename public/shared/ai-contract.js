@@ -167,6 +167,10 @@
       re:/\b(derivative beneficiar\w*|following to join|follow to join)\b/i },
     { cat:'deadline-critical filing', tier:'caution',
       re:/\b(one.?year (filing )?deadline|asylum (one|1).?year|missed (the )?deadline|appeal deadline|motion to reopen|motion to reconsider|i-?290b)\b/i },
+    { cat:'serious inadmissibility (fraud / false citizenship claim)', tier:'stop',
+      re:/\b(212\(a\)\(6\)\(c\)|false claim to (u\.?s\.? )?citizenship|claimed (to be )?(a )?(u\.?s\.? )?citizen|unlawful(ly)? vot\w*)\b/i },
+    { cat:'complex procedural posture', tier:'caution',
+      re:/\b(noid|notice of intent to deny|\bbia\b|board of immigration appeals|j-?1 (two|2).?year|212\(e\)|home.?residency requirement|\btps\b|advance parole|consular processing problem)\b/i },
   ];
   function screen(text) {
     const t = String(text || '');

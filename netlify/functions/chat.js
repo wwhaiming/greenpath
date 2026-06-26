@@ -175,7 +175,34 @@ function checkRateLimit(ip) {
   return { limited: false, retryAfter: 0 };
 }
 
-const OK_SCHEMA_NAMES = new Set(['pathway','document_review','interview_turn','notice_extract']);
+// Canonical, SERVER-OWNED response schemas. The browser may REQUEST one by name,
+// but the server defines the body — a client cannot inject an arbitrary schema.
+// Mirrors public/shared/ai-contract.js SCHEMAS (the eval harness pins that file).
+const SERVER_SCHEMAS = {
+  pathway: { name: 'pathway', strict: true, schema: { type:'object', additionalProperties:false,
+    properties:{ primaryPathway:{type:'string'}, subcategory:{type:'string'},
+      confidence:{type:'string', enum:['high','medium','low']}, reasoning:{type:'string'},
+      nextSteps:{type:'array', items:{type:'string'}}, alternativePathways:{type:'array', items:{type:'string'}} },
+    required:['primaryPathway','subcategory','confidence','reasoning','nextSteps','alternativePathways'] } },
+  document_review: { name: 'document_review', strict: true, schema: { type:'object', additionalProperties:false,
+    properties:{ overallStatus:{type:'string', enum:['looks-good','needs-attention','major-issues']},
+      issues:{type:'array', items:{type:'object', additionalProperties:false,
+        properties:{ severity:{type:'string', enum:['high','medium','low']}, field:{type:'string'}, problem:{type:'string'}, suggestion:{type:'string'} },
+        required:['severity','field','problem','suggestion'] }},
+      reminders:{type:'array', items:{type:'string'}} },
+    required:['overallStatus','issues','reminders'] } },
+  interview_turn: { name: 'interview_turn', strict: true, schema: { type:'object', additionalProperties:false,
+    properties:{ coaching:{type:['object','null'], additionalProperties:false,
+        properties:{ level:{type:'string', enum:['clear','clarify','help']}, note:{type:['string','null']} }, required:['level','note'] },
+      nextQuestion:{type:'string'}, done:{type:'boolean'}, summary:{type:['string','null']} },
+    required:['coaching','nextQuestion','done','summary'] } },
+  notice_extract: { name: 'notice_extract', strict: true, schema: { type:'object', additionalProperties:false,
+    properties:{ documentType:{type:'string'}, caseType:{type:'string'}, receiptNumber:{type:'string'},
+      dates:{type:'array', items:{type:'object', additionalProperties:false, properties:{ label:{type:'string'}, date:{type:'string'} }, required:['label','date'] }},
+      nextStep:{type:'string'} },
+    required:['documentType','caseType','receiptNumber','dates','nextStep'] } },
+};
+
 
 exports.handler = async (event) => {
   const headers = event.headers || {};
@@ -272,18 +299,17 @@ exports.handler = async (event) => {
   if (rf && typeof rf === 'object') {
     if (rf.type === 'json_object') {
       payload.response_format = { type: 'json_object' };
-    } else if (rf.type === 'json_schema' && rf.json_schema && typeof rf.json_schema === 'object') {
-      if (!OK_SCHEMA_NAMES.has(rf.json_schema.name)) return; // server owns the schema set; reject unknown client schemas
-      // JSON-schema abuse guard: ignore (do NOT 500) schemas that are too large
-      // when serialized or too deeply nested. Falling back to no response_format
-      // keeps the request working rather than failing it.
-      const serialized = JSON.stringify(rf.json_schema);
-      const depth = jsonDepth(rf.json_schema);
-      if (serialized.length <= MAX_SCHEMA_CHARS && depth <= MAX_SCHEMA_DEPTH) {
-        payload.response_format = { type: 'json_schema', json_schema: rf.json_schema };
+    } else if (rf.type === 'json_schema') {
+      // The browser names the feature; the SERVER owns the schema body. Unknown
+      // names get a clean 400 (no silent undefined, no client-defined schemas).
+      const requested = rf.json_schema && rf.json_schema.name;
+      const canonical = requested && SERVER_SCHEMAS[requested];
+      if (!canonical) {
+        return jsonResponse(400, { error: 'Unsupported response schema' }, null, allowedOrigin);
       }
-      // else: silently drop response_format and let the model answer normally.
+      payload.response_format = { type: 'json_schema', json_schema: canonical };
     }
+
   }
 
   try {
