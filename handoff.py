@@ -138,6 +138,34 @@ QUESTIONS_FOR_ATTORNEY = [
     "What are your fees, and do you offer a free or low-cost consultation?",
 ]
 
+# The KIND of help each situation calls for. This is general routing ("see this
+# type of professional"), NOT legal advice and NOT a specific provider name -- it
+# points the person at the right category of help so a referral is useful.
+_WHO_BY_CATEGORY = {
+    "removal_proceedings": "an immigration attorney who handles removal/deportation defense, "
+                           "or a DOJ/EOIR-recognized nonprofit. If you are detained, seek help urgently.",
+    "criminal_history": "an immigration attorney experienced in 'crimmigration' (how a criminal "
+                        "record affects immigration).",
+    "fraud_misrepresentation": "an immigration attorney -- fraud/misrepresentation findings carry "
+                               "serious, lasting consequences.",
+    "asylum_one_year_deadline": "an asylum/refugee legal-aid organization or an immigration attorney "
+                                "-- the one-year asylum filing deadline is time-sensitive.",
+    "vawa_u_t_visa": "a VAWA / U-visa / T-visa or domestic-violence victim-services organization -- "
+                     "many offer free, confidential help.",
+    "inadmissibility_bars": "an immigration attorney who handles waivers and grounds of inadmissibility.",
+    "prior_visa_denial": "an immigration attorney experienced with consular processing and visa denials.",
+    "unauthorized_work": "an immigration attorney -- unauthorized work can affect eligibility.",
+    "overstay_unlawful_presence": "an immigration attorney -- unlawful presence can trigger re-entry bars.",
+    "unclear_no_status": "an immigration attorney or a DOJ-accredited nonprofit to assess your situation.",
+}
+_WHO_DEFAULT = "a licensed immigration attorney or a DOJ-accredited nonprofit."
+
+
+def who_to_see(category):
+    """The KIND of help a given handoff category calls for (general routing, not
+    legal advice, not a specific provider)."""
+    return _WHO_BY_CATEGORY.get(category, _WHO_DEFAULT)
+
 
 def urgency_for(category):
     """Map a handoff category to a crisis-urgency label ('urgent'|'high')."""
@@ -164,6 +192,7 @@ def safe_prep(hand):
     keys = hand.get("reason_keys") or ([hand["category"]] if hand.get("category") else [])
     return {
         "urgency": urgency_for(hand.get("category")),
+        "who_to_see": who_to_see(hand.get("category")),
         "questions_for_attorney": list(QUESTIONS_FOR_ATTORNEY),
         "documents_to_gather": documents_to_gather(keys),
         "official_resources": list(OFFICIAL_RESOURCES),

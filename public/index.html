@@ -3168,18 +3168,73 @@
       document.addEventListener('keydown',e=>{
         if(ov.style.display==='none') return;
         if(e.key==='Escape'){ closeHandoff(); return; }
-        // Trap focus inside the modal so keyboard users cannot tab into the hidden page behind it.
-        if(e.key==='Tab'){ e.preventDefault(); btn.focus(); }
+        // Keep focus inside the modal, cycling through ALL its focusable controls
+        // (referral links, the state picker, buttons) so referrals are keyboard-usable.
+        if(e.key==='Tab'){
+          const f=[...card.querySelectorAll('a[href],button,select,input,textarea,[tabindex]:not([tabindex="-1"])')].filter(el=>el.offsetParent!==null);
+          if(!f.length){ e.preventDefault(); return; }
+          const first=f[0], last=f[f.length-1];
+          if(e.shiftKey && document.activeElement===first){ e.preventDefault(); last.focus(); }
+          else if(!e.shiftKey && document.activeElement===last){ e.preventDefault(); first.focus(); }
+        }
       });
       document.body.appendChild(ov);
     }
     const reasons=Array.isArray(data.reasons)?data.reasons:[];
     document.getElementById('handoff-why').textContent = reasons.length ? ('Why: your situation involves '+reasons.join('; ')+'.') : '';
     document.getElementById('handoff-body').textContent = data.message || 'This situation needs a licensed immigration attorney. GreenPath does not provide legal advice.';
+
+    // ── Referrals: the RIGHT kind of help + real directories + a local finder ──
+    const sp = data.safe_prep || {};
+    const cardEl = ov.querySelector('div');
+    const btnEl = cardEl.querySelector(':scope > button');
+    let extra=document.getElementById('handoff-extra');
+    if(!extra){ extra=document.createElement('div'); extra.id='handoff-extra';
+      extra.style.cssText='margin:4px 0 16px;font-size:.9rem;line-height:1.5;color:#143524';
+      cardEl.insertBefore(extra, btnEl); }
+    extra.textContent='';
+    const h4=(t)=>{ const e=document.createElement('div'); e.textContent=t; e.style.cssText='font-weight:700;margin:12px 0 4px;color:#0e3d29'; return e; };
+    const mkUl=(items, render)=>{ const u=document.createElement('ul'); u.style.cssText='margin:0 0 4px 18px;padding:0'; items.forEach(it=>{ const li=document.createElement('li'); li.style.margin='2px 0'; render(li,it); u.appendChild(li); }); return u; };
+    const link=(href,text)=>{ const a=document.createElement('a'); a.href=href||'#'; a.target='_blank'; a.rel='noopener noreferrer'; a.textContent=text; a.style.color='#1e7a52'; return a; };
+    // 1) The right KIND of help for this situation.
+    if(sp.who_to_see){ const w=document.createElement('p'); w.style.cssText='margin:8px 0;padding:10px 12px;background:rgba(30,122,82,.08);border-radius:10px';
+      const b=document.createElement('strong'); b.textContent='You likely need: '; w.appendChild(b); w.appendChild(document.createTextNode(sp.who_to_see)); extra.appendChild(w); }
+    // 2) Real national directories / referral services.
+    const res=Array.isArray(sp.official_resources)?sp.official_resources:[];
+    if(res.length){ extra.appendChild(h4('Find a lawyer or accredited nonprofit'));
+      extra.appendChild(mkUl(res,(li,r)=>li.appendChild(link(r.url, r.name||r.url)))); }
+    // 3) Real LOCAL legal-aid lookup by state (hits /api/legal-aid).
+    extra.appendChild(h4('Find free or low-cost legal aid near you'));
+    const finder=document.createElement('div'); finder.style.cssText='display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin:4px 0';
+    const sel=document.createElement('select'); sel.setAttribute('aria-label','Your state');
+    sel.style.cssText='padding:7px 8px;border:1px solid rgba(20,53,36,.3);border-radius:8px;background:#fff';
+    ['','AL','AK','AZ','AR','CA','CO','CT','DE','DC','FL','GA','HI','ID','IL','IN','IA','KS','KY','LA','ME','MD','MA','MI','MN','MS','MO','MT','NE','NV','NH','NJ','NM','NY','NC','ND','OH','OK','OR','PA','RI','SC','SD','TN','TX','UT','VT','VA','WA','WV','WI','WY']
+      .forEach(s=>{ const o=document.createElement('option'); o.value=s; o.textContent=s||'Select your state'; sel.appendChild(o); });
+    const find=document.createElement('button'); find.type='button'; find.textContent='Find help';
+    find.style.cssText='background:#1e7a52;color:#fff;border:0;border-radius:8px;padding:7px 14px;font-weight:600;cursor:pointer';
+    const results=document.createElement('div'); results.setAttribute('aria-live','polite'); results.style.cssText='margin:8px 0;font-size:.88rem';
+    find.onclick=async()=>{ const st=sel.value; if(!st){ results.textContent='Pick your state first.'; return; }
+      results.textContent='Looking up real legal-aid organizations…';
+      try{ const r=await fetch('/api/legal-aid',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({state:st})}); const d=await r.json();
+        const provs=Array.isArray(d.providers)?d.providers:[]; results.textContent='';
+        if(!provs.length){ results.textContent=(d.message||'No local entries yet for that state. Use the directories above (e.g. immigrationlawhelp.org).'); return; }
+        results.appendChild(mkUl(provs,(li,p)=>{ const nm=document.createElement('strong'); nm.textContent=p.name||'Provider'; li.appendChild(nm);
+          const meta=[p.city,p.state].filter(Boolean).join(', '); if(meta) li.appendChild(document.createTextNode(' — '+meta));
+          if(p.phone){ li.appendChild(document.createElement('br')); li.appendChild(link('tel:'+p.phone, p.phone)); }
+          if(p.url){ li.appendChild(document.createTextNode(' · ')); li.appendChild(link(p.url,'website')); } }));
+        if(d.source){ const s=document.createElement('div'); s.style.cssText='margin-top:6px;color:#2e5a44;font-size:.8rem'; s.textContent='Source: '+d.source+(d.retrieved_at?(' ('+d.retrieved_at+')'):'')+'. Informational only, not an endorsement.'; results.appendChild(s); }
+      }catch(e){ results.textContent='Could not reach the legal-aid directory right now. Use the links above.'; } };
+    finder.appendChild(sel); finder.appendChild(find); extra.appendChild(finder); extra.appendChild(results);
+    // 4) What to bring + what to ask (organizational, not advice).
+    if(Array.isArray(sp.documents_to_gather)&&sp.documents_to_gather.length){ extra.appendChild(h4('Bring these to your appointment'));
+      extra.appendChild(mkUl(sp.documents_to_gather.slice(0,6),(li,t)=>li.textContent=t)); }
+    if(Array.isArray(sp.questions_for_attorney)&&sp.questions_for_attorney.length){ extra.appendChild(h4('Questions to ask'));
+      extra.appendChild(mkUl(sp.questions_for_attorney.slice(0,5),(li,t)=>li.textContent=t)); }
+
     // Remember where focus was so we can return it when the modal closes.
     try{ if(ov.style.display==='none' || !ov._returnFocus) ov._returnFocus=document.activeElement; }catch(e){}
     ov.style.display='flex';
-    try{ ov.querySelector('button').focus(); }catch(e){}
+    try{ btnEl.focus(); }catch(e){}
   }
 
   async function aiChatMessages(messages, opts={}){
