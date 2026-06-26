@@ -148,6 +148,43 @@ SOURCES = [
                     "legal-help", "doj"],
      "anchors": ["Organizations must submit Form EOIR"],
      "max_chars": 360},
+    # ----- Biometrics appointment (NEW breadth) -----
+    {"id": "uscis-biometrics", "url": "https://www.uscis.gov/forms/filing-guidance/preparing-for-your-biometric-services-appointment",
+     "title": "Preparing for Your Biometric Services Appointment | USCIS",
+     "topic": "process",
+     "topic_tags": ["biometrics", "fingerprints", "appointment", "asc"],
+     "anchors": ["collect your fingerprints", "fingerprints, photograph", "verify your identity"],
+     "max_chars": 360},
+    # ----- Change of address AR-11 (NEW breadth) -----
+    {"id": "uscis-ar11", "url": "https://www.uscis.gov/ar-11",
+     "title": "Alien's Change of Address Card (AR-11) | USCIS",
+     "topic": "process",
+     "topic_tags": ["ar-11", "change-of-address", "address", "update"],
+     "anchors": ["change your address", "Change of Address"],
+     "max_chars": 320},
+    # ----- Medical exam I-693 (NEW breadth) -----
+    {"id": "uscis-i693-medical", "url": "https://www.uscis.gov/i-693",
+     "title": "Report of Immigration Medical Examination and Vaccination Record (I-693) | USCIS",
+     "topic": "forms",
+     "topic_tags": ["i-693", "medical-exam", "vaccination", "civil-surgeon"],
+     "anchors": ["civil surgeon", "designated civil surgeon", "medical examination"],
+     "max_chars": 360},
+    # ----- Public charge (NEW breadth) -----
+    {"id": "uscis-public-charge", "url": "https://www.uscis.gov/green-card/green-card-processes-and-procedures/public-charge",
+     "title": "Public Charge | USCIS",
+     "topic": "process",
+     "topic_tags": ["public-charge", "inadmissibility", "benefits"],
+     "anchors": ["public charge ground of inadmissibility", "likely to become primarily dependent",
+                 "likely at any time to become a public charge"],
+     "max_chars": 360},
+    # ----- Consular processing (NEW breadth) -----
+    {"id": "uscis-consular-processing", "url": "https://www.uscis.gov/green-card/green-card-processes-and-procedures/consular-processing",
+     "title": "Consular Processing | USCIS",
+     "topic": "process",
+     "topic_tags": ["consular-processing", "immigrant-visa", "nvc", "abroad"],
+     "anchors": ["apply for an immigrant visa", "the National Visa Center",
+                 "approved immigrant petition"],
+     "max_chars": 360},
 ]
 # NOTE: a few candidate pages were intentionally dropped from this config because
 # their live HTML yields only navigation/table fragments rather than a clean

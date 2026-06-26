@@ -466,5 +466,109 @@
     "retrieved_at": "2026-06-26",
     "checksum": "492ee9f4eeef13be8647be6733c36c7c5306f34faab4844aefc7dd92e309321a",
     "source_text_len": 8734
+  },
+  {
+    "id": "uscis-biometrics",
+    "title": "Preparing for Your Biometric Services Appointment | USCIS",
+    "url": "https://www.uscis.gov/forms/filing-guidance/preparing-for-your-biometric-services-appointment",
+    "canonical_url": "https://www.uscis.gov/forms/filing-guidance/preparing-for-your-biometric-services-appointment",
+    "topic": "process",
+    "topic_tags": [
+      "biometrics",
+      "fingerprints",
+      "appointment",
+      "asc"
+    ],
+    "quote": "fingerprints, photograph, or signature, we will schedule your biometric services appointment at a local Application Support Center (ASC). We have the general authority to require and collect biometrics from any applicant, petitioner, sponsor, beneficiary, or other individual residing in the United States for any immigration and naturalization benefit.",
+    "quote_span": {
+      "start": 4958,
+      "end": 5311
+    },
+    "retrieved_at": "2026-06-26",
+    "checksum": "4b48a31384e0fd3996bae36bb1eee091c38d75bf2b0198f4ddcd8efabae869d9",
+    "source_text_len": 13767
+  },
+  {
+    "id": "uscis-ar11",
+    "title": "Alien's Change of Address Card (AR-11) | USCIS",
+    "url": "https://www.uscis.gov/ar-11",
+    "canonical_url": "https://www.uscis.gov/ar-11",
+    "topic": "process",
+    "topic_tags": [
+      "ar-11",
+      "change-of-address",
+      "address",
+      "update"
+    ],
+    "quote": "change your address. This meets the legal requirement to notify USCIS of a change of address.",
+    "quote_span": {
+      "start": 4550,
+      "end": 4643
+    },
+    "retrieved_at": "2026-06-26",
+    "checksum": "5dc9ba8e2d733124bf5b3b11d8263a33f7b08edb0cec259066081904051bfea7",
+    "source_text_len": 7487
+  },
+  {
+    "id": "uscis-i693-medical",
+    "title": "Report of Immigration Medical Examination and Vaccination Record (I-693) | USCIS",
+    "url": "https://www.uscis.gov/i-693",
+    "canonical_url": "https://www.uscis.gov/i-693",
+    "topic": "forms",
+    "topic_tags": [
+      "i-693",
+      "medical-exam",
+      "vaccination",
+      "civil-surgeon"
+    ],
+    "quote": "civil surgeon is responsible for providing you with a completed Form I-693 that is signed and placed in a sealed envelope. If you file Form I-485 online, you must open the sealed envelope from the civil surgeon and upload the completed Form I-693 with your application package.",
+    "quote_span": {
+      "start": 4215,
+      "end": 4492
+    },
+    "retrieved_at": "2026-06-26",
+    "checksum": "ea9d86031fc150c6b2d615ac2241008b1c4003357a4b6c82864325587a91139f",
+    "source_text_len": 13067
+  },
+  {
+    "id": "uscis-public-charge",
+    "title": "Public Charge | USCIS",
+    "url": "https://www.uscis.gov/green-card/green-card-processes-and-procedures/public-charge",
+    "canonical_url": "https://www.uscis.gov/green-card/green-card-processes-and-procedures/public-charge",
+    "topic": "process",
+    "topic_tags": [
+      "public-charge",
+      "inadmissibility",
+      "benefits"
+    ],
+    "quote": "Public Charge Ground of Inadmissibility final rule will go into effect. This final rule, which was previously announced , provides clarity and consistency for noncitizens on how DHS will administer the public charge ground of inadmissibility.",
+    "quote_span": {
+      "start": 3877,
+      "end": 4119
+    },
+    "retrieved_at": "2026-06-26",
+    "checksum": "44e9d9f9aa16437ab329dab1bc48cb69b52f35d7f1f22b5e834a4ee2cf0aff1e",
+    "source_text_len": 6002
+  },
+  {
+    "id": "uscis-consular-processing",
+    "title": "Consular Processing | USCIS",
+    "url": "https://www.uscis.gov/green-card/green-card-processes-and-procedures/consular-processing",
+    "canonical_url": "https://www.uscis.gov/green-card/green-card-processes-and-procedures/consular-processing",
+    "topic": "process",
+    "topic_tags": [
+      "consular-processing",
+      "immigrant-visa",
+      "nvc",
+      "abroad"
+    ],
+    "quote": "the National Visa Center The National Visa Center (NVC) is responsible for collecting visa application fees and supporting documentation . The NVC will notify the petitioner and you (the beneficiary) when the visa petition is received and again when an immigrant visa number is about to become available.",
+    "quote_span": {
+      "start": 7344,
+      "end": 7648
+    },
+    "retrieved_at": "2026-06-26",
+    "checksum": "d55dad3842a8900ab98071b90952a20b751a2681935b45f34a3c44b493d81e5d",
+    "source_text_len": 10820
   }
 ]

@@ -86,3 +86,27 @@ def test_pathway_exposes_sufficiency(client, monkeypatch):
                         lambda **k: _FakeResp('{"primaryPathway": "Family-based"}'))
     d = client.post("/api/pathway", json={"intake": "married to a US citizen, filing I-130"}).get_json()
     assert "sources_sufficient" in d and "source_coverage" in d
+
+
+# ── Corpus breadth: the topics a real applicant actually asks about ──────────
+# Guards against retrieval regressions and proves the corpus is broad enough to
+# ground common process questions (not just the core form pages).
+
+CORE_TOPICS = [
+    "biometric services appointment fingerprints",
+    "change of address notify USCIS AR-11",
+    "medical examination civil surgeon I-693 vaccination",
+    "public charge ground of inadmissibility",
+    "consular processing immigrant visa national visa center",
+    "Form I-130 petition for my spouse",
+    "I-485 adjustment of status green card",
+    "Form I-765 work permit employment authorization",
+    "Form I-90 replace my green card",
+    "naturalization to become a US citizen",
+]
+
+
+@pytest.mark.parametrize("query", CORE_TOPICS)
+def test_core_topics_have_sufficient_sources(query):
+    sources = rag.retrieve(query, k=3)
+    assert not rag.is_insufficient(sources), f"corpus does not cover: {query!r}"

@@ -983,7 +983,7 @@ def api_stage_qa():
             report = claim_grounding.validate(parsed.get('claims', []), sources)
             # Citations come ONLY from sources a supported claim actually used, so
             # a citation can never imply support the model did not have.
-            citations = claim_grounding.citations_from_report(
+            citations = [] if insufficient else claim_grounding.citations_from_report(
                 report, sources, rag.as_citation)
             claim_summary = {
                 'total': report['total'], 'supported': report['supported'],
@@ -993,8 +993,9 @@ def api_stage_qa():
         else:
             answer = raw
             # Legacy path: citations are still authoritative (verbatim corpus),
-            # never free-text the model emits.
-            citations = [rag.as_citation(s) for s in sources]
+            # never free-text the model emits. Suppressed when retrieval is
+            # insufficient so a weak lexical hit never reads as a real citation.
+            citations = [] if insufficient else [rag.as_citation(s) for s in sources]
             claim_summary = None
 
         out = {'answer': answer, 'citations': citations,

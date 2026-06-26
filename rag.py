@@ -22,6 +22,9 @@ _STOPWORDS = {
     'from', 'has', 'have', 'how', 'i', 'if', 'in', 'is', 'it', 'me', 'my', 'of',
     'on', 'or', 'our', 'the', 'this', 'to', 'use', 'want', 'what', 'when',
     'where', 'which', 'who', 'will', 'with', 'you', 'your',
+    # 'general' is the UI default for pathway/stage ("General") and a low-signal
+    # word; dropping it keeps that sentinel from creating spurious retrieval hits.
+    'general',
 }
 
 
