@@ -121,11 +121,12 @@ def _security_headers(resp):
     resp.headers.setdefault(
         'Content-Security-Policy',
         "default-src 'self'; "
-        "script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://unpkg.com; "
-        "style-src 'self' 'unsafe-inline'; "
+        "script-src 'self' 'unsafe-inline' 'wasm-unsafe-eval' https://cdn.jsdelivr.net https://unpkg.com https://cdnjs.cloudflare.com; "
+        "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; "
+        "font-src 'self' data: https://fonts.gstatic.com; "
         "img-src 'self' data: blob:; "
-        "connect-src 'self' https://cdn.jsdelivr.net https://unpkg.com; "
-        "worker-src 'self' blob:; "
+        "connect-src 'self' https://cdn.jsdelivr.net https://unpkg.com https://cdnjs.cloudflare.com https://translate.googleapis.com; "
+        "worker-src 'self' blob: https://cdnjs.cloudflare.com; "
         "frame-ancestors 'none'; base-uri 'self'")
     if FORCE_HTTPS:
         resp.headers.setdefault('Strict-Transport-Security',

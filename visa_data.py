@@ -33,6 +33,27 @@ def _load(path):
         return {}
 
 
+def _current_action_date(country, eb):
+    """Current final-action anchor from visa_waits.json.
+
+    forecasts.json stores fitted movement rates, but it can lag the latest
+    manually refreshed bulletin snapshot. Anchor projections to the newest
+    committed final-action date so a priority date that is already current in
+    visa_waits.json never receives a stale multi-year forecast.
+    """
+    rec = _load(_JSON).get("countries", {}).get(country, {})
+    level = (rec.get("levels") or {}).get(eb, {})
+    raw = level.get("priority_date")
+    if raw == "Current":
+        raw = rec.get("bulletin_date")
+    if not raw or raw == "Unavailable":
+        return None
+    try:
+        return date.fromisoformat(str(raw))
+    except Exception:
+        return None
+
+
 def _trend_note(trend):
     """Describe what happened to the backlog over time from a [[year, wait], ...] series."""
     pts = trend.get("EB2") or trend.get("EB3") or []
@@ -66,10 +87,13 @@ def project_current(country, eb, priority_date):
         target = date.fromisoformat(priority_date)
     except Exception:
         return None
+    current_anchor = _current_action_date(country, eb)
+    if current_anchor and current_anchor > latest:
+        latest = current_anchor
     gap = (target - latest).days
     years = 0.0 if gap <= 0 else round((gap / slope) / 365.25, 1)
     return {"status": fc.get("status"), "years": years,
-            "latest_pd": fc["latest_pd"], "r2": fc.get("r2")}
+            "latest_pd": latest.isoformat(), "r2": fc.get("r2")}
 
 
 def _forecast_line(country, fc_countries):

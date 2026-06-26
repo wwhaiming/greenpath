@@ -6,8 +6,8 @@
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",
-    "test": "python3 -m pytest tests/ -q",
-    "eval": "python3 evals/eval.py",
+    "test": "sh -c 'PYTHON=python3; if [ -x .venv/bin/python ]; then PYTHON=.venv/bin/python; fi; \"$PYTHON\" -m pytest tests/ -q'",
+    "eval": "sh -c 'PYTHON=python3; if [ -x .venv/bin/python ]; then PYTHON=.venv/bin/python; fi; \"$PYTHON\" evals/eval.py \"$@\"' --",
     "e2e": "playwright test tests/e2e"
   },
   "dependencies": {

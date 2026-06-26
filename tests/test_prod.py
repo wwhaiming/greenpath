@@ -24,6 +24,15 @@ def test_security_headers_present(client):
     assert r.headers.get("X-Frame-Options") == "DENY"
     csp = r.headers.get("Content-Security-Policy")
     assert csp and "frame-ancestors 'none'" in csp and "default-src 'self'" in csp
+    # The single-file frontend depends on these origins for fonts, OCR/PDF, and
+    # the keyless translation fallback; CSP must not silently break those flows.
+    for origin in (
+        "https://fonts.googleapis.com",
+        "https://fonts.gstatic.com",
+        "https://cdnjs.cloudflare.com",
+        "https://translate.googleapis.com",
+    ):
+        assert origin in csp
 
 
 def test_no_hsts_without_force_https(client):

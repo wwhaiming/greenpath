@@ -53,8 +53,13 @@ test.describe('GreenPath safety + navigation E2E', () => {
     await expect(page.locator('#home')).toBeVisible();
 
     // Navigating to a deterministic, non-AI section must reveal it.
+    // Activate the nav link by keyboard (focus + Enter): the open dropdown is an
+    // absolutely-positioned panel whose lower links can sit below the fold, so a
+    // viewport-dependent mouse click is flaky — keyboard activation is not.
     await page.locator('#menuBtn').click();   // open the hamburger nav
-    await page.locator('nav.main a[data-go="legal"]').click();
+    const legalLink = page.locator('nav.main a[data-go="legal"]');
+    await legalLink.focus();
+    await page.keyboard.press('Enter');
     const legal = page.locator('#legal');
     await expect(legal).toBeVisible();
     await expect(legal.locator('h1, h2').first()).toBeVisible();

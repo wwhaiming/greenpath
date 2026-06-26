@@ -28,6 +28,13 @@ def test_project_current_already_current():
     assert r and r["years"] == 0.0
 
 
+def test_project_current_uses_latest_waits_anchor():
+    # forecasts.json may lag the latest committed visa_waits.json snapshot; the
+    # runtime estimator must not forecast dates already current in visa_waits.
+    r = project_current("Mexico", "EB3", "2024-06-01")
+    assert r and r["years"] == 0.0 and r["latest_pd"] == "2024-08-01"
+
+
 def test_project_current_stalled_has_no_forecast():
     # India EB2 has a non-positive recent slope → no reliable forecast.
     r = project_current("India", "EB2", "2015-01-01")
