@@ -10,7 +10,7 @@ import openai
 from openai import OpenAI
 from dotenv import load_dotenv
 
-from handoff import detect_handoff, build_handoff_response, safe_prep
+from handoff import detect_handoff, triage_handoff, build_handoff_response, safe_prep
 import rag
 from retrieval import claims as claim_grounding
 import freshness
@@ -592,7 +592,10 @@ def api_chat():
             schema_name = (response_format.get('json_schema') or {}).get('name', '')
         if schema_name != 'notice_extract':
             user_text = '\n'.join(m['content'] for m in clean if m['role'] == 'user')
-            hand = detect_handoff(user_text)
+            # Two-layer triage: deterministic regex (authoritative) + an
+            # escalate-only semantic layer for euphemistic/indirect/mixed-language
+            # high-risk text. Degrades to the regex result when no key/LLM.
+            hand = triage_handoff(user_text)
             if hand['handoff']:
                 return jsonify(build_handoff_response('chat', hand)), 200
 
@@ -696,7 +699,7 @@ def api_document_review():
         if not document:
             return jsonify({'error': 'document required'}), 400
 
-        hand = detect_handoff(document)
+        hand = triage_handoff(document)
         if hand['handoff']:
             return jsonify(build_handoff_response('document-review', hand)), 200
 
@@ -787,7 +790,7 @@ def api_interview():
             t.get('content', '') for t in transcript
             if isinstance(t, dict) and t.get('role') == 'applicant'
         ]
-        hand = detect_handoff(*applicant_texts)
+        hand = triage_handoff(*applicant_texts)
         if hand['handoff']:
             return jsonify(build_handoff_response('interview', hand)), 200
 
@@ -885,7 +888,7 @@ def api_pathway():
         if not intake:
             return jsonify({'error': 'intake required'}), 400
 
-        hand = detect_handoff(intake)
+        hand = triage_handoff(intake)
         if hand['handoff']:
             return jsonify(build_handoff_response('pathway', hand)), 200
 
@@ -943,7 +946,7 @@ def api_stage_qa():
         if not question:
             return jsonify({'error': 'question required'}), 400
 
-        hand = detect_handoff(question)
+        hand = triage_handoff(question)
         if hand['handoff']:
             return jsonify(build_handoff_response('stage-qa', hand)), 200
 

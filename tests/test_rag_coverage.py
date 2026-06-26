@@ -103,6 +103,27 @@ CORE_TOPICS = [
     "Form I-765 work permit employment authorization",
     "Form I-90 replace my green card",
     "naturalization to become a US citizen",
+    # ── breadth expansion: the broader green-card journey ──
+    "fee waiver I-912 inability to pay",
+    "employment based first preference EB-1 extraordinary ability",
+    "employment based second preference EB-2 advanced degree",
+    "employment based third preference EB-3 skilled worker",
+    "green card through employment permanent resident",
+    "green card family preference categories",
+    "green card eligibility categories",
+    "how to apply for a green card",
+    "adjustment of status green card",
+    "employment authorization document EAD work permit",
+    "check case status receipt number",
+    "request for evidence RFE additional evidence",
+    "reschedule biometrics appointment",
+    "naturalization interview test citizenship",
+    "naturalization civics English test study",
+    "affirmative asylum apply",
+    "refugee resettlement USRAP",
+    "DACA deferred action childhood arrivals",
+    "national visa center immigrant visa priority date",
+    "employment based immigrant visas preference categories",
 ]
 
 

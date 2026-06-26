@@ -570,5 +570,428 @@
     "retrieved_at": "2026-06-26",
     "checksum": "d55dad3842a8900ab98071b90952a20b751a2681935b45f34a3c44b493d81e5d",
     "source_text_len": 10820
+  },
+  {
+    "id": "uscis-i912-fee-waiver",
+    "title": "Request for Fee Waiver (I-912) | USCIS",
+    "url": "https://www.uscis.gov/i-912",
+    "canonical_url": "https://www.uscis.gov/i-912",
+    "topic": "fees",
+    "topic_tags": [
+      "i-912",
+      "fee-waiver",
+      "inability-to-pay",
+      "fees"
+    ],
+    "quote": "Use this form to request a fee waiver (or submit a written request) for certain immigration forms and services based on a demonstrated inability to pay. For the list of forms and services that are eligible for a fee waiver, see the list below, visit our Fee Waiver Page , or read 8 CFR 106.3(a) .",
+    "quote_span": {
+      "start": 3674,
+      "end": 3970
+    },
+    "retrieved_at": "2026-06-26",
+    "checksum": "4bc94a582e0530126af0bbeb02069e3f242aa5f8e32964952be5c247c8145545",
+    "source_text_len": 14274
+  },
+  {
+    "id": "uscis-eb1",
+    "title": "Employment-Based Immigration: First Preference EB-1 | USCIS",
+    "url": "https://www.uscis.gov/working-in-the-united-states/permanent-workers/employment-based-immigration-first-preference-eb-1",
+    "canonical_url": "https://www.uscis.gov/working-in-the-united-states/permanent-workers/employment-based-immigration-first-preference-eb-1",
+    "topic": "process",
+    "topic_tags": [
+      "eb-1",
+      "employment",
+      "extraordinary-ability",
+      "permanent-worker"
+    ],
+    "quote": "You may be eligible for an employment-based, first-preference visa if you are an alien of extraordinary ability, are an outstanding professor or researcher, or are a certain multinational executive or manager.",
+    "quote_span": {
+      "start": 4246,
+      "end": 4455
+    },
+    "retrieved_at": "2026-06-26",
+    "checksum": "1ed73808c277c7a2d2da827570a4528fe61d7925178f0137de376307f493296b",
+    "source_text_len": 11534
+  },
+  {
+    "id": "uscis-eb2",
+    "title": "Employment-Based Immigration: Second Preference EB-2 | USCIS",
+    "url": "https://www.uscis.gov/working-in-the-united-states/permanent-workers/employment-based-immigration-second-preference-eb-2",
+    "canonical_url": "https://www.uscis.gov/working-in-the-united-states/permanent-workers/employment-based-immigration-second-preference-eb-2",
+    "topic": "process",
+    "topic_tags": [
+      "eb-2",
+      "employment",
+      "advanced-degree",
+      "exceptional-ability",
+      "permanent-worker"
+    ],
+    "quote": "You may be eligible for an employment-based, second preference visa if you are a member of the professions holding an advanced degree or its equivalent, or a person who has exceptional ability.",
+    "quote_span": {
+      "start": 4249,
+      "end": 4442
+    },
+    "retrieved_at": "2026-06-26",
+    "checksum": "2fa4dd40b568bb504d151f4b6efe73437e532b9bb42104b425852be5e4f4ec93",
+    "source_text_len": 25442
+  },
+  {
+    "id": "uscis-eb3",
+    "title": "Employment-Based Immigration: Third Preference EB-3 | USCIS",
+    "url": "https://www.uscis.gov/working-in-the-united-states/permanent-workers/employment-based-immigration-third-preference-eb-3",
+    "canonical_url": "https://www.uscis.gov/working-in-the-united-states/permanent-workers/employment-based-immigration-third-preference-eb-3",
+    "topic": "process",
+    "topic_tags": [
+      "eb-3",
+      "employment",
+      "skilled-worker",
+      "professional",
+      "permanent-worker"
+    ],
+    "quote": "You may be eligible for this immigrant visa preference category if you are a skilled worker, professional, or other worker. Skilled workers are persons who are capable of performing skilled labor and whose job requires at least 2 years training or experience, not of a temporary or seasonal nature.",
+    "quote_span": {
+      "start": 5948,
+      "end": 6246
+    },
+    "retrieved_at": "2026-06-26",
+    "checksum": "b6fbe6ceb9d140060666e02c4621563441b7c8b2dd7b44f47f450a2875e3c264",
+    "source_text_len": 11885
+  },
+  {
+    "id": "uscis-green-card-employment",
+    "title": "Green Card for Employment-Based Immigrants | USCIS",
+    "url": "https://www.uscis.gov/green-card/green-card-eligibility/green-card-for-employment-based-immigrants",
+    "canonical_url": "https://www.uscis.gov/green-card/green-card-eligibility/green-card-for-employment-based-immigrants",
+    "topic": "process",
+    "topic_tags": [
+      "employment",
+      "green-card",
+      "preference",
+      "permanent-resident"
+    ],
+    "quote": "U.S. immigration law provides aliens with a variety of ways to become lawful permanent residents (get a Green Card) through employment in the United States.",
+    "quote_span": {
+      "start": 3977,
+      "end": 4133
+    },
+    "retrieved_at": "2026-06-26",
+    "checksum": "57b028a2dbf011b05d6eaa0d84541545257210e9e88ff4cd6b233073d38bc6bc",
+    "source_text_len": 28270
+  },
+  {
+    "id": "uscis-family-preference",
+    "title": "Green Card for Family Preference Immigrants | USCIS",
+    "url": "https://www.uscis.gov/green-card/green-card-eligibility/green-card-for-family-preference-immigrants",
+    "canonical_url": "https://www.uscis.gov/green-card/green-card-eligibility/green-card-for-family-preference-immigrants",
+    "topic": "process",
+    "topic_tags": [
+      "family",
+      "preference",
+      "green-card",
+      "relative",
+      "f1",
+      "f2",
+      "f3",
+      "f4"
+    ],
+    "quote": "U.S. immigration law allows certain aliens who are family members of U.S. citizens and lawful permanent residents to become lawful permanent residents (get a Green Card) based on specific family relationships.",
+    "quote_span": {
+      "start": 3980,
+      "end": 4189
+    },
+    "retrieved_at": "2026-06-26",
+    "checksum": "04e03409997e3be247528d8a1d07d3706688ef1ec33bf45d6493ce6d6449d3c7",
+    "source_text_len": 22078
+  },
+  {
+    "id": "uscis-green-card-eligibility",
+    "title": "Green Card Eligibility Categories | USCIS",
+    "url": "https://www.uscis.gov/green-card/green-card-eligibility-categories",
+    "canonical_url": "https://www.uscis.gov/green-card/green-card-eligibility-categories",
+    "topic": "process",
+    "topic_tags": [
+      "eligibility",
+      "green-card",
+      "categories"
+    ],
+    "quote": "To apply for a Green Card, you must be eligible under one of the categories listed below.",
+    "quote_span": {
+      "start": 3927,
+      "end": 4016
+    },
+    "retrieved_at": "2026-06-26",
+    "checksum": "35fcc39cb1235f11071b819bf489f11cd46df7b00304dc9068720143b1d8b567",
+    "source_text_len": 12408
+  },
+  {
+    "id": "uscis-how-to-apply",
+    "title": "How to Apply for a Green Card | USCIS",
+    "url": "https://www.uscis.gov/green-card/how-to-apply-for-a-green-card",
+    "canonical_url": "https://www.uscis.gov/green-card/how-to-apply-for-a-green-card",
+    "topic": "process",
+    "topic_tags": [
+      "apply",
+      "green-card",
+      "process"
+    ],
+    "quote": "U.S. immigration laws provide a variety of ways for people to apply for a Green Card. The eligibility requirements may vary depending on the immigrant category you are applying under.",
+    "quote_span": {
+      "start": 3898,
+      "end": 4081
+    },
+    "retrieved_at": "2026-06-26",
+    "checksum": "a6a8f776f5cddb652492f993b2efdd6159dec6faa8bff3cd657e2c3f8cab3179",
+    "source_text_len": 9718
+  },
+  {
+    "id": "uscis-adjustment-of-status",
+    "title": "Adjustment of Status | USCIS",
+    "url": "https://www.uscis.gov/green-card/green-card-processes-and-procedures/adjustment-of-status",
+    "canonical_url": "https://www.uscis.gov/green-card/green-card-processes-and-procedures/adjustment-of-status",
+    "topic": "process",
+    "topic_tags": [
+      "adjustment",
+      "adjust-status",
+      "green-card",
+      "i-485"
+    ],
+    "quote": "Adjustment of status is the process that you can use to apply for lawful permanent resident status (also known as applying for a Green Card) when you are present in the United States. This means that you may get a Green Card without having to return to your home country to complete visa processing.",
+    "quote_span": {
+      "start": 4058,
+      "end": 4357
+    },
+    "retrieved_at": "2026-06-26",
+    "checksum": "c9de1592cc69b60926bea22eef66b616365f8d59a846328cbc994183f81d5030",
+    "source_text_len": 12901
+  },
+  {
+    "id": "uscis-ead-overview",
+    "title": "Employment Authorization Document | USCIS",
+    "url": "https://www.uscis.gov/green-card/green-card-processes-and-procedures/employment-authorization-document",
+    "canonical_url": "https://www.uscis.gov/green-card/green-card-processes-and-procedures/employment-authorization-document",
+    "topic": "process",
+    "topic_tags": [
+      "ead",
+      "work-permit",
+      "employment-authorization",
+      "i-766"
+    ],
+    "quote": "Having an Employment Authorization Document (Form I-766/EAD) is one way to prove that you are authorized to work in the United States for a specific time period. To request an EAD, you generally must file Form I-765, Application for Employment Authorization .",
+    "quote_span": {
+      "start": 4230,
+      "end": 4489
+    },
+    "retrieved_at": "2026-06-26",
+    "checksum": "92734f5e9b130b29b1d353f3d344a3c5c03e4ef1cfe9f355a29314917088a45e",
+    "source_text_len": 11371
+  },
+  {
+    "id": "uscis-case-status",
+    "title": "Checking Your Case Status Online | USCIS",
+    "url": "https://www.uscis.gov/tools/checking-your-case-status-online",
+    "canonical_url": "https://www.uscis.gov/tools/checking-your-case-status-online",
+    "topic": "process",
+    "topic_tags": [
+      "case-status",
+      "receipt-number",
+      "tracking"
+    ],
+    "quote": "This receipt number is a unique 13-character identifier that USCIS provides for each application or petition it receives, and it’s used to identify and track its cases. The receipt number consists of three letters followed by 10 numbers. For example, the letters can be EAC, WAC, LIN, SRC, NBC, MSC or IOE.",
+    "quote_span": {
+      "start": 4347,
+      "end": 4653
+    },
+    "retrieved_at": "2026-06-26",
+    "checksum": "2106e6e295a5587f0771ad1cb616992ec0c296203e5ebf9b81fcfd13b6cd88af",
+    "source_text_len": 7081
+  },
+  {
+    "id": "uscis-rfe",
+    "title": "Request for Evidence (RFE) | USCIS",
+    "url": "https://www.uscis.gov/glossary-term/79521",
+    "canonical_url": "https://www.uscis.gov/glossary-term/79521",
+    "topic": "process",
+    "topic_tags": [
+      "rfe",
+      "request-for-evidence",
+      "additional-evidence"
+    ],
+    "quote": "We may send you a request for additional evidence if: You did not submit all the required evidence; The evidence you submitted is no longer valid; or The officer needs more information to determine your eligibility.",
+    "quote_span": {
+      "start": 3534,
+      "end": 3749
+    },
+    "retrieved_at": "2026-06-26",
+    "checksum": "5b35970179f3fa7286c53ff46a44e30625160e5f81029146bd4931b1e1bd2dd8",
+    "source_text_len": 4227
+  },
+  {
+    "id": "uscis-biometrics-reschedule",
+    "title": "Rescheduling Your Biometric Services Appointment | USCIS",
+    "url": "https://www.uscis.gov/forms/filing-guidance/preparing-for-your-biometric-services-appointment",
+    "canonical_url": "https://www.uscis.gov/forms/filing-guidance/preparing-for-your-biometric-services-appointment",
+    "topic": "process",
+    "topic_tags": [
+      "biometrics",
+      "reschedule",
+      "appointment",
+      "asc"
+    ],
+    "quote": "If you need to reschedule an appointment for biometric services, you must make the request through your USCIS online account . Do not mail your request.",
+    "quote_span": {
+      "start": 4078,
+      "end": 4230
+    },
+    "retrieved_at": "2026-06-26",
+    "checksum": "4b48a31384e0fd3996bae36bb1eee091c38d75bf2b0198f4ddcd8efabae869d9",
+    "source_text_len": 13767
+  },
+  {
+    "id": "uscis-naturalization-interview",
+    "title": "The Naturalization Interview and Test | USCIS",
+    "url": "https://www.uscis.gov/citizenship/learn-about-citizenship/the-naturalization-interview-and-test",
+    "canonical_url": "https://www.uscis.gov/citizenship/learn-about-citizenship/the-naturalization-interview-and-test",
+    "topic": "process",
+    "topic_tags": [
+      "naturalization",
+      "interview",
+      "citizenship",
+      "test"
+    ],
+    "quote": "During your naturalization interview, a USCIS officer will ask you questions about your application and background. Unless you qualify for an exemption , you will also take a naturalization test which is made up of two components, an English and civics test.",
+    "quote_span": {
+      "start": 4615,
+      "end": 4873
+    },
+    "retrieved_at": "2026-06-26",
+    "checksum": "f3316fe8525d9174703db9e0f41b6ab06b916c5b960018c3ae557db0bcbfc177",
+    "source_text_len": 8517
+  },
+  {
+    "id": "uscis-naturalization-test",
+    "title": "Study for the Test | USCIS Citizenship Resource Center",
+    "url": "https://www.uscis.gov/citizenship/find-study-materials-and-resources/study-for-the-test",
+    "canonical_url": "https://www.uscis.gov/citizenship/find-study-materials-and-resources/study-for-the-test",
+    "topic": "process",
+    "topic_tags": [
+      "naturalization",
+      "civics-test",
+      "english-test",
+      "citizenship"
+    ],
+    "quote": "For the English portion of the naturalization test you must demonstrate an understanding of the English language, including the ability to read, write, and speak basic English.",
+    "quote_span": {
+      "start": 4390,
+      "end": 4566
+    },
+    "retrieved_at": "2026-06-26",
+    "checksum": "69019d16fb781e50a3f897a7f506c3f7302b2da699e59768ff17b7225da39acd",
+    "source_text_len": 11068
+  },
+  {
+    "id": "uscis-asylum-affirmative",
+    "title": "Obtaining Asylum in the United States | USCIS",
+    "url": "https://www.uscis.gov/humanitarian/refugees-and-asylum/asylum/obtaining-asylum-in-the-united-states",
+    "canonical_url": "https://www.uscis.gov/humanitarian/refugees-and-asylum/asylum/obtaining-asylum-in-the-united-states",
+    "topic": "process",
+    "topic_tags": [
+      "asylum",
+      "affirmative",
+      "humanitarian",
+      "persecution"
+    ],
+    "quote": "To obtain asylum through the affirmative asylum process you must be physically present in the United States. You may apply for asylum regardless of how you arrived in the United States or your current immigration status.",
+    "quote_span": {
+      "start": 5997,
+      "end": 6217
+    },
+    "retrieved_at": "2026-06-26",
+    "checksum": "b7494d7d9e62ffc7db617638af0543b05f2a5f7dc067aac5d22daa1d826d8142",
+    "source_text_len": 16165
+  },
+  {
+    "id": "uscis-refugee",
+    "title": "Refugees | USCIS",
+    "url": "https://www.uscis.gov/humanitarian/refugees-and-asylum/refugees",
+    "canonical_url": "https://www.uscis.gov/humanitarian/refugees-and-asylum/refugees",
+    "topic": "process",
+    "topic_tags": [
+      "refugee",
+      "humanitarian",
+      "usrap",
+      "resettlement"
+    ],
+    "quote": "You must receive a referral to the U.S. Refugee Admissions Program (USRAP) for consideration as a refugee. For more information on the referral criteria, see the USRAP Consultations and Worldwide Processing Priorities page.",
+    "quote_span": {
+      "start": 4948,
+      "end": 5171
+    },
+    "retrieved_at": "2026-06-26",
+    "checksum": "820ec3e9ca3030be7ea71948d768061ebda5a04075e290a61b5528c81622c9ac",
+    "source_text_len": 12413
+  },
+  {
+    "id": "uscis-daca",
+    "title": "Consideration of Deferred Action for Childhood Arrivals (DACA) | USCIS",
+    "url": "https://www.uscis.gov/humanitarian/consideration-of-deferred-action-for-childhood-arrivals-daca",
+    "canonical_url": "https://www.uscis.gov/humanitarian/consideration-of-deferred-action-for-childhood-arrivals-daca",
+    "topic": "process",
+    "topic_tags": [
+      "daca",
+      "deferred-action",
+      "childhood-arrivals",
+      "humanitarian"
+    ],
+    "quote": "Deferred action is an exercise of prosecutorial discretion to defer removal action against an individual for a certain period of time. Deferred action does not provide lawful status. On Aug. 30, 2022, DHS published the DACA Final Rule, with the intent to preserve and fortify the DACA policy.",
+    "quote_span": {
+      "start": 8279,
+      "end": 8571
+    },
+    "retrieved_at": "2026-06-26",
+    "checksum": "3dbcc1dd721c00c41eea2a4def24b578ed231d505310978ad97806f1925e48e7",
+    "source_text_len": 32216
+  },
+  {
+    "id": "dos-nvc",
+    "title": "National Visa Center | U.S. Department of State",
+    "url": "https://travel.state.gov/content/travel/en/us-visas/immigrate/national-visa-center.html",
+    "canonical_url": "https://travel.state.gov/content/travel/en/us-visas/immigrate/national-visa-center.html",
+    "topic": "process",
+    "topic_tags": [
+      "nvc",
+      "national-visa-center",
+      "immigrant-visa",
+      "priority-date",
+      "consular"
+    ],
+    "quote": "When you filed an immigrant visa petition, USCIS assigned you a date called a Priority Date. You can verify the Priority Date on the approval notice USCIS sent you when they approved your petition.",
+    "quote_span": {
+      "start": 3321,
+      "end": 3518
+    },
+    "retrieved_at": "2026-06-26",
+    "checksum": "00ac02041d5267fe11a9ab1926a30fe46deb644d1fdce9cc8531f31acc33f62c",
+    "source_text_len": 5385
+  },
+  {
+    "id": "dos-employment-based",
+    "title": "Employment-Based Immigrant Visas | U.S. Department of State",
+    "url": "https://travel.state.gov/content/travel/en/us-visas/immigrate/employment-based-immigrant-visas.html",
+    "canonical_url": "https://travel.state.gov/content/travel/en/us-visas/immigrate/employment-based-immigrant-visas.html",
+    "topic": "process",
+    "topic_tags": [
+      "employment",
+      "immigrant-visa",
+      "preference",
+      "labor-certification"
+    ],
+    "quote": "Every fiscal year (October 1 st – September 30 th ), approximately 140,000 employment-based immigrant visas are made available to qualified applicants under the provisions of U.S. immigration law. Employment based immigrant visas are divided into five preference categories.",
+    "quote_span": {
+      "start": 2613,
+      "end": 2887
+    },
+    "retrieved_at": "2026-06-26",
+    "checksum": "1af339c9ffb1f854acb8ba0bd9c0bc17efa90338886694e32d14847f8aff3f22",
+    "source_text_len": 25748
   }
 ]

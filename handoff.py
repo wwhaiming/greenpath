@@ -303,6 +303,86 @@ def detect_handoff(*texts):
     }
 
 
+# Minimum confidence the SEMANTIC layer must report before it is allowed to
+# ESCALATE a regex no-handoff into a handoff. High on purpose: the semantic layer
+# may only add safety, never noise, and false positives erode trust.
+SEMANTIC_CONFIDENCE_THRESHOLD = 0.75
+
+
+def _default_semantic(text):
+    """Lazy bridge to the LLM semantic layer. Imported here (not at module top)
+    so ``detect_handoff`` and the eval stay a pure, no-network, no-LLM path. Any
+    failure degrades to unknown so the regex stays authoritative."""
+    try:
+        from handoff_semantic import semantic_handoff
+        return semantic_handoff(text)
+    except Exception:  # noqa: BLE001 — never let the optional layer break triage
+        return {"handoff": None}
+
+
+def triage_handoff(*texts, semantic=None):
+    """Combined two-layer triage.
+
+    Layer 1 (AUTHORITATIVE): the deterministic regex ``detect_handoff``. If it
+    fires, we hand off and return immediately — the semantic layer can NEVER
+    downgrade or override a deterministic handoff.
+
+    Layer 2 (ADVISORY, escalate-only): if the regex says no-handoff AND a semantic
+    layer is available AND it returns a high-confidence (>= 0.75) high-risk
+    classification, we ALSO hand off. This catches euphemistic / indirect /
+    mixed-language high-risk text the lexical layer misses.
+
+    ``semantic`` is an injectable classifier ``fn(text) -> dict`` (used by tests to
+    mock the LLM); when ``None`` the real ``handoff_semantic.semantic_handoff`` is
+    used. A semantic result of ``{"handoff": None}`` (unknown / unavailable) is
+    treated as "no opinion" and never changes the deterministic outcome.
+
+    Return shape matches ``detect_handoff``; a semantic escalation additionally
+    carries ``source: "semantic"`` and the semantic ``confidence``.
+    """
+    det = detect_handoff(*texts)
+    if det["handoff"]:
+        return det  # deterministic handoff is authoritative; never downgraded.
+
+    blob = re.sub(r"\s+", " ",
+                  "\n".join(t for t in texts if isinstance(t, str) and t)).strip()
+    if not blob:
+        return det
+
+    sem_fn = semantic if semantic is not None else _default_semantic
+    try:
+        sem = sem_fn(blob)
+    except Exception:  # noqa: BLE001
+        return det
+    if not isinstance(sem, dict) or sem.get("handoff") is not True:
+        # None (unknown/unavailable) or False -> regex stays authoritative.
+        return det
+    try:
+        conf = float(sem.get("confidence") or 0.0)
+    except (TypeError, ValueError):
+        return det
+    if conf < SEMANTIC_CONFIDENCE_THRESHOLD:
+        return det
+
+    # Escalate. Map onto a known category so safe_prep() docs/urgency still apply.
+    category = sem.get("category")
+    if category not in _URGENCY:
+        category = "unclear_no_status"
+    reasons = sem.get("reasons")
+    if not isinstance(reasons, list) or not reasons:
+        reasons = ["situation flagged as high-risk by semantic review"]
+    reasons = [str(r) for r in reasons]
+    return {
+        "handoff": True,
+        "category": category,
+        "reasons": reasons,
+        "reason_keys": [category],
+        "message": HANDOFF_MESSAGE,
+        "source": "semantic",
+        "confidence": conf,
+    }
+
+
 def build_handoff_response(kind, hand):
     """Shape a handoff result into the native response of a given endpoint.
 

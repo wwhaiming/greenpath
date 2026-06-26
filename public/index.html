@@ -36,7 +36,7 @@
     --green-mid:#15714a;      /* accessible green text */
     --green-deep:#237a55;     /* evergreen (lightened) */
     --green-ink:#235a40;      /* dark accent (lightened) */
-    --gold:#9a6b10;           /* gold text (AA on cream) */
+    --gold:#8a5f0e;           /* gold text (AA 4.5:1 on cream/paper) */
     --gold-leaf:#c9952c;      /* gold ornament */
     --gold-bright:#e8be62;    /* gold text on dark surfaces (AA) */
     --amber:#9a6b10;
@@ -724,6 +724,12 @@
     outline:2px solid var(--gold-leaf);outline-offset:2px;border-radius:10px}
   .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;
     clip:rect(0,0,0,0);white-space:nowrap;border:0}
+  .skip-link{position:absolute;left:12px;top:-60px;z-index:200;
+    background:var(--card);color:var(--green-ink);font-family:var(--font-body);font-weight:700;
+    padding:10px 16px;border-radius:10px;border:2px solid var(--gold-leaf);
+    box-shadow:0 14px 40px -22px rgba(12,43,29,.65);transition:top .18s}
+  .skip-link:focus{top:10px;outline:2px solid var(--gold-leaf);outline-offset:2px}
+  main:focus{outline:none}
   *{scrollbar-width:thin;scrollbar-color:#c3bda7 transparent}
   body::-webkit-scrollbar{width:12px}
   body::-webkit-scrollbar-thumb,.ip-chat::-webkit-scrollbar-thumb{background:#cdc6ae;border-radius:8px;
@@ -1205,6 +1211,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
 </head>
 <body>
+<a class="skip-link" href="#main">Skip to main content</a>
 <div id="a11yAnnounce" class="sr-only" aria-live="polite" aria-atomic="true"></div>
 <div class="bg-ambient"><div class="bg-blob blob-1"></div><div class="bg-blob blob-2"></div><div class="bg-blob blob-3"></div></div>
 <div class="bg-grain"></div>
@@ -1237,7 +1244,7 @@
   </div>
 </header>
 
-<main>
+<main id="main" tabindex="-1" role="main">
 
 <!-- ===================== HOME ===================== -->
 <section id="home" class="show">
@@ -3131,7 +3138,8 @@
     if(!ov){
       ov=document.createElement('div'); ov.id='handoff-overlay';
       ov.style.cssText='position:fixed;inset:0;z-index:9999;display:flex;align-items:center;justify-content:center;padding:20px;background:rgba(8,28,20,.62);backdrop-filter:blur(3px)';
-      ov.setAttribute('role','dialog'); ov.setAttribute('aria-modal','true'); ov.setAttribute('aria-labelledby','handoff-title');
+      ov.setAttribute('role','dialog'); ov.setAttribute('aria-modal','true');
+      ov.setAttribute('aria-labelledby','handoff-title'); ov.setAttribute('aria-describedby','handoff-body');
       const card=document.createElement('div');
       card.style.cssText='max-width:560px;width:100%;background:#fdfbf4;color:#143524;border-radius:18px;padding:26px 26px 22px;box-shadow:0 30px 80px -20px rgba(8,28,20,.7);border:1px solid rgba(20,53,36,.16);font-family:Asap,system-ui,sans-serif;max-height:88vh;overflow:auto';
       const h=document.createElement('h2'); h.id='handoff-title'; h.textContent='Please talk to a licensed immigration attorney';
@@ -3142,16 +3150,30 @@
       body.style.cssText='margin:0 0 16px;white-space:pre-line;line-height:1.55;font-size:.95rem;color:#143524';
       const btn=document.createElement('button'); btn.type='button'; btn.textContent='I understand';
       btn.style.cssText='background:#1e7a52;color:#fff;border:0;border-radius:10px;padding:11px 18px;font-size:.95rem;font-weight:600;cursor:pointer';
-      btn.onclick=()=>{ ov.style.display='none'; };
+      const closeHandoff=()=>{
+        ov.style.display='none';
+        // Restore focus to the control the user was on before the safety stop (a11y).
+        const prev=ov._returnFocus;
+        if(prev && typeof prev.focus==='function'){ try{ prev.focus(); }catch(e){} }
+      };
+      ov._close=closeHandoff;
+      btn.onclick=closeHandoff;
       card.appendChild(h); card.appendChild(why); card.appendChild(body); card.appendChild(btn);
       ov.appendChild(card);
-      ov.addEventListener('click',e=>{ if(e.target===ov) ov.style.display='none'; });
-      document.addEventListener('keydown',e=>{ if(e.key==='Escape' && ov.style.display!=='none') ov.style.display='none'; });
+      ov.addEventListener('click',e=>{ if(e.target===ov) closeHandoff(); });
+      document.addEventListener('keydown',e=>{
+        if(ov.style.display==='none') return;
+        if(e.key==='Escape'){ closeHandoff(); return; }
+        // Trap focus inside the modal so keyboard users cannot tab into the hidden page behind it.
+        if(e.key==='Tab'){ e.preventDefault(); btn.focus(); }
+      });
       document.body.appendChild(ov);
     }
     const reasons=Array.isArray(data.reasons)?data.reasons:[];
     document.getElementById('handoff-why').textContent = reasons.length ? ('Why: your situation involves '+reasons.join('; ')+'.') : '';
     document.getElementById('handoff-body').textContent = data.message || 'This situation needs a licensed immigration attorney. GreenPath does not provide legal advice.';
+    // Remember where focus was so we can return it when the modal closes.
+    try{ if(ov.style.display==='none' || !ov._returnFocus) ov._returnFocus=document.activeElement; }catch(e){}
     ov.style.display='flex';
     try{ ov.querySelector('button').focus(); }catch(e){}
   }
