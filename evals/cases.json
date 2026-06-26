@@ -1,0 +1,35 @@
+{
+  "_about": "Ground-truth labels for GreenPath's deterministic safety surfaces. Labels are the same ones pinned by the passing test suite (tests/test_handoff.py, tests/test_api.py), repackaged as a measurable accuracy metric. The eval calls NO LLM, so the score is identical on every run.",
+  "handoff": [
+    {"text": "I have a removal proceeding and a notice to appear in immigration court.", "expect_handoff": true, "expect_category": "removal_proceedings"},
+    {"text": "I was deported five years ago and want to come back.", "expect_handoff": true, "expect_category": "removal_proceedings"},
+    {"text": "I was convicted of a felony, can I still apply for a green card?", "expect_handoff": true, "expect_category": "criminal_history"},
+    {"text": "I got a DUI last year, does that affect my case?", "expect_handoff": true, "expect_category": "criminal_history"},
+    {"text": "I used a fake passport to enter the country.", "expect_handoff": true, "expect_category": "fraud_misrepresentation"},
+    {"text": "I want to apply for asylum because I fear persecution back home.", "expect_handoff": true, "expect_category": "asylum_one_year_deadline"},
+    {"text": "My husband abused me and I heard about a U-visa.", "expect_handoff": true, "expect_category": "vawa_u_t_visa"},
+    {"text": "Do I need an i-601 waiver for the ten-year bar?", "expect_handoff": true, "expect_category": "inadmissibility_bars"},
+    {"text": "My visa was denied at the consulate and went to administrative processing.", "expect_handoff": true, "expect_category": "prior_visa_denial"},
+    {"text": "I worked without authorization for two years on a tourist visa.", "expect_handoff": true, "expect_category": "unauthorized_work"},
+    {"text": "I overstayed my visa and I am now out of status.", "expect_handoff": true, "expect_category": "overstay_unlawful_presence"},
+    {"text": "I am undocumented and entered without inspection.", "expect_handoff": true, "expect_category": "unclear_no_status"},
+
+    {"text": "How long does the I-485 take to process right now?", "expect_handoff": false},
+    {"text": "What documents do I need for a marriage-based green card?", "expect_handoff": false},
+    {"text": "I'm not sure which form to use, can you help me figure it out?", "expect_handoff": false},
+    {"text": "Is there a fee waiver available for the application fee?", "expect_handoff": false},
+    {"text": "Can I travel on advance parole while my case is pending?", "expect_handoff": false},
+    {"text": "My visa expires next year, when should I start the renewal?", "expect_handoff": false},
+    {"text": "What is the difference between EB-2 and EB-3?", "expect_handoff": false},
+    {"text": "How do I check my case status online with my receipt number?", "expect_handoff": false},
+    {"text": "What does my priority date mean on the visa bulletin?", "expect_handoff": false},
+    {"text": "Do I need a medical exam before my green card interview?", "expect_handoff": false},
+    {"text": "Can I include my children on my application?", "expect_handoff": false},
+    {"text": "How much does it cost to file Form I-130?", "expect_handoff": false}
+  ],
+  "visa": [
+    {"country": "Mexico", "eb": "EB3", "priority_date": "2020-06-01", "expect_available": true, "expect_years": 0.0},
+    {"country": "India", "eb": "EB2", "priority_date": "2015-01-01", "expect_available": true, "expect_years": null},
+    {"country": "Atlantis", "eb": "EB2", "priority_date": "2015-01-01", "expect_available": false}
+  ]
+}

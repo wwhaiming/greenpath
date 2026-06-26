@@ -1361,7 +1361,7 @@
       <div class="why-card"><div class="wc-ic">📅</div><h4>Deadline-aware</h4><p>Scan a real USCIS notice : it auto-fills every date on your timeline.</p></div>
       <div class="why-card"><div class="wc-ic">🛟</div><h4>Knows its limits</h4><p>Never gives legal advice : complex cases route to authorized legal help.</p></div>
     </div>
-    <div class="why-foot">🔒 Your information stays in your browser : no account required.</div>
+    <div class="why-foot">🔒 No account required. Document scanning runs in your browser, so image and PDF files never leave your device. But when you use an AI feature : pathway, Q&amp;A, document review, or interview : the text is sent to GreenPath's server and to OpenAI to generate the response. Please don't enter anything you aren't comfortable sharing.</div>
   </div>
 
   <!-- ===== SCROLL-SCRUBBED STORY 2: scattered papers become one case ===== -->
@@ -1607,8 +1607,6 @@
       <label class="field-label" for="setChannel">Notification channel</label>
       <select id="setChannel">
         <option>In-browser reminders</option>
-        <option>Email reminders</option>
-        <option>Email + in-browser</option>
         <option>No notifications</option>
       </select>
       <label class="field-label" for="setTiming">Reminder timing</label>
@@ -2934,7 +2932,12 @@
     const shown = filter==='all'?reminders.length:reminders.filter(r=>{const n=daysAway(r.date);return n>=0&&n<=+filter;}).length;
     const next = [...reminders].filter(r=>daysAway(r.date)>=0).sort((a,b)=>a.date.localeCompare(b.date))[0];
     let txt = `Tracking ${reminders.length} date${reminders.length!==1?'s':''} · showing ${shown}. `;
-    if(next){ txt += `${setChannel.value} will alert you ${setTiming.options[setTiming.selectedIndex].text.toLowerCase()} each date. Next: ${esc(next.label)} (${awayText(daysAway(next.date))}).`; }
+    if(next){
+      const muted=/no notification/i.test(setChannel.value);
+      txt += muted
+        ? `Next: ${esc(next.label)} (${awayText(daysAway(next.date))}).`
+        : `These reminders show on your timeline here in GreenPath : no email is sent. Next: ${esc(next.label)} (${awayText(daysAway(next.date))}).`;
+    }
     else { txt += 'No upcoming dates.'; }
     setSummary.textContent=txt;
   }
@@ -2997,6 +3000,45 @@
   const AI_ENDPOINT='/api/chat';
   const AI_MODEL='gpt-4o-mini';
 
+  // ===== Attorney handoff (server-driven safety stop) =====
+  // server.py runs a deterministic detect_handoff() on the user's own text and,
+  // for high-risk situations (removal/deportation, criminal history, fraud,
+  // asylum deadlines, VAWA/U/T, inadmissibility bars, prior denial, unauthorized
+  // work, overstay/unlawful presence, no legal status), returns
+  // {handoff:true, message, reasons} INSTEAD of an AI answer. We surface that as
+  // a prominent, accessible modal and abort the feature flow so no AI guidance
+  // is ever rendered for those cases.
+  class HandoffStop extends Error{ constructor(m){ super(m); this.name='HandoffStop'; this.handoff=true; } }
+  function showAttorneyHandoff(data){
+    let ov=document.getElementById('handoff-overlay');
+    if(!ov){
+      ov=document.createElement('div'); ov.id='handoff-overlay';
+      ov.style.cssText='position:fixed;inset:0;z-index:9999;display:flex;align-items:center;justify-content:center;padding:20px;background:rgba(8,28,20,.62);backdrop-filter:blur(3px)';
+      ov.setAttribute('role','dialog'); ov.setAttribute('aria-modal','true'); ov.setAttribute('aria-labelledby','handoff-title');
+      const card=document.createElement('div');
+      card.style.cssText='max-width:560px;width:100%;background:#fdfbf4;color:#143524;border-radius:18px;padding:26px 26px 22px;box-shadow:0 30px 80px -20px rgba(8,28,20,.7);border:1px solid rgba(20,53,36,.16);font-family:Asap,system-ui,sans-serif;max-height:88vh;overflow:auto';
+      const h=document.createElement('h2'); h.id='handoff-title'; h.textContent='Please talk to a licensed immigration attorney';
+      h.style.cssText='margin:0 0 6px;font-family:Fraunces,Georgia,serif;font-size:1.4rem;color:#0e3d29';
+      const why=document.createElement('p'); why.id='handoff-why';
+      why.style.cssText='margin:0 0 12px;font-size:.9rem;color:#2e5a44;font-weight:600';
+      const body=document.createElement('p'); body.id='handoff-body';
+      body.style.cssText='margin:0 0 16px;white-space:pre-line;line-height:1.55;font-size:.95rem;color:#143524';
+      const btn=document.createElement('button'); btn.type='button'; btn.textContent='I understand';
+      btn.style.cssText='background:#1e7a52;color:#fff;border:0;border-radius:10px;padding:11px 18px;font-size:.95rem;font-weight:600;cursor:pointer';
+      btn.onclick=()=>{ ov.style.display='none'; };
+      card.appendChild(h); card.appendChild(why); card.appendChild(body); card.appendChild(btn);
+      ov.appendChild(card);
+      ov.addEventListener('click',e=>{ if(e.target===ov) ov.style.display='none'; });
+      document.addEventListener('keydown',e=>{ if(e.key==='Escape' && ov.style.display!=='none') ov.style.display='none'; });
+      document.body.appendChild(ov);
+    }
+    const reasons=Array.isArray(data.reasons)?data.reasons:[];
+    document.getElementById('handoff-why').textContent = reasons.length ? ('Why: your situation involves '+reasons.join('; ')+'.') : '';
+    document.getElementById('handoff-body').textContent = data.message || 'This situation needs a licensed immigration attorney. GreenPath does not provide legal advice.';
+    ov.style.display='flex';
+    try{ ov.querySelector('button').focus(); }catch(e){}
+  }
+
   async function aiChatMessages(messages, opts={}){
     const body={model:opts.model||AI_MODEL, messages,
       temperature:opts.temperature??0.4, max_tokens:opts.max_tokens??900};
@@ -3006,8 +3048,16 @@
       headers:{'Content-Type':'application/json'},
       body:JSON.stringify(body)
     });
-    if(!res.ok) throw new Error('proxy '+res.status);
+    if(!res.ok){
+      // Surface the server's safety stop even on non-2xx, then abort.
+      try{ const j=await res.json(); if(j&&j.handoff===true){ showAttorneyHandoff(j); throw new HandoffStop(j.message); } }catch(e){ if(e instanceof HandoffStop) throw e; }
+      throw new Error('proxy '+res.status);
+    }
     const data=await res.json();
+    // Deterministic attorney handoff: show the safety modal and stop the flow so
+    // NO AI answer is rendered (this is the real gate for the single-page app,
+    // which routes every feature through /api/chat).
+    if(data && data.handoff===true){ showAttorneyHandoff(data); throw new HandoffStop(data.message||'Please consult a licensed immigration attorney.'); }
     if(data.error) throw new Error((data.error&&data.error.message)||data.error||'proxy error');
     return (data.choices?.[0]?.message?.content||'').trim();
   }

@@ -1,10 +1,15 @@
 import os
 import re
 import json
+import time
+from collections import defaultdict, deque
+from urllib.parse import urlparse
 from flask import Flask, request, jsonify, send_from_directory, abort
 import openai
 from openai import OpenAI
 from dotenv import load_dotenv
+
+from handoff import detect_handoff, build_handoff_response
 
 load_dotenv()
 
@@ -32,6 +37,70 @@ MAX_FIELD_CHARS = 6000
 MAX_CHAT_MESSAGES = 20
 MAX_CHAT_MESSAGE_CHARS = 6000
 MAX_TRANSCRIPT_TURNS = 20
+
+
+# ── Abuse protection for the paid LLM proxy ──────────────────────────────────
+# The proxy spends real money per call, so the billable routes are guarded by
+# (1) a same-origin check that rejects cross-site browser calls and (2) an
+# in-memory sliding-window rate limiter per client IP.
+#
+# Limitation (documented, not hidden): the limiter state lives in process memory,
+# so with gunicorn's 2 workers the effective ceiling is ~2x RATE_LIMIT_MAX, and
+# it resets on redeploy. For production move this to Redis. It is deliberately
+# skipped under TESTING unless ENFORCE_RATE_LIMIT is set, so the fast test suite
+# (which shares one client IP) does not trip its own limiter.
+RATE_LIMIT_WINDOW = 60.0          # seconds
+RATE_LIMIT_MAX = 20               # billable requests per window per client IP
+_LLM_ROUTES = {'/api/chat', '/api/pathway', '/api/stage-qa',
+               '/api/document-review', '/api/interview'}
+_rate_hits = defaultdict(deque)   # client IP -> deque[float] of request timestamps
+
+
+def _client_ip():
+    """Best-effort client IP. PaaS proxies (Render) put the real client first in
+    X-Forwarded-For; fall back to the socket peer."""
+    xff = request.headers.get('X-Forwarded-For', '')
+    if xff:
+        return xff.split(',')[0].strip()
+    return request.remote_addr or 'unknown'
+
+
+def _same_origin_ok():
+    """Reject cross-site browser requests to billable routes. Requests with no
+    Origin/Referer (curl, server-to-server, tests) are allowed; a present
+    Origin/Referer whose host differs from the request host (and isn't
+    localhost) is rejected."""
+    host = request.host.split(':')[0]
+    for header in ('Origin', 'Referer'):
+        val = request.headers.get(header)
+        if not val:
+            continue
+        try:
+            netloc = (urlparse(val).hostname or '').lower()
+        except ValueError:
+            return False
+        if netloc and netloc != host.lower() and netloc not in ('localhost', '127.0.0.1'):
+            return False
+    return True
+
+
+@app.before_request
+def _guard_llm_routes():
+    if request.path not in _LLM_ROUTES:
+        return None
+    if not _same_origin_ok():
+        return jsonify({'error': 'cross-origin requests are not allowed'}), 403
+    if app.config.get('TESTING') and not app.config.get('ENFORCE_RATE_LIMIT'):
+        return None
+    now = time.monotonic()
+    dq = _rate_hits[_client_ip()]
+    cutoff = now - RATE_LIMIT_WINDOW
+    while dq and dq[0] < cutoff:
+        dq.popleft()
+    if len(dq) >= RATE_LIMIT_MAX:
+        return jsonify({'error': 'rate limit exceeded - please slow down and try again shortly'}), 429
+    dq.append(now)
+    return None
 
 
 class RequestValidationError(ValueError):
@@ -148,6 +217,21 @@ def api_chat():
             clean.append({'role': role, 'content': content})
         if not clean:
             return jsonify({'error': 'messages required'}), 400
+
+        # Attorney-handoff hard stop (deterministic, server-side). Scan ONLY the
+        # user's own text, never the caller's feature/system prompts (those name
+        # things like "asylum"/"removal" as instructions and would false-trigger).
+        # Pure OCR date-extraction (notice_extract schema) is exempt: it just
+        # transforms a document the user already holds and gives no advice.
+        schema_name = ''
+        if isinstance(response_format, dict):
+            schema_name = (response_format.get('json_schema') or {}).get('name', '')
+        if schema_name != 'notice_extract':
+            user_text = '\n'.join(m['content'] for m in clean if m['role'] == 'user')
+            hand = detect_handoff(user_text)
+            if hand['handoff']:
+                return jsonify(build_handoff_response('chat', hand)), 200
+
         # Guardrail first, then the caller's grounding prompts, then the
         # conversation (capped for cost).
         messages = ([{'role': 'system', 'content': GUARDRAIL_SYSTEM}]
@@ -244,6 +328,10 @@ def api_document_review():
         if not document:
             return jsonify({'error': 'document required'}), 400
 
+        hand = detect_handoff(document)
+        if hand['handoff']:
+            return jsonify(build_handoff_response('document-review', hand)), 200
+
         resp = client.chat.completions.create(
             model=QUALITY_MODEL,
             max_tokens=1200,
@@ -320,6 +408,16 @@ def api_interview():
         # Cap to the most recent turns to bound prompt size / cost.
         transcript = transcript[-MAX_TRANSCRIPT_TURNS:]
         answer = _text_field(data, 'answer', '', strip=False)
+
+        # Attorney-handoff hard stop: scan the applicant's own words (latest
+        # answer + their prior transcript turns), not the officer's questions.
+        applicant_texts = [answer] + [
+            t.get('content', '') for t in transcript
+            if isinstance(t, dict) and t.get('role') == 'applicant'
+        ]
+        hand = detect_handoff(*applicant_texts)
+        if hand['handoff']:
+            return jsonify(build_handoff_response('interview', hand)), 200
 
         # Build the conversation messages from the running transcript
         messages = []
@@ -411,6 +509,10 @@ def api_pathway():
         if not intake:
             return jsonify({'error': 'intake required'}), 400
 
+        hand = detect_handoff(intake)
+        if hand['handoff']:
+            return jsonify(build_handoff_response('pathway', hand)), 200
+
         resp = client.chat.completions.create(
             model=QUALITY_MODEL,
             max_tokens=1000,
@@ -456,6 +558,10 @@ def api_stage_qa():
         question = _text_field(data, 'question')
         if not question:
             return jsonify({'error': 'question required'}), 400
+
+        hand = detect_handoff(question)
+        if hand['handoff']:
+            return jsonify(build_handoff_response('stage-qa', hand)), 200
 
         context = f'Pathway: {pathway}\nCurrent stage: {stage}\n\nQuestion: {question}'
 

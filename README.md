@@ -43,7 +43,51 @@ GreenPath turns the U.S. green card process from a maze of forms and legalese in
 | `POST /api/document-review` | form entries → severity-ranked issue list |
 | `POST /api/interview` | running transcript → coaching + next question |
 | `POST /api/stage-qa` | pathway + stage + question → plain-language answer |
-| `POST /api/chat` | generic completion (date extraction, translation) |
+| `POST /api/chat` | generic completion (date extraction, translation); the single-page frontend routes its AI features through this endpoint |
+
+Every LLM endpoint runs a deterministic, server-side **attorney-handoff** check
+first (`handoff.py`). For high-risk situations it returns
+`{ "handoff": true, "message": ..., "reasons": [...] }` and **never calls the
+model** — the frontend shows a "see a licensed attorney" modal instead of an AI
+answer.
+
+## Safety & security
+
+- **Source-backed preparation, not legal advice.** GreenPath helps you prepare
+  and understand the process and points to official sources; it is a navigator,
+  not a law firm or a substitute for an attorney.
+- **Deterministic attorney handoff** (`handoff.py`) on removal/deportation,
+  criminal history, fraud/misrepresentation, asylum deadlines, VAWA/U/T visas,
+  inadmissibility bars, prior denials, unauthorized work, overstay, and unclear
+  status. Reused across all five LLM endpoints and unit-tested for both recall
+  and **no false positives** on benign questions.
+- **Abuse protection on the paid proxy**: same-origin guard (`403` on cross-site
+  browser calls) + in-memory per-IP rate limit (`429` past the cap).
+- **Key handling**: the OpenAI key is read from `.env` via `os.environ` and never
+  reaches the browser. See [`SECURITY.md`](SECURITY.md) — a key was committed to
+  git history in the past and **must be rotated by the owner** (not yet done).
+
+## Tests & evaluation
+
+```bash
+pip install -r requirements-dev.txt
+npm test            # or: .venv/bin/python -m pytest tests/ -q   (56 tests)
+npm run eval        # or: .venv/bin/python evals/eval.py
+```
+
+The eval (`evals/eval.py`, ground truth in `evals/cases.json`) scores the
+deterministic safety surfaces — handoff precision/recall, the visa estimator,
+and grounding/no-legal-advice framing. It calls **no LLM**, so the number is
+identical on every run. Current result: **33/33 = 100.0%**. CI
+(`.github/workflows/ci.yml`) runs both on every push.
+
+## Data freshness
+
+The deterministic visa-wait estimate is computed from real U.S. Department of
+State Visa Bulletin history **through the December 2025 bulletin** (the latest
+available at build time). Cutoffs change monthly — the UI links the official
+bulletin and labels its source/date, and where GreenPath and an official source
+differ, the official source controls.
 
 ## Standalone demo
 
