@@ -142,10 +142,24 @@ def validate(claims, sources):
 
 
 def citations_from_report(report, sources, as_citation):
-    """Citations derived ONLY from sources a supported claim actually used. Falls
-    back to all retrieved sources when the model produced no usable claim mapping
-    (so we never show FEWER citations than the legacy path could justify)."""
+    """Citations derived ONLY from sources a supported claim actually used.
+
+    Behavior depends on whether the model returned STRUCTURED claims at all
+    (``report['total']``):
+
+    * total > 0 (structured claims present): cite ONLY the sources that a
+      supported claim actually used. If NONE validated (used is empty), return
+      ``[]`` - the model gave us claims but grounded none of them, so showing any
+      citation would imply support the model never had.
+    * total == 0 (no structured claims - legacy/unstructured reply): fall back to
+      all retrieved sources, since there is no per-claim mapping to narrow by and
+      the legacy citations remain authoritative (verbatim corpus quotes).
+    """
     used = report.get("used_source_indexes") or []
     if used:
         return [as_citation(sources[i]) for i in used if 0 <= i < len(sources)]
+    # Structured claims were present but none validated -> NO citations.
+    if report.get("total", 0) > 0:
+        return []
+    # Legacy fallback: no structured claims at all.
     return [as_citation(s) for s in sources]

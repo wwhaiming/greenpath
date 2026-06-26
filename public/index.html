@@ -520,6 +520,10 @@
     padding:7px 14px;text-decoration:none;transition:.15s}
   a.cite::before{content:"";width:6px;height:6px;border-radius:50%;background:var(--gold-leaf)}
   a.cite:hover{background:var(--pill-green);border-color:var(--green)}
+  .cite-list-col{flex-direction:column}
+  .cite-item{display:flex;flex-direction:column;gap:6px}
+  .cite-item .cite-quote{margin:0 0 2px;font-size:13px;line-height:1.5;color:var(--green-mid);
+    font-style:italic;padding-left:12px;border-left:2px solid var(--gold-leaf)}
   a.cite-inline{font-size:.72em;font-weight:700;color:var(--green-deep);text-decoration:none;
     padding:0 1px;margin-left:1px;border-bottom:1px dotted var(--gold-leaf)}
   a.cite-inline:hover{color:var(--green);border-bottom-color:var(--green)}
@@ -3206,6 +3210,28 @@
     messages.push({role:'user',content:prompt});
     return aiChatMessages(messages, opts);
   }
+  // ===== Specialized server endpoints (server builds the prompt + grounding) =====
+  // POST {body} to one of the dedicated routes (/api/pathway, /api/stage-qa,
+  // /api/document-review, /api/interview) and return its structured JSON. The
+  // attorney-handoff gate is enforced here exactly like aiChatMessages: if the
+  // server returns {handoff:true}, surface the safety modal and abort the flow so
+  // NO AI answer is ever rendered. Network/5xx errors throw so callers can show
+  // their friendly offline/error state.
+  async function aiPostJSON(path, body){
+    const res=await fetch(path,{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify(body)
+    });
+    if(!res.ok){
+      try{ const j=await res.json(); if(j&&j.handoff===true){ showAttorneyHandoff(j); throw new HandoffStop(j.message); } }catch(e){ if(e instanceof HandoffStop) throw e; }
+      throw new Error('proxy '+res.status);
+    }
+    const data=await res.json();
+    if(data && data.handoff===true){ showAttorneyHandoff(data); throw new HandoffStop(data.message||'Please consult a licensed immigration attorney.'); }
+    if(data && data.error) throw new Error((data.error&&data.error.message)||data.error||'proxy error');
+    return data;
+  }
   // parses a JSON object/array out of the reply (strips fences/prose)
   function parseLooseJSON(txt){
     txt=txt.replace(/```json|```/g,'').trim();
@@ -3237,27 +3263,9 @@
   // ===== Structured Outputs: guarantee schema-valid JSON (no regex scraping) =====
   // gpt-4o / gpt-4o-mini honor response_format json_schema (strict). If the proxy
   // or model variant rejects it, we degrade gracefully to loose parsing.
+  // Only the notice/OCR date-extraction utility still builds a client-side schema;
+  // pathway / document-review / interview now use their specialized server routes.
   const SCHEMAS={
-    pathway:{name:'pathway',schema:{type:'object',additionalProperties:false,
-      properties:{primaryPathway:{type:'string'},subcategory:{type:'string'},
-        confidence:{type:'string',enum:['high','medium','low']},reasoning:{type:'string'},
-        nextSteps:{type:'array',items:{type:'string'}},
-        alternativePathways:{type:'array',items:{type:'string'}}},
-      required:['primaryPathway','subcategory','confidence','reasoning','nextSteps','alternativePathways']}},
-    review:{name:'document_review',schema:{type:'object',additionalProperties:false,
-      properties:{overallStatus:{type:'string',enum:['looks-good','needs-attention','major-issues']},
-        issues:{type:'array',items:{type:'object',additionalProperties:false,
-          properties:{severity:{type:'string',enum:['high','medium','low']},field:{type:'string'},
-            problem:{type:'string'},suggestion:{type:'string'}},
-          required:['severity','field','problem','suggestion']}},
-        reminders:{type:'array',items:{type:'string'}}},
-      required:['overallStatus','issues','reminders']}},
-    interview:{name:'interview_turn',schema:{type:'object',additionalProperties:false,
-      properties:{coaching:{type:['object','null'],additionalProperties:false,
-          properties:{level:{type:'string',enum:['clear','clarify','help']},note:{type:['string','null']}},
-          required:['level','note']},
-        nextQuestion:{type:'string'},done:{type:'boolean'},summary:{type:['string','null']}},
-      required:['coaching','nextQuestion','done','summary']}},
     notice:{name:'notice_extract',schema:{type:'object',additionalProperties:false,
       properties:{documentType:{type:'string'},caseType:{type:'string'},receiptNumber:{type:'string'},
         dates:{type:'array',items:{type:'object',additionalProperties:false,
@@ -3770,6 +3778,8 @@ Rules: resolve relative dates against today. If a year is missing, choose the ne
       const items=await reviewAI(drForm.value, text);
       renderIssues(items);
     }catch(e){
+      // Server safety stop already showed the attorney modal — render no AI answer.
+      if(e instanceof HandoffStop){ drIssues.replaceChildren(); return; }
       const local=localReview(text);
       renderIssues({
         overallStatus: local.some(i=>i.severity==='high')?'major-issues':'needs-attention',
@@ -3780,18 +3790,9 @@ Rules: resolve relative dates against today. If a year is missing, choose the ne
   });
 
   async function reviewAI(form, text){
-    const system=`You are a meticulous U.S. immigration paralegal reviewing a draft form for errors before submission. You are not a lawyer and do not give legal advice. Flag inconsistencies, missing required information, and common rejection triggers. Return ONLY JSON.\n\n${GROUNDING_RULE}\nOFFICIAL SOURCES:\n${sourcesPrompt('rfe request for evidence form '+form)}`;
-    const prompt=`Review the following draft entries for ${form}. Identify problems that could cause a rejection or RFE.
-Return ONLY a JSON object (no markdown, no prose) shaped exactly:
-{"overallStatus":"looks-good"|"needs-attention"|"major-issues",
- "issues":[{"severity":"high"|"medium"|"low","field":"short field name","problem":"what's wrong","suggestion":"how to fix"}],
- "reminders":["short reminder", ...]}
-
-Form: ${form}
-
-Entries:
-${text}`;
-    const data=await aiJSONSchema(prompt, system, SCHEMAS.review, {model:AI_SMART, max_tokens:1000, temperature:0.2});
+    // Specialized server route owns the system prompt + JSON contract; we only
+    // pass the form context + the user's entries and render the structured reply.
+    const data=await aiPostJSON('/api/document-review', {document:`Form: ${form}\n\nEntries:\n${text}`});
     return {
       overallStatus: data.overallStatus||'needs-attention',
       issues: Array.isArray(data.issues)?data.issues:[],
@@ -3903,6 +3904,8 @@ ${text}`;
       }
     }catch(e){
       clearTyping();
+      // Server safety stop already showed the attorney modal — render no AI turn.
+      if(e instanceof HandoffStop){ endSession(); return; }
       // offline fallback: heuristic coach + scripted question bank
       if(userAnswer) { const c=localCoach(userAnswer); coachCard(c.level,c.note); }
       const bank=IP_BANK[ipCase.value]||IP_BANK['Marriage-based adjustment of status (I-485)'];
@@ -3919,23 +3922,17 @@ ${text}`;
 
   async function interviewAI(userAnswer){
     // ipHistory is the running transcript in {role:'applicant'|'officer'} form.
-    if(userAnswer) ipHistory.push({role:'applicant',content:userAnswer});
-    const system=`You simulate a USCIS officer conducting a green card interview for practice. Speak the way real officers do: terse, concrete, one question at a time. No flowery or "AI-sounding" phrasing.
-SAFETY GUARDRAIL (VAWA): If the scenario is a VAWA self-petition or the applicant references abuse, domestic violence, or fear of an abuser, never ask the applicant to involve, contact, confront, or seek information from the abuser, and never suggest they need the abuser's cooperation. Keep questions trauma-informed and confidential.
-After each applicant answer, give brief coaching. Return ONLY JSON.`;
-    const transcript=ipHistory.map(h=>`${h.role==='officer'?'Officer':'Applicant'}: ${h.content}`).join('\n');
-    const prompt=`Scenario / pathway: ${ipCase.value}
-Transcript so far:
-${transcript||'(none yet : ask your first question)'}
-
-Return ONLY a JSON object shaped exactly:
-{"coaching":{"level":"clear"|"clarify"|"help","note":"short feedback on the applicant's last answer, or null if none"},
- "nextQuestion":"the officer's next question (terse, USCIS style)",
- "done":false,
- "summary":null}
-Set "done":true and provide a short "summary" only when the interview should end.`;
-    const data=await aiJSONSchema(prompt, system, SCHEMAS.interview, {model:AI_SMART, max_tokens:700, temperature:0.5});
+    // The specialized server route owns the officer persona + VAWA guardrail + JSON
+    // contract: we send the prior turns as `transcript` and the current `answer`
+    // separately (the server appends it), then record both into history for the
+    // next call.
+    const data=await aiPostJSON('/api/interview', {
+      pathway: ipCase.value,
+      transcript: ipHistory.slice(),
+      answer: userAnswer||''
+    });
     const q=data.nextQuestion||'';
+    if(userAnswer) ipHistory.push({role:'applicant',content:userAnswer});
     if(q) ipHistory.push({role:'officer',content:q});
     return {coaching:data.coaching||null, next_question:q, done:!!data.done, summary:data.summary||null};
   }
@@ -4050,9 +4047,9 @@ Set "done":true and provide a short "summary" only when the interview should end
       pwResult.innerHTML='<div class="dr-loading"><div class="dr-spin"></div>Finding your most likely pathway…</div>';
       pwFind.disabled=true;
       try{
-        const sys=`You are a U.S. immigration intake assistant that suggests the most likely green card pathway from a free-text description. You are not a lawyer; flag when a case is complex enough to need an accredited attorney. Return ONLY JSON.\n\n${GROUNDING_RULE}\nOFFICIAL SOURCES:\n${sourcesPrompt(text)}`;
-        const pr=`Applicant's situation:\n"""${text}"""\n\nReturn ONLY a JSON object shaped exactly:\n{"primaryPathway":"name","subcategory":"optional or empty","confidence":"high"|"medium"|"low","reasoning":"1-3 sentence plain explanation","nextSteps":["step", ...],"alternativePathways":["option", ...]}`;
-        const d=await aiJSONSchema(pr, sys, SCHEMAS.pathway, {model:AI_SMART, max_tokens:900, temperature:0.2});
+        // Specialized server route owns the intake prompt, grounding, and JSON
+        // contract; we only pass the free-text intake and render the structured reply.
+        const d=await aiPostJSON('/api/pathway', {intake:text});
         // Shared numbering map so the same [id] reuses its number across reasoning + steps.
         const nums=Object.create(null);
         // Build an "issue" card whose <p> body holds model text with inline citations
@@ -4079,12 +4076,19 @@ Set "done":true and provide a short "summary" only when the interview should end
           pwResult.appendChild(heading('Other options to explore:'));
           (d.alternativePathways||[]).forEach(a=>pwResult.appendChild(issueCard('amb', a)));
         }
+        // Surface the server's retrieval-sufficiency signal instead of fabricating
+        // a client-side "verified sources" footer for this feature.
+        if(d.sources_sufficient===false){
+          const note=document.createElement('div'); note.className='ai-error'; note.setAttribute('role','status');
+          const t=document.createElement('span');
+          t.textContent='GreenPath has limited official-source coverage for this situation, so this is general guidance only. Verify on USCIS.gov and consider an accredited attorney.';
+          note.appendChild(t); pwResult.appendChild(note);
+        }
         pwResult.insertAdjacentHTML('beforeend', `<div class="legal-row"><button class="btn-legal" data-go="qa">Ask a question about this</button><small>Not legal advice. Complex cases: consult an accredited attorney.</small></div>`);
         pwResult.querySelectorAll('[data-go]').forEach(b=>b.addEventListener('click',()=>show(b.dataset.go)));
-        // Footer lists only sources the model actually cited (across reasoning + steps + alts).
-        const allText=[d.reasoning||''].concat(d.nextSteps||[], d.alternativePathways||[]).join(' ');
-        pwResult.insertAdjacentHTML('beforeend', citationsFromText(allText, text));
       }catch(e){
+        // Server safety stop already showed the attorney modal — render no AI answer.
+        if(e instanceof HandoffStop){ pwResult.replaceChildren(); return; }
         pwResult.replaceChildren(); pwResult.insertAdjacentHTML('beforeend', aiErrorHTML(e));
       }finally{ pwFind.disabled=false; }
     });
@@ -4098,37 +4102,59 @@ Set "done":true and provide a short "summary" only when the interview should end
           qaAsk=document.getElementById('qaAsk'),
           qaAnswer=document.getElementById('qaAnswer');
     if(!qaAsk) return;
+    // Build the server's verified-source citations (title/url/quote) as safe DOM.
+    // Citations come ONLY from the server response now — never assembled client-side.
+    function buildServerCitations(cites){
+      const wrap=document.createElement('div'); wrap.className='cite-row';
+      const label=document.createElement('span'); label.className='cite-label'; label.textContent='Verified sources';
+      wrap.appendChild(label);
+      const list=document.createElement('div'); list.className='cite-list cite-list-col';
+      cites.forEach((c,i)=>{
+        const item=document.createElement('div'); item.className='cite-item';
+        const a=document.createElement('a'); a.className='cite'; a.href=c.url||'#'; a.target='_blank'; a.rel='noopener';
+        a.textContent=(i+1)+'. '+(c.title||c.url||'Source');
+        if(c.quote) a.title=c.quote;
+        item.appendChild(a);
+        if(c.quote){ const q=document.createElement('p'); q.className='cite-quote'; q.textContent='“'+c.quote+'”'; item.appendChild(q); }
+        list.appendChild(item);
+      });
+      wrap.appendChild(list); return wrap;
+    }
+    function renderQA(data){
+      qaAnswer.replaceChildren();
+      const box=document.createElement('div');
+      box.className='dr-summary ai-pop'; box.style.lineHeight='1.6';
+      String(data.answer||'').split(/\n+/).filter(Boolean).forEach(p=>{
+        const el=document.createElement('p'); el.style.margin='0 0 10px'; el.textContent=p; box.appendChild(el);
+      });
+      qaAnswer.appendChild(box);
+      // When the server says retrieval was insufficient, show its notice and skip
+      // citations (the server already suppresses them in that case).
+      if(data.sources_sufficient===false){
+        const note=document.createElement('div'); note.className='ai-error'; note.setAttribute('role','status');
+        const t=document.createElement('span');
+        t.textContent=data.insufficient_notice||'GreenPath has limited official-source coverage for this question. Verify at uscis.gov and consider a licensed immigration attorney.';
+        note.appendChild(t); qaAnswer.appendChild(note);
+      } else if(data.ungrounded_warning){
+        const note=document.createElement('div'); note.className='ai-error'; note.setAttribute('role','status');
+        const t=document.createElement('span'); t.textContent=data.ungrounded_warning; note.appendChild(t); qaAnswer.appendChild(note);
+      }
+      const cites=Array.isArray(data.citations)?data.citations:[];
+      if(cites.length) qaAnswer.appendChild(buildServerCitations(cites));
+    }
     qaAsk.addEventListener('click',async()=>{
       const q=qaInput.value.trim();
       if(!q){ qaAnswer.innerHTML='<p class="dr-placeholder">Type a question first.</p>'; return; }
       qaAnswer.innerHTML='<div class="dr-loading"><div class="dr-spin"></div>Finding a clear answer…</div>';
       qaAsk.disabled=true;
       try{
-        const sys=`You answer questions about a specific stage of the U.S. green card process in clear, plain language. You are not a lawyer and do not give legal advice; recommend an accredited attorney for complex situations. Be accurate, warm, and concise.\n\n${GROUNDING_RULE}\nOFFICIAL SOURCES:\n${sourcesPrompt(q+' '+qaStage.value+' '+qaPathway.value)}`;
-        const pr=`Pathway: ${qaPathway.value}\nStage: ${qaStage.value}\nQuestion: ${q}\n\nAnswer in 1-3 short paragraphs of plain text (no markdown).`;
-        const box=document.createElement('div');
-        box.className='dr-summary ai-pop stream-caret'; box.style.lineHeight='1.6';
-        qaAnswer.innerHTML=''; qaAnswer.appendChild(box);
-        // Render each paragraph as a safe <p> with inline citation superscripts
-        // (linkifyCitations builds DOM via createElement/textContent — never innerHTML).
-        let lastFull='';
-        const renderAnswer=(full)=>{
-          lastFull=full;
-          const nums=Object.create(null), frag=document.createDocumentFragment();
-          full.split(/\n+/).filter(Boolean).forEach(p=>{
-            const el=document.createElement('p'); el.style.margin='0 0 10px';
-            el.appendChild(linkifyCitations(p, nums)); frag.appendChild(el);
-          });
-          box.replaceChildren(frag);
-        };
-        await aiStream(
-          [{role:'system',content:sys},{role:'user',content:pr}],
-          (tok,full)=>renderAnswer(full),
-          {temperature:0.3,max_tokens:700,model:AI_SMART}
-        );
-        box.classList.remove('stream-caret');
-        qaAnswer.insertAdjacentHTML('beforeend', citationsFromText(lastFull, q+' '+qaStage.value));
+        // Specialized server route owns the grounding + claim verification and
+        // returns {answer, citations, sources_sufficient, insufficient_notice?}.
+        const data=await aiPostJSON('/api/stage-qa', {pathway:qaPathway.value, stage:qaStage.value, question:q});
+        renderQA(data);
       }catch(e){
+        // Server safety stop already showed the attorney modal — render no AI answer.
+        if(e instanceof HandoffStop){ qaAnswer.replaceChildren(); return; }
         qaAnswer.innerHTML=aiErrorHTML(e);
       }finally{ qaAsk.disabled=false; }
     });

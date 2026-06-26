@@ -128,18 +128,29 @@ def _coerce(data):
             "confidence": conf, "reasons": reasons}
 
 
-def semantic_handoff(text):
+def semantic_handoff(text, client=None):
     """Classify free text for high-risk handoff using an LLM (gpt-4o-mini).
 
     SAFE-DEGRADING: returns ``{"handoff": None, ...}`` (unknown) whenever the key
     is missing, the text is empty, or anything goes wrong (network, API, parse,
     malformed output). Never raises. The deterministic regex in ``handoff.py``
     stays authoritative; this only ever ADDS signal via ``triage_handoff``.
+
+    ``client`` is an OPTIONAL injectable chat client (anything exposing the same
+    ``client.chat.completions.create(...)`` -> ``resp.choices[0].message.content``
+    surface as the OpenAI SDK). When provided it is used INSTEAD of building a
+    live, billable client, so the real parse + ``_coerce`` + decision path can be
+    exercised against recorded/mock classifier responses with NO key and NO
+    network (see ``evals/semantic_replay.py``). The safe-degrade contract is
+    unchanged: with ``client=None`` and no ``OPENAI_API_KEY`` this still returns
+    the unknown sentinel, and a malformed/erroring injected client still degrades
+    to unknown rather than raising.
     """
     if not isinstance(text, str) or not text.strip():
         return dict(_UNKNOWN)
     try:
-        client = _build_client()
+        if client is None:
+            client = _build_client()
         if client is None:
             return dict(_UNKNOWN)
         resp = client.chat.completions.create(

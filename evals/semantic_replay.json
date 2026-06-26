@@ -1,0 +1,98 @@
+{
+  "_about": "Recorded (text, classifier_response) pairs for the SEMANTIC attorney-handoff layer. classifier_response is the RAW model JSON (the string content the LLM would return for `text`); the replay runner feeds it through the real handoff_semantic.semantic_handoff() parse/_coerce/decision path via an injected mock client, so the live behavior is proven with NO billable key and NO network. These are illustrative, hand-authored fixtures (NOT captured from a paid run): each classifier_response is the conservative verdict the documented system prompt is designed to produce for that input. They exist only to pin the DECISION LOGIC, never to assert a specific vendor's wording.",
+  "threshold_note": "handoff.SEMANTIC_CONFIDENCE_THRESHOLD = 0.75; high-risk fixtures sit above it on purpose.",
+  "cases": [
+    {
+      "id": "indirect_removal_en",
+      "kind": "high_risk",
+      "note": "Indirect English removal/detention; no trigger word -> regex misses, semantic catches.",
+      "text": "They took my brother to the detention center last week and we cannot find him.",
+      "classifier_response": {"handoff": true, "category": "removal_proceedings", "confidence": 0.9, "reasons": ["relative taken to detention center"]},
+      "expect_regex_handoff": false,
+      "expect_handoff": true,
+      "expect_source": "semantic",
+      "expect_category": "removal_proceedings"
+    },
+    {
+      "id": "mixed_removal_es",
+      "kind": "high_risk",
+      "note": "Spanish/English code-switch describing ICE detention.",
+      "text": "Mi primo fue llevado por la migra y ahora esta detenido, what can he do?",
+      "classifier_response": {"handoff": true, "category": "removal_proceedings", "confidence": 0.92, "reasons": ["cousin detained by immigration"]},
+      "expect_regex_handoff": false,
+      "expect_handoff": true,
+      "expect_source": "semantic",
+      "expect_category": "removal_proceedings"
+    },
+    {
+      "id": "indirect_fraud_en",
+      "kind": "high_risk",
+      "note": "Euphemistic fraud/misrepresentation; never says 'fake documents'.",
+      "text": "I used my cousin's papers to get the job because I did not have my own.",
+      "classifier_response": {"handoff": true, "category": "fraud_misrepresentation", "confidence": 0.88, "reasons": ["used another person's documents"]},
+      "expect_regex_handoff": false,
+      "expect_handoff": true,
+      "expect_source": "semantic",
+      "expect_category": "fraud_misrepresentation"
+    },
+    {
+      "id": "indirect_criminal_en",
+      "kind": "high_risk",
+      "note": "Roundabout criminal-history disclosure with no trigger word.",
+      "text": "Last year I was taken away by the police after a fight at a bar.",
+      "classifier_response": {"handoff": true, "category": "criminal_history", "confidence": 0.85, "reasons": ["detained by police after an altercation"]},
+      "expect_regex_handoff": false,
+      "expect_handoff": true,
+      "expect_source": "semantic",
+      "expect_category": "criminal_history"
+    },
+    {
+      "id": "mixed_criminal_zh",
+      "kind": "high_risk",
+      "note": "Chinese describing police custody for fighting; lexical filter cannot read it.",
+      "text": "去年我因为打架被警察带走了，会影响绿卡吗？",
+      "classifier_response": {"handoff": true, "category": "criminal_history", "confidence": 0.9, "reasons": ["taken by police for fighting"]},
+      "expect_regex_handoff": false,
+      "expect_handoff": true,
+      "expect_source": "semantic",
+      "expect_category": "criminal_history"
+    },
+    {
+      "id": "benign_processing_time",
+      "kind": "benign",
+      "note": "Ordinary processing-time question; semantic must NOT flag.",
+      "text": "How long does the I-485 take to process right now?",
+      "classifier_response": {"handoff": false, "category": null, "confidence": 0.95, "reasons": []},
+      "expect_regex_handoff": false,
+      "expect_handoff": false
+    },
+    {
+      "id": "benign_doc_checklist",
+      "kind": "benign",
+      "note": "Document checklist question; nothing risky disclosed.",
+      "text": "What documents do I need for a marriage-based green card?",
+      "classifier_response": {"handoff": false, "category": null, "confidence": 0.97, "reasons": []},
+      "expect_regex_handoff": false,
+      "expect_handoff": false
+    },
+    {
+      "id": "regex_authoritative_no_downgrade",
+      "kind": "regex_authoritative",
+      "note": "Regex fires; even a high-confidence semantic 'false' must NOT downgrade it. (triage returns before consulting semantic.)",
+      "text": "I already have a deportation order from the immigration judge.",
+      "classifier_response": {"handoff": false, "category": null, "confidence": 0.99, "reasons": ["model thinks this is fine"]},
+      "expect_regex_handoff": true,
+      "expect_handoff": true,
+      "expect_category": "removal_proceedings"
+    },
+    {
+      "id": "degraded_malformed_output",
+      "kind": "degraded",
+      "note": "Malformed model output (handoff not a bool) -> _coerce returns unknown -> regex stays authoritative, no escalation.",
+      "text": "I have a small question about my paperwork situation.",
+      "classifier_response": {"handoff": null, "category": "removal_proceedings", "confidence": 0.99},
+      "expect_regex_handoff": false,
+      "expect_handoff": false
+    }
+  ]
+}
