@@ -34,6 +34,7 @@
     /* brand */
     --green:#239a64;          /* primary accent (lighter) */
     --green-mid:#15714a;      /* accessible green text */
+    --green-aa:#15714a;       /* AA background for green text-bearing tokens */
     --green-deep:#237a55;     /* evergreen (lightened) */
     --green-ink:#235a40;      /* dark accent (lightened) */
     --gold:#8a5f0e;           /* gold text (AA 4.5:1 on cream/paper) */
@@ -138,6 +139,15 @@
     text-transform:uppercase;color:var(--gold-bright);padding:12px 14px 4px;margin-top:2px;
     border-top:1px solid rgba(246,241,226,.12)}
   header nav.main .nav-group:first-child{border-top:0;margin-top:0;padding-top:4px}
+  /* Desktop: a short horizontal top nav of primary tasks; hamburger keeps grouped overflow. */
+  nav.topnav{display:none}
+  @media(min-width:1000px){
+    nav.topnav{display:flex;gap:2px;align-items:center;margin-left:10px}
+    nav.topnav a{color:#d9e2d6;text-decoration:none;font-size:13.5px;font-weight:600;white-space:nowrap;
+      padding:8px 12px;border-radius:8px;transition:background .15s,color .15s}
+    nav.topnav a:hover{background:rgba(246,241,226,.12);color:#fff}
+    nav.topnav a.active{background:rgba(201,149,44,.2);color:#fff}
+  }
   select.lang{
     margin-left:auto;flex:none;max-width:220px;cursor:pointer;appearance:none;
     border:1px solid rgba(246,241,226,.3);border-radius:999px;
@@ -232,7 +242,7 @@
   .node[data-go]:hover{transform:translateY(-3px)}
   .node .ntitle{display:block;font-family:var(--font-display);font-size:21px;font-weight:500;margin:18px 0 6px;line-height:1.12;letter-spacing:-.015em}
   .node .np{display:block;color:var(--muted);font-size:14px;line-height:1.45}
-  .c-green{background:var(--green)} .c-slate{background:var(--slate)}
+  .c-green{background:var(--green-aa)} .c-slate{background:var(--slate)}
   .c-amber{background:#8a5e0c} .c-terra{background:var(--terra)}
   .pill{display:inline-flex;align-items:center;gap:10px;font-family:var(--font-mono);
     background:var(--soft-green);color:var(--green-deep);font-size:11px;letter-spacing:.18em;
@@ -322,7 +332,7 @@
     background:var(--line-strong)}
   .istep .ic{width:38px;height:38px;border-radius:50%;flex:none;display:flex;align-items:center;
     justify-content:center;font-family:var(--font-display);font-size:15px;transition:background .25s}
-  .ic.done{background:var(--green);color:#fdfbf4}
+  .ic.done{background:var(--green-aa);color:#fdfbf4}
   .ic.cur{background:var(--gold-leaf);color:var(--green-deep);box-shadow:0 0 0 5px rgba(201,149,44,.18)}
   .ic.todo{background:#efe8d8;color:#575f54}
   .istep span{font-size:16px;color:var(--muted);transition:color .25s}
@@ -412,7 +422,7 @@
     box-shadow:inset 0 0 0 1px rgba(255,255,255,.25),0 10px 20px -12px rgba(14,61,41,.5)}
   .tl-date{font-family:var(--font-mono);font-size:11px;letter-spacing:.08em;padding:8px 12px;
     border-radius:8px;flex:none;min-width:78px;text-align:center}
-  .d-terra{background:var(--terra-bg);color:#94391c} .d-amber{background:var(--amber-bg);color:#7c5408}
+  .d-terra{background:var(--terra-bg);color:#7c2e17} .d-amber{background:var(--amber-bg);color:#7c5408}
   .d-slate{background:var(--slate-bg);color:#2e4f74} .d-green{background:var(--pill-green);color:var(--green-mid)}
   .tl-item .tt b{font-size:17px;color:var(--ink)} .tl-item .tt p{color:var(--muted);font-size:14.5px}
   .tl-item .tl-x{margin-left:auto;border:none;background:transparent;color:var(--terra);font-size:20px;
@@ -441,7 +451,7 @@
   .ai-box{border-top:1px solid var(--line);padding:18px 0 4px;margin-bottom:26px}
   .ai-box-head{display:flex;align-items:center;gap:10px;margin-bottom:12px}
   .ai-badge{font-family:var(--font-mono);font-size:10px;letter-spacing:.12em;color:#f6f1e2;
-    background:linear-gradient(120deg,var(--green),var(--green-deep));padding:5px 10px;border-radius:7px}
+    background:linear-gradient(120deg,var(--green-aa),var(--green-deep));padding:5px 10px;border-radius:7px}
   .ai-box-head b{color:var(--ink);font-size:16px}
   .ai-box textarea{min-height:92px}
   .ai-box-foot{display:flex;align-items:center;gap:16px;margin-top:14px;flex-wrap:wrap}
@@ -473,7 +483,7 @@
   .btn-read{background:var(--amber-bg);color:#6b4806;font-weight:700;border:none;border-radius:11px;
     padding:15px 24px;cursor:pointer;font-family:var(--font-body);font-size:14.5px;transition:.15s}
   .btn-read:hover{filter:brightness(.96)}
-  .btn-read.speaking{background:var(--green);color:#f6f1e2}
+  .btn-read.speaking{background:var(--green-aa);color:#f6f1e2}
   .btn-detect{font-family:var(--font-mono);background:var(--slate-bg);color:#2e4f74;font-size:10.5px;
     letter-spacing:.1em;border:none;border-radius:11px;padding:15px 20px;cursor:pointer;transition:.15s}
   .btn-detect:hover{filter:brightness(.96)}
@@ -513,7 +523,8 @@
     border:1px solid rgba(30,122,82,.3);border-radius:11px;padding:16px 24px;cursor:pointer;
     font-family:var(--font-body);font-size:14.5px;transition:.15s}
   .btn-legal:hover{background:var(--pill-green)}
-  .legal-row small{color:var(--terra);font-weight:700;font-size:14px}
+  .legal-row small{color:#7c2e17;font-weight:700;font-size:14px}
+  .legal-row.lr-actions{margin-top:18px;gap:12px}
   .dr-left .btn-primary{margin-top:8px}
   .tiny{color:var(--muted);font-size:13.5px;margin-top:10px}
 
@@ -531,9 +542,11 @@
   .cite-item{display:flex;flex-direction:column;gap:6px}
   .cite-item .cite-quote{margin:0 0 2px;font-size:13px;line-height:1.5;color:var(--green-mid);
     font-style:italic;padding-left:12px;border-left:2px solid var(--gold-leaf)}
+  .cite-ref{display:inline-flex;align-items:center;justify-content:center;
+    min-width:32px;min-height:32px;vertical-align:middle}
   a.cite-inline{font-size:.72em;font-weight:700;color:var(--green-deep);text-decoration:none;
-    padding:0 1px;margin-left:1px;border-bottom:1px dotted var(--gold-leaf);
-    min-width:44px;min-height:44px;display:inline-flex;align-items:center;justify-content:center;vertical-align:middle}
+    padding:2px 5px;margin-left:1px;border-bottom:1px dotted var(--gold-leaf);
+    min-width:auto;min-height:auto;display:inline-flex;align-items:center;justify-content:center}
   a.cite-inline:hover{color:var(--green);border-bottom-color:var(--green)}
   .ai-error{display:flex;flex-direction:column;gap:4px;background:#f8e7e1;border:1px solid #e3b3a4;
     border-radius:12px;padding:14px 16px;color:#8c2f17}
@@ -686,12 +699,12 @@
   /* ---------- FIELD VALIDATION ---------- */
   .field-error{margin:6px 0 0;color:#a8331f;font-size:13px;font-weight:600}
   [aria-invalid="true"]{outline:2px solid #c0492f;outline-offset:2px;border-radius:10px}
+  main input[type=text]{cursor:text}
 
   /* ---------- SECTION VISUALS (animated emblems) ---------- */
   section{position:relative}
-  .sv{position:absolute;top:58px;right:40px;width:225px;cursor:pointer;z-index:1;
+  .sv{position:absolute;top:58px;right:40px;width:225px;cursor:default;pointer-events:none;z-index:1;
     transition:transform .45s cubic-bezier(.22,.61,.36,1);filter:drop-shadow(0 16px 24px rgba(26,92,67,.16))}
-  .sv:hover{transform:rotate(-3deg) scale(1.07)}
   .sv svg{width:100%;display:block;overflow:visible}
   .sv .tb{transform-box:fill-box;transform-origin:center}
   .sv .tbb{transform-box:fill-box;transform-origin:center bottom}
@@ -794,6 +807,13 @@
     .lt-toolbar .lt-sel-real{flex:1 1 140px}
     .lt-toolbar,.lt-body,.dr-left,.dr-right,.ip-left,.timeline-card,.settings-card,.qcard,.intake,.checkpoint{padding:24px}
     .add-row input[type=date],.add-row input[type=text],.add-row .btn{width:100%;min-width:0}
+  }
+  @media (max-width:640px){
+    /* Phones get the static stacked story; desktop keeps the scrub. */
+    .scrolly-track{height:auto}
+    .scrolly-stage{position:static;height:auto;min-height:0;display:block}
+    .scrolly-card-wrap,.scrolly-meter{display:none}
+    .s-step{opacity:1;background:rgba(253,251,244,.7)}
   }
   @media (prefers-reduced-motion: reduce){*{animation:none!important;transition:none!important}}
 
@@ -1274,6 +1294,14 @@
       <span class="nav-group" role="presentation">Get legal help</span>
       <a href="#legal" data-go="legal">Legal notice &amp; find help</a>
     </nav>
+    <nav class="topnav" aria-label="Quick links">
+      <a href="#home" data-go="home">Start</a>
+      <a href="#language" data-go="language">Understand documents</a>
+      <a href="#alerts" data-go="alerts">Track deadlines</a>
+      <a href="#interview" data-go="interview">Prepare interview</a>
+      <a href="#qa" data-go="qa">Ask</a>
+      <a href="#legal" data-go="legal">Get legal help</a>
+    </nav>
     <button type="button" class="reading-btn" id="readingBtn" aria-pressed="false" aria-label="Toggle easy-reading mode"><span class="no-i18n">Aa</span></button>
     <select class="lang" id="siteLang" aria-label="Site language">
       <option value="English">English ⌄</option>
@@ -1412,10 +1440,10 @@
     <div class="kicker">Why GreenPath</div>
     <h2 class="why-h">Not just a chatbot.</h2>
     <div class="why-grid">
-      <div class="why-card"><div class="wc-ic">🔗</div><h4>Grounded &amp; cited</h4><p>Every answer links to official USCIS and State Department sources : not guesses.</p></div>
-      <div class="why-card"><div class="wc-ic">🌐</div><h4>Speaks your language</h4><p>Translate, scan, and hear each step read aloud in your own language.</p></div>
-      <div class="why-card"><div class="wc-ic">📅</div><h4>Deadline-aware</h4><p>Scan a real USCIS notice : it auto-fills every date on your timeline.</p></div>
-      <div class="why-card"><div class="wc-ic">🛟</div><h4>Knows its limits</h4><p>Never gives legal advice : complex cases route to authorized legal help.</p></div>
+      <div class="why-card"><div class="wc-ic" aria-hidden="true">🔗</div><h4>Grounded &amp; cited</h4><p>Every answer links to official USCIS and State Department sources : not guesses.</p></div>
+      <div class="why-card"><div class="wc-ic" aria-hidden="true">🌐</div><h4>Speaks your language</h4><p>Translate, scan, and hear each step read aloud in your own language.</p></div>
+      <div class="why-card"><div class="wc-ic" aria-hidden="true">📅</div><h4>Deadline-aware</h4><p>Scan a real USCIS notice : it auto-fills every date on your timeline.</p></div>
+      <div class="why-card"><div class="wc-ic" aria-hidden="true">🛟</div><h4>Knows its limits</h4><p>Never gives legal advice : complex cases route to authorized legal help.</p></div>
     </div>
     <div class="why-foot">🔒 No account required. Document scanning runs in your browser, so image and PDF files never leave your device. But when you use an AI feature : pathway, Q&amp;A, document review, or interview : the text is sent to GreenPath's server and to OpenAI to generate the response. Please don't enter anything you aren't comfortable sharing.</div>
   </div>
@@ -1552,7 +1580,7 @@
 <section id="progress">
   <div class="kicker-rule"></div>
   <h1 class="h1" style="font-size:clamp(36px,4.6vw,58px);margin-top:8px">A roadmap makes a long process feel manageable.</h1>
-  <div class="sv sv-prog" title="Your journey, step by step">
+  <div class="sv sv-prog" aria-hidden="true" title="Your journey, step by step">
     <svg viewBox="0 0 230 150" role="img" aria-label="Animated winding path with a traveler moving between milestones">
       <path class="trail" d="M14 124C58 124 60 64 104 64C150 64 152 26 206 26"/>
       <circle class="pu1 tb" cx="14" cy="124" r="9" style="fill:var(--green)"/>
@@ -1615,7 +1643,7 @@
   <div class="kicker-rule"></div>
   <h1 class="h1" style="font-size:clamp(36px,4.6vw,58px);margin-top:8px">See important dates before they become urgent.</h1>
   <p class="lede">Based on dates you enter and dated official public sources.</p>
-  <div class="sv sv-bell" title="Deadline alerts">
+  <div class="sv sv-bell" aria-hidden="true" title="Deadline alerts">
     <svg viewBox="0 0 230 150" role="img" aria-label="Animated bell with radiating alert rings and a date chip">
       <circle class="ring tb" cx="115" cy="66" r="50"/>
       <circle class="ring ring2 tb" cx="115" cy="66" r="50"/>
@@ -1810,7 +1838,7 @@
   <div class="kicker-rule"></div>
   <h1 class="h1" style="font-size:clamp(36px,4.6vw,58px);margin-top:8px">Support works in the language and format the user needs.</h1>
   <p class="lede">Translate text, scan a page, or hear instructions read aloud.</p>
-  <div class="sv sv-lang" title="Speaks your language">
+  <div class="sv sv-lang" aria-hidden="true" title="Speaks your language">
     <svg viewBox="0 0 230 150" role="img" aria-label="Animated speech bubbles in several languages">
       <g class="f1"><rect x="8" y="14" width="86" height="40" rx="14" style="fill:var(--green)"/><text x="51" y="40" text-anchor="middle" class="no-i18n" style="font-size:16px;font-weight:700;fill:#fff">Hola</text></g>
       <g class="f2"><rect x="120" y="36" width="86" height="40" rx="14" style="fill:var(--gold-leaf)"/><text x="163" y="62" text-anchor="middle" class="no-i18n" style="font-size:16px;font-weight:700;fill:var(--green-ink)">你好</text></g>
@@ -1902,7 +1930,7 @@
 <section id="review">
   <div class="kicker-rule"></div>
   <h1 class="h1" style="font-size:clamp(36px,4.6vw,58px);margin-top:8px">AI review catches possible issues before submission.</h1>
-  <div class="sv sv-scan" title="Document review">
+  <div class="sv sv-scan" aria-hidden="true" title="Document review">
     <svg viewBox="0 0 230 150" role="img" aria-label="Animated scanner beam sweeping a document, ending in a check mark">
       <rect x="62" y="8" width="106" height="134" rx="10" style="fill:var(--card);stroke:var(--line-strong)"/>
       <rect x="76" y="26" width="78" height="9" rx="4.5" style="fill:var(--soft-green)"/>
@@ -2039,7 +2067,7 @@
 <section id="interview">
   <div class="kicker-rule"></div>
   <h1 class="h1" style="font-size:clamp(36px,4.6vw,58px);margin-top:8px">Practice replaces uncertainty with preparation.</h1>
-  <div class="sv sv-mic" title="Interview practice">
+  <div class="sv sv-mic" aria-hidden="true" title="Interview practice">
     <svg viewBox="0 0 230 150" role="img" aria-label="Animated microphone with sound level bars">
       <rect x="98" y="14" width="34" height="62" rx="17" style="fill:var(--green-deep)"/>
       <path d="M84 60v10c0 17 14 31 31 31s31-14 31-31V60" style="fill:none;stroke:var(--green);stroke-width:5;stroke-linecap:round"/>
@@ -2082,7 +2110,7 @@
     <div class="ip-chat-wrap">
       <div class="ip-chat" id="ipChat" aria-live="polite" aria-atomic="false">
         <div class="ip-empty">
-          <div class="ip-empty-icon">🎙️</div>
+          <div class="ip-empty-icon" aria-hidden="true">🎙️</div>
           <p>Pick a case type and press <b>Start Practice</b>. An AI interviewer will ask one USCIS-style question at a time, then give you coaching feedback on each answer.</p>
         </div>
       </div>
@@ -2213,7 +2241,7 @@
 <section id="pathway">
   <div class="kicker-rule"></div>
   <h1 class="h1" style="font-size:clamp(36px,4.6vw,58px);margin-top:8px">Find your most likely green card pathway.</h1>
-  <div class="sv sv-path" title="Pathway finder">
+  <div class="sv sv-path" aria-hidden="true" title="Pathway finder">
     <svg viewBox="0 0 230 150" role="img" aria-label="Animated branching paths leading to one highlighted pathway">
       <path class="branch" pathLength="100" d="M14 75H80C104 75 110 38 134 38H196"/>
       <path class="branch b2" pathLength="100" d="M14 75H196"/>
@@ -2340,7 +2368,7 @@
 <section id="qa">
   <div class="kicker-rule"></div>
   <h1 class="h1" style="font-size:clamp(36px,4.6vw,58px);margin-top:8px">Ask a question about your current stage.</h1>
-  <div class="sv sv-qa" title="Ask anything">
+  <div class="sv sv-qa" aria-hidden="true" title="Ask anything">
     <svg viewBox="0 0 230 150" role="img" aria-label="Animated chat bubbles with typing dots">
       <g class="f1"><rect x="14" y="16" width="124" height="46" rx="16" style="fill:var(--green)"/><text x="76" y="45" text-anchor="middle" class="no-i18n" style="font-size:15px;font-weight:700;fill:#fff">What's next?</text></g>
       <g class="f2"><rect x="96" y="84" width="120" height="46" rx="16" style="fill:var(--cream-panel);stroke:var(--line-strong)"/>
@@ -2478,7 +2506,7 @@
 <section id="bulletin">
   <div class="kicker-rule"></div>
   <h1 class="h1" style="font-size:clamp(36px,4.6vw,58px);margin-top:8px">See where your priority date stands.</h1>
-  <div class="sv sv-chart" title="Visa bulletin movement">
+  <div class="sv sv-chart" aria-hidden="true" title="Visa bulletin movement">
     <svg viewBox="0 0 230 150" role="img" aria-label="Animated chart of visa bulletin categories with a moving cutoff line">
       <line x1="14" y1="132" x2="216" y2="132" style="stroke:var(--line-strong);stroke-width:2"/>
       <rect class="bar tbb" x="32" y="62" width="26" height="70" rx="6" style="fill:var(--soft-green)"/>
@@ -2638,7 +2666,7 @@
 <section id="legal">
   <div class="kicker-rule"></div>
   <h1 class="h1" style="font-size:clamp(36px,4.6vw,58px);margin-top:8px">Important legal notice.</h1>
-  <div class="sv sv-scale" title="Know your rights">
+  <div class="sv sv-scale" aria-hidden="true" title="Know your rights">
     <svg viewBox="0 0 230 150" role="img" aria-label="Animated scales of justice gently balancing">
       <line x1="115" y1="20" x2="115" y2="116" style="stroke:var(--green-deep);stroke-width:5;stroke-linecap:round"/>
       <line x1="78" y1="122" x2="152" y2="122" style="stroke:var(--green-deep);stroke-width:6;stroke-linecap:round"/>
@@ -2659,7 +2687,7 @@
     <p><b>Official sources govern.</b> Only USCIS (uscis.gov) and the U.S. Department of State (travel.state.gov) provide authoritative rules, forms, fees, processing times, and Visa Bulletin cutoff dates. Where GreenPath and an official source differ, the official source controls.</p>
     <p><b>Your information.</b> Documents and notices you upload are processed only to generate your answer and are not a formal filing with any agency. Do not upload anything you are not comfortable sharing. GreenPath cannot submit anything to the government on your behalf.</p>
     <p><b>Complex cases need real help.</b> Immigration law is complex and mistakes can be costly or permanent. For anything beyond general guidance, consult an accredited representative or a licensed immigration attorney.</p>
-    <div class="legal-row" style="margin-top:18px;display:flex;gap:12px;flex-wrap:wrap"><button class="btn btn-primary" data-go="qa">Ask a question</button><a class="btn btn-ghost" href="https://www.uscis.gov/scams-fraud-and-misconduct/avoid-scams/find-legal-services" target="_blank" rel="noopener">Find authorized legal help</a></div>
+    <div class="legal-row lr-actions"><button class="btn btn-primary" data-go="qa">Ask a question</button><a class="btn btn-ghost" href="https://www.uscis.gov/scams-fraud-and-misconduct/avoid-scams/find-legal-services" target="_blank" rel="noopener">Find authorized legal help</a></div>
   </div>
 
   <div class="safety-callout" role="note">
@@ -2747,7 +2775,7 @@
     // Resolve empty/unknown ids (e.g. a stale or hand-typed hash) to a valid section.
     if(!(document.getElementById(id) || id==='hero2')) id='home';
     sections.forEach(s=>s.classList.toggle('show', s.id===id));
-    document.querySelectorAll('nav.main a').forEach(a=>{
+    document.querySelectorAll('nav.main a, nav.topnav a').forEach(a=>{
       const active = a.dataset.go===id || (id==='hero2' && a.dataset.go==='home');
       a.classList.toggle('active', active);
       if(active) a.setAttribute('aria-current','page');
@@ -3499,11 +3527,12 @@
       last=m.index+m[0].length;
       if(!src) continue; // unknown id: strip the token entirely
       if(!numbers[id]) numbers[id]=next++;
-      const sup=document.createElement('sup');
+      const ref=document.createElement('span');
+      ref.className='cite-ref';
       const a=document.createElement('a');
       a.className='cite-inline'; a.href=src.url; a.target='_blank'; a.rel='noopener';
       a.title=src.title; a.textContent='['+numbers[id]+']';
-      sup.appendChild(a); frag.appendChild(sup);
+      ref.appendChild(a); frag.appendChild(ref);
     }
     if(last<s.length) frag.appendChild(document.createTextNode(s.slice(last)));
     frag._numbers=numbers;
