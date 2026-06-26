@@ -20,12 +20,6 @@ const MAX_TOKENS_MAX = 1200;
 const MAX_TOKENS_DEFAULT = 900;
 const UNTRUSTED_MAX_TOKENS = 600;
 
-// JSON-schema abuse guards: a forwarded json_schema may not be larger than this
-// serialized, nor nested deeper than this. Over-limit schemas are ignored (we
-// fall back to no response_format) rather than rejected with a 500.
-const MAX_SCHEMA_CHARS = 4000;
-const MAX_SCHEMA_DEPTH = 8;
-
 // Best-effort rate limit: N requests per rolling window per client IP.
 const RATE_LIMIT_MAX = 20;
 const RATE_LIMIT_WINDOW_MS = 60 * 1000;
@@ -64,26 +58,6 @@ function normalizeMessages(messages) {
   }
 
   return normalized;
-}
-
-// Measure the maximum nesting depth of a JSON-compatible value. Used to reject
-// pathologically deep json_schema payloads that could blow up validation cost.
-function jsonDepth(value, seen) {
-  if (value === null || typeof value !== 'object') return 0;
-  // Guard against cyclic references (shouldn't happen post-JSON.parse, but the
-  // value originates from untrusted input, so be defensive).
-  seen = seen || new Set();
-  if (seen.has(value)) return Infinity;
-  seen.add(value);
-
-  let max = 0;
-  const children = Array.isArray(value) ? value : Object.values(value);
-  for (const child of children) {
-    const d = jsonDepth(child, seen);
-    if (d > max) max = d;
-  }
-  seen.delete(value);
-  return max + 1;
 }
 
 // Parse the host out of an Origin/Referer URL. Returns null on anything unparseable.
@@ -174,6 +148,28 @@ function checkRateLimit(ip) {
   }
   return { limited: false, retryAfter: 0 };
 }
+// Durable rate limit using Netlify Blobs (shared across function instances), with
+// the in-memory bucket as a local-dev / blobs-unavailable fallback. Read-modify-
+// write is not strictly atomic, but it is shared state — far stronger than per-
+// instance memory. For hard guarantees use an atomic INCR store (Upstash Redis).
+async function checkRateLimitDurable(ip) {
+  try {
+    const { getStore } = require('@netlify/blobs');
+    const store = getStore('greenpath-ratelimit');
+    const now = Date.now();
+    const prev = await store.get(ip, { type: 'json' });
+    let bucket = (prev && now < prev.resetAt) ? prev : { count: 0, resetAt: now + RATE_LIMIT_WINDOW_MS };
+    bucket.count += 1;
+    await store.setJSON(ip, bucket);
+    if (bucket.count > RATE_LIMIT_MAX) {
+      return { limited: true, retryAfter: Math.ceil((bucket.resetAt - now) / 1000) };
+    }
+    return { limited: false, retryAfter: 0 };
+  } catch {
+    return checkRateLimit(ip); // local dev / Blobs unavailable
+  }
+}
+
 
 // Canonical, SERVER-OWNED response schemas. The browser may REQUEST one by name,
 // but the server defines the body — a client cannot inject an arbitrary schema.
@@ -246,7 +242,7 @@ exports.handler = async (event) => {
     header(headers, 'x-nf-client-connection-ip') ||
     header(headers, 'x-forwarded-for')?.split(',')[0]?.trim() ||
     'unknown';
-  const rl = checkRateLimit(clientIp);
+  const rl = await checkRateLimitDurable(clientIp);
   if (rl.limited) {
     return jsonResponse(
       429,
@@ -256,13 +252,13 @@ exports.handler = async (event) => {
     );
   }
 
+  if ((event.body || '').length > 24000) {
+    return jsonResponse(413, { error: 'Request too large' }, null, allowedOrigin);
+  }
+
   const key = process.env.OPENAI_API_KEY;
   if (!key) {
     return jsonResponse(500, { error: 'Server missing OPENAI_API_KEY' }, null, allowedOrigin);
-  }
-
-  if ((event.body || '').length > 24000) {
-    return jsonResponse(413, { error: 'Request too large' }, null, allowedOrigin);
   }
 
   let body;

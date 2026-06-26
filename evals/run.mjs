@@ -170,11 +170,7 @@ async function runGrounding() {
 }
 
 // ---- suite 4: risk screen (offline, no API) ----
-const RISK_CASES = [
-  { text: 'I have a prior order of removal', expect: true },
-  { text: 'I was arrested for a crime', expect: true },
-  { text: 'I am married to a US citizen, entered legally', expect: false },
-];
+const RISK_CASES = (cases.risk || []);
 
 function runRisk() {
   console.log('\n== Risk screen (offline) ==');
@@ -182,8 +178,8 @@ function runRisk() {
   for (const c of RISK_CASES) {
     let ok = false, hit = null;
     try {
-      hit = GP.RISK.screen(c.text).hit;
-      ok = hit === c.expect;
+      const res = GP.RISK.screen(c.text); hit = res.hit;
+      ok = res.hit === c.expect && (c.tier === undefined || res.tier === c.tier);
     } catch (e) {
       console.log(`  FAIL  screen -> ERR ${e.message}`);
       continue;

@@ -154,7 +154,7 @@
     { cat:'asylum / fear of return', tier:'stop',
       re:/\b(asylum|persecut\w*|credible fear|refugee|afraid to (go|return) (back|home)|fear (of )?(returning|persecution))\b/i },
     { cat:'abuse / VAWA', tier:'stop',
-      re:/\b(vawa|domestic violence|abus(e|ed|er|ive)|battered|my (husband|wife|spouse) (hits|hurts|threatens)|trafficking|t visa|u visa)\b/i },
+      re:/\b(vawa|domestic violence|abus\w*|battered|my (husband|wife|spouse) (hits|hurts|threatens)|trafficking|t visa|u visa)\b/i },
     { cat:'entry without inspection / unlawful presence', tier:'caution',
       re:/\b(without inspection|entered illegally|crossed the border|snuck (in|across)|ewi\b|no inspection|never inspected|unlawful presence|3.?year bar|10.?year bar|overstay\w*|out of status|expired (visa|status))\b/i },
     { cat:'prior denial or NTA', tier:'caution',
