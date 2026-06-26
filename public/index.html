@@ -109,7 +109,7 @@
   .brand .tag{font-family:var(--font-mono);font-size:9px;letter-spacing:.22em;color:var(--gold-bright)}
   /* hamburger (always-on dropdown nav) */
   .menu-btn{display:flex;flex-direction:column;justify-content:center;align-items:center;gap:5px;
-    order:-1;margin:0;width:46px;height:42px;padding:0;cursor:pointer;
+    order:-1;margin:0;width:46px;height:42px;min-width:44px;min-height:44px;padding:0;cursor:pointer;
     background:rgba(246,241,226,.08);border:1px solid rgba(246,241,226,.28);border-radius:11px;
     transition:background .18s,border-color .18s}
   .menu-btn:hover{background:rgba(246,241,226,.16);border-color:rgba(201,149,44,.6)}
@@ -319,9 +319,9 @@
     font-size:18px;background:var(--soft-green);border:1px solid rgba(30,122,82,.25);margin-bottom:12px}
   .why-card h4{font-family:var(--font-body);font-size:15.5px;font-weight:700;margin:0 0 5px}
   .why-card p{color:var(--muted);font-size:13.5px;line-height:1.5;margin:0}
-  .why-foot{margin-top:18px;display:inline-flex;align-items:center;gap:8px;font-size:13.5px;font-weight:600;
+  .why-foot{margin-top:18px;display:flex;align-items:flex-start;gap:10px;font-size:13.5px;font-weight:600;
     color:var(--green-mid);background:var(--soft-green);border:1px solid rgba(30,122,82,.25);
-    border-radius:999px;padding:10px 18px}
+    max-width:760px;border-radius:14px;padding:14px 18px;line-height:1.55}
 
   /* ---------- GUIDED WALKTHROUGH ---------- */
   .gw-grid{display:grid;grid-template-columns:.62fr 1fr;gap:30px;margin-top:12px;align-items:start}
@@ -815,13 +815,20 @@
     .scrolly-card-wrap,.scrolly-meter{display:none}
     .s-step{opacity:1;background:rgba(253,251,244,.7)}
   }
+  @media(max-width:380px){
+    .nav-inner{gap:8px;padding:10px 12px}
+    .brand{min-width:0}
+    .brand .logo{font-size:18px;max-width:92px;display:inline-block;overflow:hidden;text-overflow:ellipsis}
+    .reading-btn{width:44px;height:44px;min-width:44px;padding:0}
+    select.lang{width:96px;max-width:96px;font-size:11px}
+  }
   @media (prefers-reduced-motion: reduce){*{animation:none!important;transition:none!important}}
 
   /* ---------- READING / EASY-READING MODE ---------- */
   .reading-btn{
     flex:none;margin-left:auto;cursor:pointer;appearance:none;
     border:1px solid rgba(246,241,226,.3);border-radius:999px;
-    min-width:44px;height:42px;padding:0 16px;color:#f1ecdc;font-weight:700;font-size:16px;
+    min-width:44px;min-height:44px;height:42px;padding:0 16px;color:#f1ecdc;font-weight:700;font-size:16px;
     font-family:var(--font-body);background-color:rgba(246,241,226,.08);letter-spacing:.01em;
     display:inline-flex;align-items:center;justify-content:center;
     transition:background-color .18s,border-color .18s}
@@ -1445,7 +1452,7 @@
       <div class="why-card"><div class="wc-ic" aria-hidden="true">📅</div><h4>Deadline-aware</h4><p>Scan a real USCIS notice : it auto-fills every date on your timeline.</p></div>
       <div class="why-card"><div class="wc-ic" aria-hidden="true">🛟</div><h4>Knows its limits</h4><p>Never gives legal advice : complex cases route to authorized legal help.</p></div>
     </div>
-    <div class="why-foot">🔒 No account required. Document scanning runs in your browser, so image and PDF files never leave your device. But when you use an AI feature : pathway, Q&amp;A, document review, or interview : the text is sent to GreenPath's server and to OpenAI to generate the response. Please don't enter anything you aren't comfortable sharing.</div>
+    <div class="why-foot"><span class="no-i18n" aria-hidden="true">🔒</span> No account required. Document scanning runs in your browser, so image and PDF files never leave your device. But when you use an AI feature : pathway, Q&amp;A, document review, or interview : the text is sent to GreenPath's server and to OpenAI to generate the response. Please don't enter anything you aren't comfortable sharing.</div>
   </div>
 
   <!-- ===== SCROLL-SCRUBBED STORY 2: scattered papers become one case ===== -->
@@ -1668,7 +1675,7 @@
         <p class="trust-strip" role="note"><span class="ts-dot" aria-hidden="true"></span><span><b>General info, not legal advice.</b> This text is sent to GreenPath's server and OpenAI. Document scanning stays in your browser.</span></p>
         <div class="ai-box-foot">
           <button class="btn btn-primary" id="aiExtract">Extract Dates with AI</button>
-          <button class="btn-scan" id="noticeScan" type="button">📄 Scan a USCIS notice</button>
+          <button class="btn-scan" id="noticeScan" type="button"><span class="no-i18n" aria-hidden="true">📄</span> Scan a USCIS notice</button>
           <input type="file" id="noticeFile" accept="image/*,.pdf,.txt" hidden>
           <small id="aiStatus"></small>
         </div>
@@ -1889,12 +1896,12 @@
     </div>
     <div class="lt-cols" style="margin-top:22px">
       <div class="lt-actions">
-        <button class="btn-scan" id="ltScan">📄 Scan Document</button>
+        <button class="btn-scan" id="ltScan"><span class="no-i18n" aria-hidden="true">📄</span> Scan Document</button>
         <button class="btn btn-primary" id="ltTranslate" style="padding:15px 30px">Translate</button>
         <small id="ltStatus"></small>
       </div>
       <div class="lt-actions">
-        <button class="btn-read" id="ltRead">▶ Read Aloud</button>
+        <button class="btn-read" id="ltRead"><span class="no-i18n" aria-hidden="true">▶</span> Read Aloud</button>
         <button class="btn-detect" id="ltDetect">AUTO-DETECT LANGUAGE</button>
         <small>Translation tools</small>
       </div>
@@ -2101,7 +2108,7 @@
       <div class="example-q"><small>Example question</small><b id="ipExample">Please explain your current address history.</b></div>
       <div class="ip-btns">
         <button class="btn btn-primary" id="ipStart">● Start Practice</button>
-        <button class="btn-read" id="ipReadQ">▶ Read Question</button>
+        <button class="btn-read" id="ipReadQ"><span class="no-i18n" aria-hidden="true">▶</span> Read Question</button>
       </div>
       <p class="trust-strip" role="note"><span class="ts-dot" aria-hidden="true"></span><span><b>General info, not legal advice.</b> Your answers are sent to GreenPath's server and OpenAI.</span></p>
       <p class="tiny" style="margin-top:14px">A calm simulation only. Real interviews vary : never treat this as legal advice.</p>
@@ -3791,8 +3798,8 @@ Rules: resolve relative dates against today. If a year is missing, choose the ne
     const u=new SpeechSynthesisUtterance(text);
     u.lang=speechCode(ltTo.value);
     applyVoiceMood(u,u.lang);
-    u.onstart=()=>{ speaking=true; ltRead.classList.add('speaking'); ltRead.textContent='■ Stop'; };
-    u.onend=u.onerror=()=>{ speaking=false; ltRead.classList.remove('speaking'); ltRead.textContent='▶ Read Aloud'; };
+    u.onstart=()=>{ speaking=true; ltRead.classList.add('speaking'); ltRead.innerHTML='<span class="no-i18n" aria-hidden="true">■</span> Stop'; };
+    u.onend=u.onerror=()=>{ speaking=false; ltRead.classList.remove('speaking'); ltRead.innerHTML='<span class="no-i18n" aria-hidden="true">▶</span> Read Aloud'; };
     window.speechSynthesis.cancel();
     window.speechSynthesis.speak(u);
   });
