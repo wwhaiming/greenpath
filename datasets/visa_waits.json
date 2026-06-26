@@ -1,28 +1,32 @@
 {
   "_meta": {
-    "source": "DOS Visa Bulletin via DavidBellamy/visa_dates",
+    "source": "U.S. Department of State Visa Bulletin",
     "generated_from": "datasets/visa_bulletin/*.csv",
-    "note": "latest estimated wait (years) and current priority date by country/EB level"
+    "note": "latest estimated wait (years) and current priority date by country/EB level",
+    "source_url": "https://travel.state.gov/content/travel/en/legal/visa-law0/visa-bulletin/2026/visa-bulletin-for-july-2026.html",
+    "bulletin_month": "2026-07",
+    "retrieved_at": "2026-06-26",
+    "table": "Employment-Based Final Action Dates"
   },
   "countries": {
     "China": {
-      "bulletin_date": "2025-12-01",
+      "bulletin_date": "2026-07-01",
       "levels": {
         "EB1": {
-          "wait_years": 2.9,
-          "priority_date": "2023-01-22"
+          "wait_years": 3.1,
+          "priority_date": "2023-06-01"
         },
         "EB2": {
-          "wait_years": 4.5,
-          "priority_date": "2021-06-01"
+          "wait_years": 4.8,
+          "priority_date": "2021-09-01"
         },
         "EB3": {
-          "wait_years": 4.7,
-          "priority_date": "2021-04-01"
+          "wait_years": 4.5,
+          "priority_date": "2021-12-22"
         },
         "EB4": {
-          "wait_years": 5.2,
-          "priority_date": "2020-09-01"
+          "wait_years": 3.8,
+          "priority_date": "2022-09-15"
         }
       },
       "trend": {
@@ -201,23 +205,23 @@
       }
     },
     "India": {
-      "bulletin_date": "2025-12-01",
+      "bulletin_date": "2026-07-01",
       "levels": {
         "EB1": {
           "wait_years": 3.7,
-          "priority_date": "2022-03-15"
+          "priority_date": "2022-10-15"
         },
         "EB2": {
-          "wait_years": 12.5,
-          "priority_date": "2013-05-15"
+          "wait_years": null,
+          "priority_date": "Unavailable"
         },
         "EB3": {
-          "wait_years": 12.2,
-          "priority_date": "2013-09-22"
+          "wait_years": 12.5,
+          "priority_date": "2014-01-01"
         },
         "EB4": {
-          "wait_years": 5.2,
-          "priority_date": "2020-09-01"
+          "wait_years": 3.8,
+          "priority_date": "2022-09-15"
         }
       },
       "trend": {
@@ -412,23 +416,23 @@
       }
     },
     "Mexico": {
-      "bulletin_date": "2025-12-01",
+      "bulletin_date": "2026-07-01",
       "levels": {
         "EB1": {
           "wait_years": 0.0,
-          "priority_date": "2025-12-01"
+          "priority_date": "Current"
         },
         "EB2": {
-          "wait_years": 1.8,
-          "priority_date": "2024-02-01"
+          "wait_years": 0.0,
+          "priority_date": "Current"
         },
         "EB3": {
-          "wait_years": 2.6,
-          "priority_date": "2023-04-15"
+          "wait_years": 1.9,
+          "priority_date": "2024-08-01"
         },
         "EB4": {
-          "wait_years": 5.2,
-          "priority_date": "2020-09-01"
+          "wait_years": 3.8,
+          "priority_date": "2022-09-15"
         }
       },
       "trend": {
@@ -623,23 +627,23 @@
       }
     },
     "Philippines": {
-      "bulletin_date": "2025-12-01",
+      "bulletin_date": "2026-07-01",
       "levels": {
         "EB1": {
           "wait_years": 0.0,
-          "priority_date": "2025-12-01"
+          "priority_date": "Current"
         },
         "EB2": {
-          "wait_years": 1.8,
-          "priority_date": "2024-02-01"
+          "wait_years": 0.0,
+          "priority_date": "Current"
         },
         "EB3": {
-          "wait_years": 2.6,
-          "priority_date": "2023-04-15"
+          "wait_years": 2.9,
+          "priority_date": "2023-08-01"
         },
         "EB4": {
-          "wait_years": 5.2,
-          "priority_date": "2020-09-01"
+          "wait_years": 3.8,
+          "priority_date": "2022-09-15"
         }
       },
       "trend": {
@@ -834,23 +838,23 @@
       }
     },
     "Rest of world": {
-      "bulletin_date": "2025-12-01",
+      "bulletin_date": "2026-07-01",
       "levels": {
         "EB1": {
           "wait_years": 0.0,
-          "priority_date": "2025-12-01"
+          "priority_date": "Current"
         },
         "EB2": {
-          "wait_years": 1.8,
-          "priority_date": "2024-02-01"
+          "wait_years": 0.0,
+          "priority_date": "Current"
         },
         "EB3": {
-          "wait_years": 2.6,
-          "priority_date": "2023-04-15"
+          "wait_years": 1.9,
+          "priority_date": "2024-08-01"
         },
         "EB4": {
-          "wait_years": 5.2,
-          "priority_date": "2020-09-01"
+          "wait_years": 3.8,
+          "priority_date": "2022-09-15"
         }
       },
       "trend": {
