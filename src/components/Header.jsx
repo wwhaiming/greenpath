@@ -1,52 +1,7 @@
-import { useState } from 'react'
-import { LANG_NAMES } from '../constants/languages.js'
+import React from 'react'
 
-const NAV = [
-  { id: 'home',      label: 'Home' },
-  { id: 'guided',    label: 'Guided Walkthrough' },
-  { id: 'progress',  label: 'Progress' },
-  { id: 'alerts',    label: 'Deadline Alerts' },
-  { id: 'language',  label: 'Language Tools' },
-  { id: 'pathway',   label: 'Pathway Finder' },
-  { id: 'qa',        label: 'Stage Q&A' },
-  { id: 'bulletin',  label: 'Visa Bulletin' },
-  { id: 'review',    label: 'Document Review' },
-  { id: 'interview', label: 'Interview Prep' },
-]
+const HTML = "<header>\n  <div class=\"nav-inner\">\n    <div class=\"brand\">\n      <span class=\"logo\">GreenPath</span>\n      <span class=\"tag\">AI NAVIGATOR</span>\n    </div>\n    <button class=\"menu-btn\" id=\"menuBtn\" aria-controls=\"mainnav\" aria-expanded=\"false\" aria-label=\"Menu\"><span></span><span></span><span></span></button>\n    <nav class=\"main\" id=\"mainnav\" aria-label=\"Primary\">\n      <a href=\"#\" data-go=\"home\" class=\"active\" aria-current=\"page\">Home</a>\n      <a href=\"#\" data-go=\"guided\">Guided Walkthrough</a>\n      <a href=\"#\" data-go=\"language\">Understand Language</a>\n      <a href=\"#\" data-go=\"interview\">Interview Prep</a>\n      <a href=\"#\" data-go=\"alerts\">Deadline Alerts</a>\n      <a href=\"#\" data-go=\"review\">Evidence Review</a>\n      <a href=\"#\" data-go=\"progress\">Stage Tracking</a>\n      <a href=\"#\" data-go=\"pathway\">Pathway Finder</a>\n      <a href=\"#\" data-go=\"qa\">Stage Q&amp;A</a>\n      <a href=\"#\" data-go=\"bulletin\">Visa Bulletin</a>\n      <a href=\"#\" data-go=\"legal\">Legal</a>\n    </nav>\n    <button type=\"button\" class=\"reading-btn\" id=\"readingBtn\" aria-pressed=\"false\" aria-label=\"Toggle easy-reading mode\"><span class=\"no-i18n\">Aa</span></button>\n    <select class=\"lang\" id=\"siteLang\" aria-label=\"Site language\">\n      <option value=\"English\">English \u2304</option>\n    </select>\n  </div>\n</header>"
 
-export default function Header({ currentPage, navigate, siteLang, setSiteLang }) {
-  const [menuOpen, setMenuOpen] = useState(false)
-
-  return (
-    <header>
-      <div className="nav-inner">
-        <div className="brand">
-          <span className="logo">GreenPath</span>
-          <span className="tag">AI NAVIGATOR</span>
-        </div>
-        <button className="menu-btn" onClick={() => setMenuOpen(o => !o)}>Menu</button>
-        <nav className={`main${menuOpen ? ' open' : ''}`}>
-          {NAV.map(({ id, label }) => (
-            <a
-              key={id}
-              className={currentPage === id || (currentPage === 'hero2' && id === 'home') ? 'active' : ''}
-              onClick={e => { e.preventDefault(); navigate(id); setMenuOpen(false) }}
-            >
-              {label}
-            </a>
-          ))}
-        </nav>
-        <select
-          className="lang"
-          value={siteLang}
-          onChange={e => setSiteLang(e.target.value)}
-          aria-label="Site language"
-        >
-          {LANG_NAMES.map(name => (
-            <option key={name} value={name}>{name}</option>
-          ))}
-        </select>
-      </div>
-    </header>
-  )
+export default function Header() {
+  return <div dangerouslySetInnerHTML={{ __html: HTML }} />
 }
