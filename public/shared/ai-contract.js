@@ -159,6 +159,14 @@
       re:/\b(without inspection|entered illegally|crossed the border|snuck (in|across)|ewi\b|no inspection|never inspected|unlawful presence|3.?year bar|10.?year bar|overstay\w*|out of status|expired (visa|status))\b/i },
     { cat:'prior denial or NTA', tier:'caution',
       re:/\b(denied|denial|notice to appear|\bnta\b|in (removal|deportation) court|immigration judge|appeal\w*)\b/i },
+    { cat:'possible inadmissibility / waiver needed', tier:'caution',
+      re:/\b(inadmissib\w*|public charge|i-?601|i-?212|grounds of inadmissibility|unlawful presence waiver|waiver of inadmissibility|communicable disease|health-related ground)\b/i },
+    { cat:'child aging out (CSPA)', tier:'caution',
+      re:/\b(aging out|age(d|s)? out|\bcspa\b|turning 21|turned 21|about to turn 21)\b/i },
+    { cat:'derivative beneficiary timing', tier:'caution',
+      re:/\b(derivative beneficiar\w*|following to join|follow to join)\b/i },
+    { cat:'deadline-critical filing', tier:'caution',
+      re:/\b(one.?year (filing )?deadline|asylum (one|1).?year|missed (the )?deadline|appeal deadline|motion to reopen|motion to reconsider|i-?290b)\b/i },
   ];
   function screen(text) {
     const t = String(text || '');

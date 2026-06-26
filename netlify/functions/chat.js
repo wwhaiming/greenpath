@@ -175,6 +175,8 @@ function checkRateLimit(ip) {
   return { limited: false, retryAfter: 0 };
 }
 
+const OK_SCHEMA_NAMES = new Set(['pathway','document_review','interview_turn','notice_extract']);
+
 exports.handler = async (event) => {
   const headers = event.headers || {};
   const selfHost = (header(headers, 'host') || '').toLowerCase();
@@ -271,6 +273,7 @@ exports.handler = async (event) => {
     if (rf.type === 'json_object') {
       payload.response_format = { type: 'json_object' };
     } else if (rf.type === 'json_schema' && rf.json_schema && typeof rf.json_schema === 'object') {
+      if (!OK_SCHEMA_NAMES.has(rf.json_schema.name)) return; // server owns the schema set; reject unknown client schemas
       // JSON-schema abuse guard: ignore (do NOT 500) schemas that are too large
       // when serialized or too deeply nested. Falling back to no response_format
       // keeps the request working rather than failing it.

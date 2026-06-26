@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="description" content="GreenPath organizes the U.S. green card journey into clear, human-sized steps with grounded AI guidance, deadline tracking, and multilingual support.">
 <meta name="theme-color" content="#0c2b1d">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%2316432d'/%3E%3Ccircle cx='16' cy='16' r='6' fill='%23c9952c'/%3E%3C/svg%3E">
 <title>GreenPath — AI Navigator</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -773,9 +774,10 @@
   .handoff-stop .handoff-tag{color:#a8381b}
   .handoff-caution{background:var(--amber-bg);border-color:rgba(154,107,16,.5);border-left:5px solid var(--gold-leaf)}
   .handoff-caution .handoff-tag{color:#7c5408}
+  .why-grid .why-card:first-child{grid-column:span 2}
 </style>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/tesseract.js/5.1.0/tesseract.min.js" integrity="sha384-pp0v+kW40yTMi4LentvswD3nxu1oWaextMgId7p11q/fwg37pVpBelXqq5saljJG" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js" integrity="sha384-KBwg7obOscka8IvPu04hSU1QkTen6yg+79IeRhYvW3rXuzKOGwZ0LSjFUyR13A3i" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script src="vendor/tesseract.min.js" integrity="sha384-1zP4ZOtlk2FXAOiUArpMuWf7INJJKe/ROfYFAVSeUa11DEfXdKWGiPI3dVma2Gt0" crossorigin="anonymous"></script>
+<script src="vendor/pdf.min.js" integrity="sha384-/1qUCSGwTur9vjf/z9lmu/eCUYbpOTgSjmpbMQZ1/CtX2v/WcAIKqRv+U1DUCG6e" crossorigin="anonymous"></script>
 </head>
 <body>
 <a href="#main" class="skip-link">Skip to main content</a>
@@ -858,6 +860,7 @@
             <div class="s-step" data-step="3"><i>04</i><div><b>Card in hand</b><p>Permanent residence, made visible.</p></div></div>
           </div>
           <div class="scrolly-meter"><span id="scrollyPct" class="scrolly-pct no-i18n">0%</span><small>of the journey · keep scrolling</small></div>
+          <button class="btn btn-ghost" id="playJourney" style="margin-top:18px;align-self:flex-start">▶ Play the journey</button>
         </div>
         <div class="scrolly-card-wrap">
           <svg class="gc" viewBox="0 0 460 300" role="img" aria-label="Illustration of a permanent resident card assembling step by step">
@@ -920,7 +923,7 @@
       <h1 class="hero-h">Your next step should not be a <em class="it">mystery.</em></h1>
       <p class="lede">GreenPath helps you understand possible pathways, organize documents, track deadlines, and prepare questions in your preferred language.</p>
       <div class="btn-row">
-        <button class="btn btn-primary" data-go="guided">Start My Walkthrough</button>
+        <button class="btn btn-primary" data-go="pathway">Tell me my next step</button>
         <button class="btn btn-ghost" data-go="alerts">Scan a Notice</button>
       </div>
       <p class="note-strong">Built to guide. Designed to know when to hand off.</p>
@@ -1941,7 +1944,7 @@
     async function readNotice(f){
       if(f.type==='text/plain'||/\.txt$/i.test(f.name)) return await f.text();
       if(window.pdfjsLib && (f.type==='application/pdf'||/\.pdf$/i.test(f.name))){
-        pdfjsLib.GlobalWorkerOptions.workerSrc='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+        pdfjsLib.GlobalWorkerOptions.workerSrc='vendor/pdf.worker.min.js';
         const pdf=await pdfjsLib.getDocument({data:await f.arrayBuffer()}).promise;
         let out='';
         for(let p=1;p<=pdf.numPages;p++){ const pg=await pdf.getPage(p); const tc=await pg.getTextContent(); out+=tc.items.map(i=>i.str).join(' ')+'\n'; }
@@ -2150,7 +2153,7 @@ Rules: resolve relative dates against today. If a year is missing, choose the ne
   ltVoice.addEventListener('change',()=>{ if(speaking){ window.speechSynthesis.cancel(); ltRead.click(); }});
 
   // configure PDF.js worker
-  if(window.pdfjsLib){ pdfjsLib.GlobalWorkerOptions.workerSrc='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js'; }
+  if(window.pdfjsLib){ pdfjsLib.GlobalWorkerOptions.workerSrc='vendor/pdf.worker.min.js'; }
 
   ltScan.addEventListener('click',()=>ltFile.click());
   ltFile.addEventListener('change',async()=>{
@@ -2835,6 +2838,20 @@ Set "done":true and provide a short "summary" only when the interview should end
       if(pctEl) pctEl.textContent=Math.round(p*100)+'%';
       const idx=p<.28?0:p<.52?1:p<.76?2:3;
       t.querySelectorAll('.s-step').forEach((s,i)=>s.classList.toggle('on',i<=idx&&p>.02));
+    }
+    const homeTrack=document.getElementById('scrollyTrack'), playBtn=document.getElementById('playJourney');
+    if(playBtn && homeTrack){
+      playBtn.addEventListener('click',()=>{
+        if(homeTrack.dataset.playing) return;
+        homeTrack.scrollIntoView({behavior:reduce?'auto':'smooth',block:'start'});
+        if(reduce){ apply(homeTrack,1); return; }
+        homeTrack.dataset.playing='1'; playBtn.disabled=true; playBtn.textContent='Playing…';
+        const dur=5200, t0=performance.now();
+        (function step(now){
+          const pr=Math.min(1,(now-t0)/dur); apply(homeTrack,pr);
+          if(pr<1){ requestAnimationFrame(step); } else { delete homeTrack.dataset.playing; playBtn.disabled=false; playBtn.textContent='▶ Replay the journey'; }
+        })(performance.now());
+      });
     }
     if(reduce){ tracks.forEach(t=>apply(t,1)); return; }   // show finished art, no scrubbing
     let ticking=false;
