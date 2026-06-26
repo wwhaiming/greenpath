@@ -475,6 +475,52 @@ def api_stage_qa():
         return jsonify({'error': 'internal server error'}), 500
 
 
+# ── /api/intake-hint ─────────────────────────────────────────────────────────
+
+IH_SYSTEM = """You are GreenPath's intake assistant. A user is answering a short quiz to find their \
+possible U.S. immigration pathway. For each step you receive the question label, the question text, \
+and optionally the answer they just selected.
+
+Return 1–2 plain-English sentences that help them understand what is being asked or what their \
+selected answer means for their immigration process. No legal advice. No markdown. No hedging phrases \
+like "please note" or "it's important to know". Return only the explanation text."""
+
+
+@app.route('/api/intake-hint', methods=['POST'])
+def api_intake_hint():
+    try:
+        data = request.get_json(silent=True)
+        if not isinstance(data, dict):
+            return jsonify({'error': 'invalid JSON body'}), 400
+        label = _text_field(data, 'label', max_chars=200)
+        question = _text_field(data, 'question', max_chars=500)
+        answer = _text_field(data, 'answer', max_chars=500)
+        if not question:
+            return jsonify({'error': 'question required'}), 400
+
+        if answer:
+            user_msg = f'Step: {label}\nQuestion: {question}\nSelected answer: {answer}'
+        else:
+            user_msg = f'Step: {label}\nQuestion: {question}'
+
+        resp = client.chat.completions.create(
+            model=CHAT_MODEL,
+            max_tokens=120,
+            temperature=0.3,
+            messages=[
+                {'role': 'system', 'content': IH_SYSTEM},
+                {'role': 'user', 'content': user_msg},
+            ],
+        )
+        hint = resp.choices[0].message.content.strip()
+        return jsonify({'hint': hint})
+    except openai.APITimeoutError:
+        return jsonify({'error': 'upstream timeout'}), 504
+    except Exception:
+        app.logger.exception('route error')
+        return jsonify({'error': 'internal server error'}), 500
+
+
 # ── MAIN ─────────────────────────────────────────────────────────────────────
 
 # ── /api/visa-estimate  (deterministic — computed from the real dataset, no LLM) ─
