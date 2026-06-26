@@ -5,10 +5,10 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="description" content="GreenPath organizes the U.S. green card journey into clear, human-sized steps with grounded AI guidance, deadline tracking, and multilingual support.">
 <meta name="theme-color" content="#0c2b1d">
-<title>GreenPath : AI Navigator</title>
+<title>GreenPath — AI Navigator</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..700;1,9..144,300..700&family=Schibsted+Grotesk:ital,wght@0,400..900;1,400..900&family=Fragment+Mono:ital@0;1&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400;1,700&family=Fraunces:ital,opsz,wght@0,9..144,300..700;1,9..144,300..700&family=Schibsted+Grotesk:ital,wght@0,400..900;1,400..900&family=Fragment+Mono:ital@0;1&display=swap" rel="stylesheet">
 <style>
   /* ==================================================================
      GREENPATH — "Heirloom Ledger" design system
@@ -48,7 +48,7 @@
     --red:#a63a2a;
     /* type */
     --font-display:"Fraunces",Georgia,serif;
-    --font-body:"Schibsted Grotesk",system-ui,sans-serif;
+    --font-body:"Atkinson Hyperlegible","Schibsted Grotesk",system-ui,sans-serif;
     --font-mono:"Fragment Mono",ui-monospace,"SF Mono",monospace;
     /* depth */
     --shadow:0 24px 60px -34px rgba(14,61,41,.38),0 2px 6px -2px rgba(14,61,41,.10);
@@ -85,8 +85,7 @@
   .bg-ambient::after{content:"";position:absolute;left:50%;top:0;bottom:0;width:1px;
     background:rgba(154,107,16,.14)}
   .bg-blob{display:none}
-  .bg-grain{position:fixed;inset:0;z-index:-1;pointer-events:none;opacity:.055;
-    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
+  .bg-grain{display:none}
   .page-band{height:6px;background:linear-gradient(90deg,var(--green-deep) 0 34%,var(--green) 34% 67%,var(--gold-leaf) 67%)}
   .shell{background:transparent}
 
@@ -341,6 +340,7 @@
     padding:15px 17px;font-family:var(--font-body);font-size:15px;color:var(--ink);
     background:#fffdf7;line-height:1.55;transition:border-color .18s,box-shadow .18s}
   .fake-select{width:100%}
+  main input::placeholder,main textarea::placeholder{color:var(--ink-soft);opacity:1}
 
   /* ---------- PROGRESS / ROADMAP ---------- */
   .prog-top{display:flex;justify-content:space-between;align-items:baseline}
@@ -712,6 +712,7 @@
   /* ---------- A11Y + CHROME ---------- */
   a:focus-visible,button:focus-visible,select:focus-visible,textarea:focus-visible,input:focus-visible{
     outline:2px solid var(--gold-leaf);outline-offset:2px;border-radius:10px}
+  main a:focus-visible,main button:focus-visible,main select:focus-visible,main input:focus-visible,main textarea:focus-visible{outline:2px solid var(--green-deep);outline-offset:2px;box-shadow:none}
   .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;
     clip:rect(0,0,0,0);white-space:nowrap;border:0}
   *{scrollbar-width:thin;scrollbar-color:#c3bda7 transparent}
@@ -749,11 +750,35 @@
     .add-row input[type=date],.add-row input[type=text],.add-row .btn{width:100%;min-width:0}
   }
   @media (prefers-reduced-motion: reduce){*{animation:none!important;transition:none!important}}
+  @media(min-width:1200px){
+    .menu-btn{display:none}
+    .brand{position:static;transform:none;order:-1;margin:0 14px 0 2px}
+    header nav.main{display:flex;position:static;flex-direction:row;flex-wrap:wrap;gap:2px;min-width:0;background:none;border:none;box-shadow:none;backdrop-filter:none;-webkit-backdrop-filter:none;padding:0;animation:none}
+    header nav.main a{font-size:12.5px;padding:8px 9px;color:#d9e2d6}
+    header nav.main a:hover{padding-left:9px;background:rgba(246,241,226,.12)}
+    header nav.main a.active::before{content:""}
+    .nav-inner{gap:10px;justify-content:flex-start}
+  }
+  .skip-link{position:absolute;left:-999px;top:0;z-index:300;background:var(--green-deep);color:#f6f1e2;padding:12px 18px;border-radius:0 0 10px 0;font-weight:700;text-decoration:none}
+  .skip-link:focus{left:0}
+  .safe-step{background:linear-gradient(135deg,#e9f3ea,#dcebde);border:1px solid rgba(30,122,82,.4);border-left:5px solid var(--green);border-radius:14px;padding:18px 20px;margin-bottom:16px}
+  .safe-step .safe-tag{font-family:var(--font-mono);font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--green-mid);font-weight:700}
+  .safe-step p{font-size:17px;color:var(--ink);margin:8px 0 6px;font-weight:600}
+  .safe-step small{color:var(--ink-soft);font-size:13px}
+  .handoff{border-radius:14px;padding:18px 20px;margin-bottom:18px;border:1px solid}
+  .handoff .handoff-tag{font-family:var(--font-mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;font-weight:700;margin-bottom:8px;display:block}
+  .handoff p{font-size:15px;line-height:1.55;margin-bottom:12px}
+  .handoff a.btn-legal{display:inline-block;text-decoration:none}
+  .handoff-stop{background:#fbeae3;border-color:#d98b6f;border-left:5px solid var(--terra)}
+  .handoff-stop .handoff-tag{color:#a8381b}
+  .handoff-caution{background:var(--amber-bg);border-color:rgba(154,107,16,.5);border-left:5px solid var(--gold-leaf)}
+  .handoff-caution .handoff-tag{color:#7c5408}
 </style>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/tesseract.js/5.1.0/tesseract.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/tesseract.js/5.1.0/tesseract.min.js" integrity="sha384-pp0v+kW40yTMi4LentvswD3nxu1oWaextMgId7p11q/fwg37pVpBelXqq5saljJG" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js" integrity="sha384-KBwg7obOscka8IvPu04hSU1QkTen6yg+79IeRhYvW3rXuzKOGwZ0LSjFUyR13A3i" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 </head>
 <body>
+<a href="#main" class="skip-link">Skip to main content</a>
 <div class="bg-ambient"><div class="bg-blob blob-1"></div><div class="bg-blob blob-2"></div><div class="bg-blob blob-3"></div></div>
 <div class="bg-grain"></div>
 <div class="page-band"></div>
@@ -784,7 +809,7 @@
   </div>
 </header>
 
-<main>
+<main id="main">
 
 <!-- ===================== HOME ===================== -->
 <section id="home" class="show">
@@ -794,7 +819,7 @@
   <h1 class="h1">One clear place to <em class="it">begin.</em></h1>
       <p class="lede">GreenPath organizes the green-card journey into visible, human-sized steps, in your language, at your pace.</p>
       <div class="btn-row" style="margin-top:30px">
-        <button class="btn btn-primary" data-go="guided">Start My Walkthrough</button>
+        <button class="btn btn-primary" data-go="pathway">Tell me my next step</button>
         <button class="btn btn-ghost" data-go="hero2">See How It Works</button>
       </div>
     </div>
@@ -899,15 +924,15 @@
         <button class="btn btn-ghost" data-go="alerts">Scan a Notice</button>
       </div>
       <p class="note-strong">Built to guide. Designed to know when to hand off.</p>
-      <p class="note">Complex situations are redirected to authorized legal help.</p>
+      <p class="note">GreenPath tells you when to consult authorized legal help, and links you to USCIS's official directory.</p>
     </div>
     <div class="roadmap-card">
       <div class="kicker">Your roadmap</div>
       <h2>A visible path forward</h2>
       <div class="road-step"><div class="rnum c-green">1</div><div><h3>Tell us your situation</h3><p>Plain-language questions</p></div></div>
       <div class="road-step"><div class="rnum c-slate">2</div><div><h3>See a possible pathway</h3><p>Official sources linked</p></div></div>
-      <div class="road-step"><div class="rnum c-amber">3</div><div><h3>Follow your checklist</h3><p>Progress saved locally</p></div></div>
-      <div class="road-step"><div class="rnum c-terra">4</div><div><h3>Know when to ask for help</h3><p>Authorized support referrals</p></div></div>
+      <div class="road-step"><div class="rnum c-amber">3</div><div><h3>Follow your checklist</h3><p>Saved on this device</p></div></div>
+      <div class="road-step"><div class="rnum c-terra">4</div><div><h3>Know when to ask for help</h3><p>Links to USCIS-authorized legal help</p></div></div>
     </div>
   </div>
 
@@ -915,12 +940,13 @@
     <div class="kicker">Why GreenPath</div>
     <h2 class="why-h">Not just a chatbot.</h2>
     <div class="why-grid">
-      <div class="why-card"><div class="wc-ic">🔗</div><h4>Grounded &amp; cited</h4><p>Every answer links to official USCIS and State Department sources : not guesses.</p></div>
-      <div class="why-card"><div class="wc-ic">🌐</div><h4>Speaks your language</h4><p>Translate, scan, and hear each step read aloud in your own language.</p></div>
-      <div class="why-card"><div class="wc-ic">📅</div><h4>Deadline-aware</h4><p>Scan a real USCIS notice : it auto-fills every date on your timeline.</p></div>
-      <div class="why-card"><div class="wc-ic">🛟</div><h4>Knows its limits</h4><p>Never gives legal advice : complex cases route to authorized legal help.</p></div>
+      <div class="why-card"><div class="wc-ic" aria-hidden="true"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="#15714a" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 15l6-6"/><path d="M11 7l1-1a3.5 3.5 0 0 1 5 5l-1 1"/><path d="M13 17l-1 1a3.5 3.5 0 0 1-5-5l1-1"/></svg></div><h4>Grounded &amp; cited</h4><p>Every answer links to the official USCIS and State Department pages to verify against.</p></div>
+      <div class="why-card"><div class="wc-ic" aria-hidden="true"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="#15714a" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M3 12h18"/><path d="M12 3c2.6 2.6 2.6 15.4 0 18M12 3c-2.6 2.6-2.6 15.4 0 18"/></svg></div><h4>Speaks your language</h4><p>Translate, scan, and hear each step read aloud in your own language.</p></div>
+      <div class="why-card"><div class="wc-ic" aria-hidden="true"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="#15714a" stroke-width="1.8" stroke-linecap="round"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 9h18M8 3v4M16 3v4"/></svg></div><h4>Deadline-aware</h4><p>Scan a USCIS notice and it pulls the dates it can find onto your timeline.</p></div>
+      <div class="why-card"><div class="wc-ic" aria-hidden="true"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="#15714a" stroke-width="1.8" stroke-linejoin="round"><path d="M12 3l7 3v6c0 4-3 7-7 9-4-2-7-5-7-9V6z"/><path d="M9 12l2 2 4-4"/></svg></div><h4>Knows its limits</h4><p>Never gives legal advice — complex cases route to authorized legal help.</p></div>
     </div>
-    <div class="why-foot">🔒 Your information stays in your browser : no account required.</div>
+    <div class="why-foot">🔒 No account required. AI features send only the text you submit to our secure server (it is not stored); your timeline is saved on this device.</div>
+    <div class="why-foot" style="margin-left:10px">✓ Checked by an automated eval harness — 29 labeled cases plus grounding &amp; safety-screen suites, run with <code>npm test</code> against the same prompts the app ships.</div>
   </div>
 
   <!-- ===== SCROLL-SCRUBBED STORY 2: scattered papers become one case ===== -->
@@ -1122,11 +1148,11 @@
           <button class="btn btn-primary" id="aiExtract">Extract Dates with AI</button>
           <button class="btn-scan" id="noticeScan" type="button">📄 Scan a USCIS notice</button>
           <input type="file" id="noticeFile" accept="image/*,.pdf,.txt" hidden>
-          <small id="aiStatus"></small>
+          <small id="aiStatus" role="status" aria-live="polite"></small>
         </div>
       </div>
 
-      <div id="noticeResult"></div>
+      <div id="noticeResult" aria-live="polite"></div>
       <div id="timeline"></div>
 
       <!-- manual add -->
@@ -1143,9 +1169,7 @@
       <div class="kicker">Alert settings</div>
       <label class="field-label" for="setChannel">Notification channel</label>
       <select id="setChannel">
-        <option>In-browser reminders</option>
-        <option>Email reminders</option>
-        <option>Email + in-browser</option>
+        <option>Show on my timeline</option>
         <option>No notifications</option>
       </select>
       <label class="field-label" for="setTiming">Reminder timing</label>
@@ -1226,14 +1250,14 @@
       </div>
       <div>
         <div class="lt-heading">Translation</div>
-        <div class="lt-text out" id="ltOut">I need help understanding which documents I should gather for my next step.</div>
+        <div class="lt-text out" id="ltOut" aria-live="polite">I need help understanding which documents I should gather for my next step.</div>
       </div>
     </div>
     <div class="lt-cols" style="margin-top:22px">
       <div class="lt-actions">
         <button class="btn-scan" id="ltScan">📄 Scan Document</button>
         <button class="btn btn-primary" id="ltTranslate" style="padding:15px 30px">Translate</button>
-        <small id="ltStatus"></small>
+        <small id="ltStatus" role="status" aria-live="polite"></small>
       </div>
       <div class="lt-actions">
         <button class="btn-read" id="ltRead">▶ Read Aloud</button>
@@ -1267,11 +1291,11 @@
       <div class="kicker">Form entry to review</div>
       <label class="field-label" for="drForm" style="margin-top:0">Which form is this?</label>
       <select id="drForm" class="lt-sel-real" style="width:100%;margin-bottom:18px">
-        <option value="I-485">I-485 : Adjustment of Status</option>
-        <option value="I-130">I-130 : Petition for Alien Relative</option>
-        <option value="I-765">I-765 : Employment Authorization</option>
-        <option value="I-693">I-693 : Medical Examination</option>
-        <option value="N-400">N-400 : Application for Naturalization</option>
+        <option value="I-485">I-485 — Adjustment of Status</option>
+        <option value="I-130">I-130 — Petition for Alien Relative</option>
+        <option value="I-765">I-765 — Employment Authorization</option>
+        <option value="I-693">I-693 — Medical Examination</option>
+        <option value="N-400">N-400 — Application for Naturalization</option>
         <option value="Other">Other / not sure</option>
       </select>
       <label class="field-label" for="drInput">Describe or paste your entries</label>
@@ -1284,10 +1308,10 @@
     </div>
     <div class="dr-right">
       <div class="kicker">Possible issues to review</div>
-      <div id="drIssues">
+      <div id="drIssues" aria-live="polite">
         <p class="dr-placeholder">Enter your form details on the left and select <b>Review with AI</b>. GreenPath will flag fields that commonly trigger a Request for Evidence (RFE) so you can fix them before filing.</p>
       </div>
-      <div class="legal-row"><button class="btn-legal" data-go="interview">Find Authorized Legal Help</button><small>AI review can miss issues.</small></div>
+      <div class="legal-row"><button class="btn-legal" data-go="legal">Find Authorized Legal Help</button><small>AI review can miss issues.</small></div>
     </div>
   </div>
   <div class="footer-rule"><span>General information only. GreenPath does not provide legal advice.</span><span class="pg">GreenPath</span></div>
@@ -1333,11 +1357,11 @@
         <button class="btn btn-primary" id="ipStart">● Start Practice</button>
         <button class="btn-read" id="ipReadQ">▶ Read Question</button>
       </div>
-      <p class="tiny" style="margin-top:14px">A calm simulation only. Real interviews vary : never treat this as legal advice.</p>
+      <p class="tiny" style="margin-top:14px">A calm simulation only. Real interviews vary — never treat this as legal advice.</p>
     </div>
 
     <div class="ip-chat-wrap">
-      <div class="ip-chat" id="ipChat">
+      <div class="ip-chat" id="ipChat" aria-live="polite">
         <div class="ip-empty">
           <div class="ip-empty-icon">🎙️</div>
           <p>Pick a case type and press <b>Start Practice</b>. An AI interviewer will ask one USCIS-style question at a time, then give you coaching feedback on each answer.</p>
@@ -1368,7 +1392,7 @@
       <circle cx="206" cy="112" r="7" style="fill:var(--soft-green);stroke:var(--green)"/>
     </svg>
   </div>
-  <p class="lede">Answer in your own words. GreenPath suggests a likely pathway : general information only, not legal advice.</p>
+  <p class="lede">Answer in your own words. GreenPath suggests a likely pathway — general information only, not legal advice.</p>
 
   <div class="dr-grid">
     <div class="dr-left">
@@ -1382,7 +1406,7 @@
     </div>
     <div class="dr-right">
       <div class="kicker">Suggested pathway</div>
-      <div id="pwResult">
+      <div id="pwResult" aria-live="polite">
         <p class="dr-placeholder">Describe your situation on the left and select <b>Find my pathway</b>. GreenPath will suggest the most likely category and next steps. For complex cases, talk with an accredited immigration attorney.</p>
       </div>
     </div>
@@ -1435,8 +1459,8 @@
     </div>
     <div class="dr-right">
       <div class="kicker">Answer</div>
-      <div id="qaAnswer">
-        <p class="dr-placeholder">Pick your pathway and stage, type a question, and select <b>Ask GreenPath</b>. Answers are general information : not legal advice or case predictions.</p>
+      <div id="qaAnswer" aria-live="polite">
+        <p class="dr-placeholder">Pick your pathway and stage, type a question, and select <b>Ask GreenPath</b>. Answers are general information — not legal advice or case predictions.</p>
       </div>
     </div>
   </div>
@@ -1456,7 +1480,7 @@
       <line class="cut" x1="14" y1="56" x2="216" y2="56"/>
     </svg>
   </div>
-  <p class="lede">The State Department Visa Bulletin sets the cutoff dates that decide when your case can move forward. Cutoffs change every month : always confirm the exact dates on the official bulletin.</p>
+  <p class="lede">The State Department Visa Bulletin sets the cutoff dates that decide when your case can move forward. Cutoffs change every month — always confirm the exact dates on the official bulletin.</p>
 
   <div class="dr-grid">
     <div class="dr-left">
@@ -1464,19 +1488,19 @@
       <label class="field-label" for="vbCategory" style="margin-top:0">Category</label>
       <select id="vbCategory" class="lt-sel-real" style="width:100%;margin-bottom:14px">
         <optgroup label="Family-sponsored">
-          <option value="F1 (unmarried adult sons/daughters of U.S. citizens)">F1 : Unmarried adult children of U.S. citizens</option>
-          <option value="F2A (spouses and minor children of permanent residents)">F2A : Spouses &amp; minor children of green card holders</option>
-          <option value="F2B (unmarried adult sons/daughters of permanent residents)">F2B : Unmarried adult children of green card holders</option>
-          <option value="F3 (married sons/daughters of U.S. citizens)">F3 : Married children of U.S. citizens</option>
-          <option value="F4 (siblings of adult U.S. citizens)">F4 : Siblings of adult U.S. citizens</option>
+          <option value="F1 (unmarried adult sons/daughters of U.S. citizens)">F1 — Unmarried adult children of U.S. citizens</option>
+          <option value="F2A (spouses and minor children of permanent residents)">F2A — Spouses &amp; minor children of green card holders</option>
+          <option value="F2B (unmarried adult sons/daughters of permanent residents)">F2B — Unmarried adult children of green card holders</option>
+          <option value="F3 (married sons/daughters of U.S. citizens)">F3 — Married children of U.S. citizens</option>
+          <option value="F4 (siblings of adult U.S. citizens)">F4 — Siblings of adult U.S. citizens</option>
         </optgroup>
         <optgroup label="Employment-based">
-          <option value="EB-1 (priority workers)">EB-1 : Priority workers</option>
-          <option value="EB-2 (advanced degree / exceptional ability)">EB-2 : Advanced degree / exceptional ability</option>
-          <option value="EB-3 (skilled workers and professionals)">EB-3 : Skilled workers &amp; professionals</option>
-          <option value="EB-3 Other Workers (unskilled)">EB-3 : Other (unskilled) workers</option>
-          <option value="EB-4 (special immigrants)">EB-4 : Special immigrants</option>
-          <option value="EB-5 (immigrant investors)">EB-5 : Immigrant investors</option>
+          <option value="EB-1 (priority workers)">EB-1 — Priority workers</option>
+          <option value="EB-2 (advanced degree / exceptional ability)">EB-2 — Advanced degree / exceptional ability</option>
+          <option value="EB-3 (skilled workers and professionals)">EB-3 — Skilled workers &amp; professionals</option>
+          <option value="EB-3 Other Workers (unskilled)">EB-3 — Other (unskilled) workers</option>
+          <option value="EB-4 (special immigrants)">EB-4 — Special immigrants</option>
+          <option value="EB-5 (immigrant investors)">EB-5 — Immigrant investors</option>
         </optgroup>
       </select>
       <label class="field-label" for="vbCountry">Country of chargeability (usually country of birth)</label>
@@ -1496,12 +1520,12 @@
     </div>
     <div class="dr-right">
       <div class="kicker">What this means</div>
-      <div id="vbResult">
-        <p class="dr-placeholder">Pick your category, country, and priority date, then select <b>Check my priority date</b>. GreenPath explains how the bulletin works for your case : general information, not legal advice or a prediction of timing.</p>
+      <div id="vbResult" aria-live="polite">
+        <p class="dr-placeholder">Pick your category, country, and priority date, then select <b>Check my priority date</b>. GreenPath explains how the bulletin works for your case — general information, not legal advice or a prediction of timing.</p>
       </div>
       <div style="margin-top:18px;display:grid;gap:10px">
-        <div style="padding:12px 14px;border:1px solid var(--rail,#e5e7eb);border-radius:12px;background:var(--cream-panel,#faf9f5)"><b>Chart A : Final Action Dates</b><br><small>When a green card can actually be issued. If your priority date is before this cutoff, your case can be approved.</small></div>
-        <div style="padding:12px 14px;border:1px solid var(--rail,#e5e7eb);border-radius:12px;background:var(--cream-panel,#faf9f5)"><b>Chart B : Dates for Filing</b><br><small>When you may submit your application paperwork. USCIS announces each month which chart applies.</small></div>
+        <div style="padding:12px 14px;border:1px solid var(--rail,#e5e7eb);border-radius:12px;background:var(--cream-panel,#faf9f5)"><b>Chart A — Final Action Dates</b><br><small>When a green card can actually be issued. If your priority date is before this cutoff, your case can be approved.</small></div>
+        <div style="padding:12px 14px;border:1px solid var(--rail,#e5e7eb);border-radius:12px;background:var(--cream-panel,#faf9f5)"><b>Chart B — Dates for Filing</b><br><small>When you may submit your application paperwork. USCIS announces each month which chart applies.</small></div>
       </div>
     </div>
   </div>
@@ -1540,6 +1564,7 @@
 </main>
 <div class="page-band"></div>
 
+<script src="shared/ai-contract.js"></script>
 <script>
   const links = document.querySelectorAll('[data-go]');
   const sections = document.querySelectorAll('section');
@@ -1667,6 +1692,9 @@
   // timeline starts empty : it is populated by the AI extractor or manual add
   let reminders=[];
   let nextId=1;
+  const LS_KEY='greenpath.timeline.v1';
+  function saveReminders(){ try{ localStorage.setItem(LS_KEY, JSON.stringify({reminders,nextId})); }catch(e){} }
+  (function loadReminders(){ try{ const s=JSON.parse(localStorage.getItem(LS_KEY)||'null'); if(s&&Array.isArray(s.reminders)){ reminders=s.reminders; nextId=s.nextId||(reminders.reduce((m,r)=>Math.max(m,r.id||0),0)+1); } }catch(e){} })();
   const MON=['JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC'];
   const today=new Date();
   const tlEl=document.getElementById('timeline'),
@@ -1702,7 +1730,7 @@
       </div>`;
     }).join('');
     tlEl.querySelectorAll('.tl-x').forEach(b=>b.addEventListener('click',()=>{
-      reminders=reminders.filter(r=>r.id!=b.dataset.rid); renderTimeline();
+      reminders=reminders.filter(r=>r.id!=b.dataset.rid); saveReminders(); renderTimeline();
     }));
     updateSummary();
   }
@@ -1721,6 +1749,7 @@
   function addReminder(date,label,note){
     if(!date||!label) return false;
     reminders.push({id:nextId++,date,label,note:note||''});
+    saveReminders();
     return true;
   }
   document.getElementById('addBtn').addEventListener('click',()=>{
@@ -1827,34 +1856,7 @@
   // ===== Structured Outputs: guarantee schema-valid JSON (no regex scraping) =====
   // gpt-4o / gpt-4o-mini honor response_format json_schema (strict). If the proxy
   // or model variant rejects it, we degrade gracefully to loose parsing.
-  const SCHEMAS={
-    pathway:{name:'pathway',schema:{type:'object',additionalProperties:false,
-      properties:{primaryPathway:{type:'string'},subcategory:{type:'string'},
-        confidence:{type:'string',enum:['high','medium','low']},reasoning:{type:'string'},
-        nextSteps:{type:'array',items:{type:'string'}},
-        alternativePathways:{type:'array',items:{type:'string'}}},
-      required:['primaryPathway','subcategory','confidence','reasoning','nextSteps','alternativePathways']}},
-    review:{name:'document_review',schema:{type:'object',additionalProperties:false,
-      properties:{overallStatus:{type:'string',enum:['looks-good','needs-attention','major-issues']},
-        issues:{type:'array',items:{type:'object',additionalProperties:false,
-          properties:{severity:{type:'string',enum:['high','medium','low']},field:{type:'string'},
-            problem:{type:'string'},suggestion:{type:'string'}},
-          required:['severity','field','problem','suggestion']}},
-        reminders:{type:'array',items:{type:'string'}}},
-      required:['overallStatus','issues','reminders']}},
-    interview:{name:'interview_turn',schema:{type:'object',additionalProperties:false,
-      properties:{coaching:{type:['object','null'],additionalProperties:false,
-          properties:{level:{type:'string',enum:['clear','clarify','help']},note:{type:['string','null']}},
-          required:['level','note']},
-        nextQuestion:{type:'string'},done:{type:'boolean'},summary:{type:['string','null']}},
-      required:['coaching','nextQuestion','done','summary']}},
-    notice:{name:'notice_extract',schema:{type:'object',additionalProperties:false,
-      properties:{documentType:{type:'string'},caseType:{type:'string'},receiptNumber:{type:'string'},
-        dates:{type:'array',items:{type:'object',additionalProperties:false,
-          properties:{label:{type:'string'},date:{type:'string'}},required:['label','date']}},
-        nextStep:{type:'string'}},
-      required:['documentType','caseType','receiptNumber','dates','nextStep']}}
-  };
+  /* SCHEMAS now sourced from shared/ai-contract.js (window.GP_AI) */
   async function aiJSONSchema(prompt, system, schema, opts={}){
     try{
       const rf={type:'json_schema',json_schema:{name:schema.name,strict:true,schema:schema.schema}};
@@ -1868,6 +1870,7 @@
   // to keep the live feel. Calls onToken(delta, fullSoFar).
   async function aiStream(messages, onToken, opts={}){
     const full=await aiChatMessages(messages, opts);
+    if(window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches){ onToken('', full); return full; }
     const step=Math.max(1, Math.round(full.length/90));
     for(let i=0;i<full.length;i+=step){
       onToken(full.slice(i,i+step), full.slice(0,i+step));
@@ -1877,7 +1880,7 @@
     return full;
   }
   // back-compat aliases so every existing caller keeps working
-  const claudeChat=aiChat, claudeJSON=aiJSON;
+  const openaiChat=aiChat, openaiJSON=aiJSON;
 
   // Model tiers: route hard reasoning (pathway/review/interview) to gpt-4o,
   // keep cheap/quick tasks (extract, translate, simple Q&A) on mini.
@@ -1895,34 +1898,10 @@
   // ===== Grounding: curated OFFICIAL sources so AI answers cite real pages =====
   // We never hardcode volatile specifics (fees/dates/times). The model is told to
   // ground claims in these sources, cite the [id], and send users to verify numbers.
-  const USCIS_SOURCES=[
-    {id:'forms',      title:'USCIS Forms',                     url:'https://www.uscis.gov/forms', topics:['form','filing','i-130','i-485','i-765','i-131','n-400','i-693']},
-    {id:'i-485',      title:'I-485 Adjustment of Status',      url:'https://www.uscis.gov/i-485', topics:['adjustment','inside the united states','i-485','green card application']},
-    {id:'i-130',      title:'I-130 Petition for Relative',     url:'https://www.uscis.gov/i-130', topics:['family','sponsor','spouse','parent','child','sibling','i-130','relative']},
-    {id:'employment', title:'Green Card through Employment',   url:'https://www.uscis.gov/green-card/green-card-eligibility/green-card-for-employment-based-immigrants', topics:['employment','job','employer','perm','labor','eb-1','eb-2','eb-3']},
-    {id:'bulletin',   title:'Visa Bulletin (priority dates)',  url:'https://travel.state.gov/content/travel/en/legal/visa-law0/visa-bulletin.html', topics:['priority date','visa bulletin','wait','backlog','category','country cap']},
-    {id:'times',      title:'USCIS Processing Times',          url:'https://egov.uscis.gov/processing-times/', topics:['processing time','how long','timeline','wait time']},
-    {id:'fees',       title:'USCIS Fee Schedule',              url:'https://www.uscis.gov/g-1055', topics:['fee','cost','price','payment','how much']},
-    {id:'rfe',        title:'Responding to an RFE',            url:'https://www.uscis.gov/forms/filing-guidance/responding-to-an-rfe', topics:['rfe','request for evidence','evidence','missing']},
-    {id:'status',     title:'Check Case Status',               url:'https://egov.uscis.gov/casestatus/', topics:['case status','receipt number','i-797','tracking']},
-    {id:'legal-help', title:'Find Authorized Legal Services',  url:'https://www.uscis.gov/scams-fraud-and-misconduct/avoid-scams/find-legal-services', topics:['attorney','lawyer','legal help','accredited','representation']},
-    {id:'8cfr',       title:'8 CFR — Immigration Regulations', url:'https://www.ecfr.gov/current/title-8', topics:['regulation','8 cfr','rule','eligibility','requirement','statute','code','law']},
-    {id:'policy',     title:'USCIS Policy Manual',             url:'https://www.uscis.gov/policy-manual', topics:['policy','discretion','adjudicate','adjudication','guidance','manual','standard']},
-    {id:'perm',       title:'PERM Labor Certification (DOL)',  url:'https://www.dol.gov/agencies/eta/foreign-labor/programs/permanent', topics:['perm','labor certification','prevailing wage','eb-2','eb-3','recruitment','sponsor employer']},
-    {id:'feecalc',    title:'USCIS Fee Calculator',            url:'https://www.uscis.gov/feecalculator', topics:['fee calculator','how much','total cost','combined fee','filing fees']},
-  ];
-  function pickSources(query, max=5){
-    const q=(query||'').toLowerCase();
-    const hit=USCIS_SOURCES.filter(s=>s.topics.some(t=>q.includes(t)));
-    return (hit.length?hit:USCIS_SOURCES).slice(0,max);
-  }
-  function sourcesPrompt(query){
-    return pickSources(query).map(s=>`[${s.id}] ${s.title} — ${s.url}`).join('\n');
-  }
-  const GROUNDING_RULE='Ground every factual claim in the OFFICIAL sources listed below. Never invent fees, dollar amounts, dates, or processing times — if asked for a specific number, say it changes and tell the user to verify on the cited page. Keep it plain-language. This is general information, NOT legal advice; for complex cases point to authorized legal help. Do not print a sources list or [id] tags in your answer — those are shown separately.';
+  const {SCHEMAS,USCIS_SOURCES,pickSources,sourcesPrompt,GROUNDING_RULE,RISK,scrubVolatileNumbers,buildSystem,CITE_LABEL,SOURCES_CHECKED}=window.GP_AI;
   function citationsHTML(query){
     const items=pickSources(query).map(s=>`<a class="cite" href="${s.url}" target="_blank" rel="noopener">${s.title}</a>`).join('');
-    return `<div class="cite-row"><span class="cite-label">Verified sources</span><div class="cite-list">${items}</div></div>`;
+    return `<div class="cite-row"><span class="cite-label">${CITE_LABEL}</span><div class="cite-list">${items}</div><small class="src-foot" style="margin-top:8px">Official .gov / .us pages to confirm the answer against — sources last checked ${SOURCES_CHECKED}. These links are not a verification of the answer itself.</small></div>`;
   }
 
   // ===== Notice -> Roadmap autopilot: upload a USCIS notice, auto-fill the timeline =====
@@ -1940,10 +1919,10 @@
         const text=await readNotice(f);
         if(!text||text.trim().length<8){ aiStatus.textContent='Could not read text from that file : try a clearer photo.'; return; }
         aiStatus.textContent='Understanding the notice…';
-        const sys='You read a U.S. immigration notice (USCIS Form I-797 Notice of Action, RFE, biometrics/ASC appointment, interview notice, or visa bulletin) and extract the key facts. Return ONLY JSON with ISO dates (YYYY-MM-DD). Never invent dates or numbers : omit anything not clearly present in the text.';
+        const sys=buildSystem.notice();
         const pr='NOTICE TEXT:\n"""'+text.slice(0,6000)+'"""\n\nReturn ONLY a JSON object shaped exactly:\n{"documentType":"e.g. Form I-797C, Notice of Action","caseType":"e.g. I-485 Adjustment of Status, or empty","receiptNumber":"e.g. MSC2190000000, or empty","dates":[{"label":"what this date is, e.g. Biometrics appointment","date":"YYYY-MM-DD"}],"nextStep":"one plain-language sentence on what to do next"}';
         const d=await aiJSONSchema(pr, sys, SCHEMAS.notice, {model:AI_SMART, max_tokens:700, temperature:0.1});
-        const dates=Array.isArray(d.dates)?d.dates.filter(x=>x&&x.date):[];
+        const dates=Array.isArray(d.dates)?d.dates.filter(x=>x&&/^\d{4}-\d{2}-\d{2}$/.test(x.date)):[];
         let added=0; dates.forEach(x=>{ if(addReminder(x.date, x.label||'Important date', 'From scanned notice')) added++; });
         if(added) renderTimeline();
         const head='<b>'+esc(d.documentType||'Notice detected')+(d.receiptNumber?' · '+esc(d.receiptNumber):'')+'</b>';
@@ -1985,7 +1964,7 @@ Today's date is ${todayStr}. The user wrote:
 """${text}"""
 Return ONLY a JSON array (no prose, no markdown fences). Each element: {"date":"YYYY-MM-DD","label":"short title (max 6 words)","note":"short context (max 8 words)"}.
 Rules: resolve relative dates against today. If a year is missing, choose the next upcoming occurrence. Do not invent a fixed I-693 expiration for exams signed on or after November 1, 2023; current USCIS policy ties validity to the pending application. For I-693 text without a clear deadline, add no date. Skip anything with no determinable date. If none, return [].`;
-    const arr=await claudeJSON(prompt);
+    const arr=await openaiJSON(prompt);
     return Array.isArray(arr)?arr.filter(x=>x&&/^\d{4}-\d{2}-\d{2}$/.test(x.date)):[];
   }
 
@@ -2117,7 +2096,7 @@ Rules: resolve relative dates against today. If a year is missing, choose the ne
   async function translateAI(text, from, to){
     const fromTxt = from==='auto' ? 'the detected source language' : from;
     const prompt=`Translate the text below from ${fromTxt} into ${to}. Return ONLY the translation : no notes, no quotes, no language labels.\n\nText:\n${text}`;
-    return await claudeChat(prompt);
+    return await openaiChat(prompt);
   }
 
   // Keyless, CORS-enabled translation (Google's public endpoint). Real translations, ~100+ languages.
@@ -2308,7 +2287,7 @@ Rules: resolve relative dates against today. If a year is missing, choose the ne
   });
 
   async function reviewAI(form, text){
-    const system=`You are a meticulous U.S. immigration paralegal reviewing a draft form for errors before submission. You are not a lawyer and do not give legal advice. Flag inconsistencies, missing required information, and common rejection triggers. Return ONLY JSON.\n\n${GROUNDING_RULE}\nOFFICIAL SOURCES:\n${sourcesPrompt('rfe request for evidence form '+form)}`;
+    const system=buildSystem.review(form);
     const prompt=`Review the following draft entries for ${form}. Identify problems that could cause a rejection or RFE.
 Return ONLY a JSON object (no markdown, no prose) shaped exactly:
 {"overallStatus":"looks-good"|"needs-attention"|"major-issues",
@@ -2448,9 +2427,7 @@ ${text}`;
   async function interviewAI(userAnswer){
     // ipHistory is the running transcript in {role:'applicant'|'officer'} form.
     if(userAnswer) ipHistory.push({role:'applicant',content:userAnswer});
-    const system=`You simulate a USCIS officer conducting a green card interview for practice. Speak the way real officers do: terse, concrete, one question at a time. No flowery or "AI-sounding" phrasing.
-SAFETY GUARDRAIL (VAWA): If the scenario is a VAWA self-petition or the applicant references abuse, domestic violence, or fear of an abuser, never ask the applicant to involve, contact, confront, or seek information from the abuser, and never suggest they need the abuser's cooperation. Keep questions trauma-informed and confidential.
-After each applicant answer, give brief coaching. Return ONLY JSON.`;
+    const system=buildSystem.interview();
     const transcript=ipHistory.map(h=>`${h.role==='officer'?'Officer':'Applicant'}: ${h.content}`).join('\n');
     const prompt=`Scenario / pathway: ${ipCase.value}
 Transcript so far:
@@ -2463,7 +2440,7 @@ Return ONLY a JSON object shaped exactly:
  "summary":null}
 Set "done":true and provide a short "summary" only when the interview should end.`;
     const data=await aiJSONSchema(prompt, system, SCHEMAS.interview, {model:AI_SMART, max_tokens:700, temperature:0.5});
-    const q=data.nextQuestion||'';
+    const q=data.done?'':(data.nextQuestion||'');
     if(q) ipHistory.push({role:'officer',content:q});
     return {coaching:data.coaching||null, next_question:q, done:!!data.done, summary:data.summary||null};
   }
@@ -2578,22 +2555,36 @@ Set "done":true and provide a short "summary" only when the interview should end
       pwResult.innerHTML='<div class="dr-loading"><div class="dr-spin"></div>Finding your most likely pathway…</div>';
       pwFind.disabled=true;
       try{
-        const sys=`You are a U.S. immigration intake assistant that suggests the most likely green card pathway from a free-text description. You are not a lawyer; flag when a case is complex enough to need an accredited attorney. Return ONLY JSON.\n\n${GROUNDING_RULE}\nOFFICIAL SOURCES:\n${sourcesPrompt(text)}`;
+        const risk=RISK.screen(text);
+        const sys=buildSystem.pathway(text);
         const pr=`Applicant's situation:\n"""${text}"""\n\nReturn ONLY a JSON object shaped exactly:\n{"primaryPathway":"name","subcategory":"optional or empty","confidence":"high"|"medium"|"low","reasoning":"1-3 sentence plain explanation","nextSteps":["step", ...],"alternativePathways":["option", ...]}`;
         const d=await aiJSONSchema(pr, sys, SCHEMAS.pathway, {model:AI_SMART, max_tokens:900, temperature:0.2});
+        const stop=risk.tier==='stop';
+        const cats=risk.categories.join(', ');
+        const LEGAL='https://www.uscis.gov/scams-fraud-and-misconduct/avoid-scams/find-legal-services';
         const steps=(d.nextSteps||[]).map(s=>`<div class="issue blu ai-pop"><div class="idot"></div><div><p>${esc(s)}</p></div></div>`).join('');
         const alts=(d.alternativePathways||[]).length
           ? '<div class="dr-summary" style="margin-top:16px">Other options to explore:</div>'+
             (d.alternativePathways||[]).map(a=>`<div class="issue amb ai-pop"><div class="idot"></div><div><p>${esc(a)}</p></div></div>`).join('')
           : '';
+        let safe='';
+        if(stop){
+          safe=`<div class="handoff handoff-stop ai-pop" role="alert"><span class="handoff-tag">⚠ Stop — talk to an attorney first</span><p>Your description mentions <b>${esc(cats)}</b>. These situations can carry serious, sometimes permanent consequences, and filing the wrong thing can make them worse. GreenPath will not list filing steps for a case like this — please speak with an accredited immigration attorney before you file anything.</p><a class="btn-legal" href="${LEGAL}" target="_blank" rel="noopener">Find authorized legal help →</a></div>`;
+        } else if(risk.tier==='caution'){
+          safe=`<div class="handoff handoff-caution ai-pop" role="alert"><span class="handoff-tag">Caution — confirm before you file</span><p>Your description may involve <b>${esc(cats)}</b>, which can change whether you can file the usual way (for example, how you entered the U.S. or time out of status). Treat the steps below as general information and confirm your eligibility with an accredited attorney before filing.</p><a class="btn-legal" href="${LEGAL}" target="_blank" rel="noopener">Find authorized legal help →</a></div>`;
+        } else if((d.nextSteps||[]).length){
+          safe=`<div class="safe-step ai-pop"><span class="safe-tag">Your next safe step</span><p>${esc(d.nextSteps[0])}</p><small>Confidence: ${esc(CONF[d.confidence]||d.confidence||'—')} · grounded in the official sources below</small></div>`;
+        }
         pwResult.innerHTML=
-          `<div class="dr-summary ai-pop"><b>${esc(d.primaryPathway||'Pathway')}</b>${d.subcategory?' : '+esc(d.subcategory):''} · ${esc(CONF[d.confidence]||d.confidence||'')}</div>`+
+          safe+
+          `<div class="dr-summary ai-pop"><b>${esc(d.primaryPathway||'Pathway')}</b>${d.subcategory?' — '+esc(d.subcategory):''} · ${esc(CONF[d.confidence]||d.confidence||'')}</div>`+
           `<div class="issue blu ai-pop"><div class="idot"></div><div><p>${esc(d.reasoning||'')}</p></div></div>`+
-          (steps?'<div class="dr-summary" style="margin-top:16px">Suggested next steps:</div>'+steps:'')+
-          alts+
-          `<div class="legal-row"><button class="btn-legal" data-go="qa">Ask a question about this</button><small>Not legal advice. Complex cases: consult an accredited attorney.</small></div>`;
+          (stop?'':(steps?'<div class="dr-summary" style="margin-top:16px">Suggested next steps (general information):</div>'+steps:''))+
+          (stop?'':alts)+
+          `<div class="legal-row"><a class="btn-legal" href="${LEGAL}" target="_blank" rel="noopener">Find authorized legal help</a><button class="btn-legal" data-go="qa">Ask a question about this</button><small>General information, not legal advice.</small></div>`;
         pwResult.querySelectorAll('[data-go]').forEach(b=>b.addEventListener('click',()=>show(b.dataset.go)));
         pwResult.insertAdjacentHTML('beforeend', citationsHTML(text));
+
       }catch(e){
         pwResult.replaceChildren(); pwResult.insertAdjacentHTML('beforeend', aiErrorHTML(e));
       }finally{ pwFind.disabled=false; }
@@ -2614,14 +2605,16 @@ Set "done":true and provide a short "summary" only when the interview should end
       qaAnswer.innerHTML='<div class="dr-loading"><div class="dr-spin"></div>Finding a clear answer…</div>';
       qaAsk.disabled=true;
       try{
-        const sys=`You answer questions about a specific stage of the U.S. green card process in clear, plain language. You are not a lawyer and do not give legal advice; recommend an accredited attorney for complex situations. Be accurate, warm, and concise.\n\n${GROUNDING_RULE}\nOFFICIAL SOURCES:\n${sourcesPrompt(q+' '+qaStage.value+' '+qaPathway.value)}`;
+        const sys=buildSystem.qa(q, qaStage.value, qaPathway.value);
         const pr=`Pathway: ${qaPathway.value}\nStage: ${qaStage.value}\nQuestion: ${q}\n\nAnswer in 1-3 short paragraphs of plain text (no markdown).`;
         const box=document.createElement('div');
         box.className='dr-summary ai-pop stream-caret'; box.style.lineHeight='1.6';
-        qaAnswer.innerHTML=''; qaAnswer.appendChild(box);
+        const qrisk=RISK.screen(q); qaAnswer.innerHTML='';
+        if(qrisk.tier==='stop'){ qaAnswer.insertAdjacentHTML('beforeend','<div class="handoff handoff-stop" role="alert"><span class="handoff-tag">⚠ Talk to an attorney</span><p>Because your question may involve '+esc(qrisk.categories.join(', '))+', please confirm with an accredited immigration attorney — the general guidance below may not fit your situation.</p><a class="btn-legal" href="https://www.uscis.gov/scams-fraud-and-misconduct/avoid-scams/find-legal-services" target="_blank" rel="noopener">Find authorized legal help →</a></div>'); }
+        qaAnswer.appendChild(box);
         await aiStream(
           [{role:'system',content:sys},{role:'user',content:pr}],
-          (tok,full)=>{ box.innerHTML=full.split(/\n+/).filter(Boolean)
+          (tok,full)=>{ box.innerHTML=scrubVolatileNumbers(full).split(/\n+/).filter(Boolean)
             .map(p=>`<p style="margin:0 0 10px">${esc(p)}</p>`).join(''); },
           {temperature:0.3,max_tokens:700,model:AI_SMART}
         );
@@ -2660,14 +2653,14 @@ Set "done":true and provide a short "summary" only when the interview should end
       check.disabled=true;
       try{
         const q='visa bulletin priority date '+cat.value+' '+country.value;
-        const sys=`You explain the U.S. State Department Visa Bulletin in clear, plain language for one person's case. You are not a lawyer and give general information only.\n\n${GROUNDING_RULE}\nCRITICAL: cutoff dates change every month and you do NOT have access to the current month's bulletin. NEVER state, estimate, or guess a specific current cutoff date or a number of months/years of wait. Instead explain how to read the bulletin for their category and country and tell them to check the official bulletin (linked separately) for the exact current cutoff.\nOFFICIAL SOURCES:\n${sourcesPrompt(q)}`;
+        const sys=buildSystem.bulletin(q);
         const pr=`Category: ${cat.value}\nCountry of chargeability: ${country.value}\nTheir priority date: ${date.value}\n\nExplain in 2-3 short plain-text paragraphs: (1) what a priority date is and why theirs matters, (2) how to compare their date against Chart A (Final Action Dates) and Chart B (Dates for Filing) in the current bulletin, (3) general context for oversubscribed countries (especially India and China) without giving any specific cutoff or wait length. Do not state any specific current cutoff date.`;
         const box=document.createElement('div');
         box.className='dr-summary ai-pop stream-caret'; box.style.lineHeight='1.6';
         result.replaceChildren(box);
         await aiStream(
           [{role:'system',content:sys},{role:'user',content:pr}],
-          (tok,full)=>renderParas(box, full),
+          (tok,full)=>renderParas(box, scrubVolatileNumbers(full)),
           {temperature:0.3,max_tokens:700,model:AI_SMART}
         );
         box.classList.remove('stream-caret');

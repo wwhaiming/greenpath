@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+# Git pre-commit hook for GreenPath.
+# Enable it once per clone with:
+#     git config core.hooksPath .githooks
+# It runs the secret scanner in scripts/ and aborts the commit if a live key
+# (sk-... / gsk_...) or a tracked .env is found in the staged changes.
+set -euo pipefail
+
+repo_root="$(git rev-parse --show-toplevel)"
+exec "$repo_root/scripts/pre-commit-secret-scan.sh"

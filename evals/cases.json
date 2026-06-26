@@ -1,5 +1,5 @@
 {
-  "_note": "Labeled cases for GreenPath AI. 'pathway' tests the classifier; 'review' tests document review. Add more cases freely — accuracy is only meaningful with coverage. Expected pathway categories: family-based | employment-based | humanitarian | diversity-lottery | investment | low-confidence.",
+  "_note": "Labeled cases for GreenPath AI. 'pathway' tests the classifier; 'review' tests document review. Add more cases freely — accuracy is only meaningful with coverage. Expected pathway categories: family-based | employment-based | humanitarian | diversity-lottery | investment | low-confidence. For review cases, expectStatus is an OR-set (any match passes) and EVERY string in expectKeywords must appear in the serialized issues (case-insensitive), so keep keywords to a single robust token per case.",
   "pathway": [
     {"id": "spouse-citizen-in-us", "input": "I am married to a U.S. citizen. We live together in California. I entered legally on a tourist visa.", "expect": "family-based", "note": "AOS via I-130 + I-485"},
     {"id": "spouse-citizen-abroad", "input": "My husband is a U.S. citizen. I live in the Philippines and have never been to the US.", "expect": "family-based", "note": "Consular processing IR-1/CR-1"},
@@ -14,14 +14,23 @@
     {"id": "dv-lottery", "input": "I am from Nepal and entered the green card lottery. I was selected this year.", "expect": "diversity-lottery", "note": "DV"},
     {"id": "investor", "input": "I have 1.2 million dollars to invest in a new U.S. business that will create at least 10 jobs.", "expect": "investment", "note": "EB-5"},
     {"id": "fiance", "input": "My U.S. citizen fiance and I want to marry in the US after I arrive.", "expect": "family-based", "note": "K-1 then AOS"},
-    {"id": "student-no-basis", "input": "I am an international student on an F-1 visa and just want a green card somehow.", "expect": "low-confidence", "note": "Insufficient basis; classifier should set confidence low"}
+    {"id": "student-no-basis", "input": "I am an international student on an F-1 visa and just want a green card somehow.", "expect": "low-confidence", "note": "Insufficient basis; classifier should set confidence low"},
+    {"id": "eb1c-multinational-manager", "input": "I manage a foreign branch of a U.S. multinational company and they want to transfer me permanently to run the U.S. office as an executive.", "expect": "employment-based", "note": "EB-1C multinational manager/executive"},
+    {"id": "f2a-spouse-of-lpr", "input": "My wife is a U.S. lawful permanent resident (green card holder, not a citizen) and wants to sponsor me to immigrate.", "expect": "family-based", "note": "F2A spouse of LPR"},
+    {"id": "refugee-adjusting", "input": "I was admitted to the United States as a refugee just over a year ago and now I want to apply for my green card.", "expect": "humanitarian", "note": "Refugee adjustment after 1 year of admission"},
+    {"id": "sij-minor", "input": "I am 16 years old. My parents abandoned me and a juvenile court has placed me in the custody of my aunt in the US.", "expect": "humanitarian", "note": "Special Immigrant Juvenile (SIJ)"},
+    {"id": "sibling-of-citizen", "input": "My brother is a U.S. citizen and wants to petition for me to immigrate from India some day.", "expect": "family-based", "note": "F4 sibling category"},
+    {"id": "eb5-regional-center", "input": "I want to put 800,000 dollars into a USCIS-approved regional center project located in a targeted employment area.", "expect": "investment", "note": "EB-5 regional center / TEA"}
   ],
   "review": [
-    {"id": "unsigned-i485", "form": "I-485", "input": "Applicant info complete. The signature field on the last page was left blank. Date of birth: 05/13/1990.", "expectStatus": ["needs-attention", "major-issues"], "expectKeywords": ["sign", "signature"]},
-    {"id": "date-mismatch-i130", "form": "I-130", "input": "Petitioner date of birth on the form is 03/04/1985 but the passport copy shows 04/03/1985.", "expectStatus": ["needs-attention", "major-issues"], "expectKeywords": ["date", "mismatch", "match", "inconsistent"]},
-    {"id": "blank-address-history", "form": "I-485", "input": "Address history section: only current address listed, prior 5 years left blank.", "expectStatus": ["needs-attention", "major-issues"], "expectKeywords": ["address", "blank", "missing", "history"]},
+    {"id": "unsigned-i485", "form": "I-485", "input": "Applicant info complete. The signature field on the last page was left blank. Date of birth: 05/13/1990.", "expectStatus": ["needs-attention", "major-issues"], "expectKeywords": ["sign"]},
+    {"id": "date-mismatch-i130", "form": "I-130", "input": "Petitioner date of birth on the form is 03/04/1985 but the passport copy shows 04/03/1985.", "expectStatus": ["needs-attention", "major-issues"], "expectKeywords": ["date"]},
+    {"id": "blank-address-history", "form": "I-485", "input": "Address history section: only current address listed, prior 5 years left blank.", "expectStatus": ["needs-attention", "major-issues"], "expectKeywords": ["address"]},
     {"id": "clean-form", "form": "I-130", "input": "All fields complete, signed and dated, names match supporting documents, no gaps in history.", "expectStatus": ["looks-good"], "expectKeywords": []},
-    {"id": "missing-fee", "form": "I-765", "input": "Form complete and signed but no filing fee or fee waiver request (I-912) included.", "expectStatus": ["needs-attention", "major-issues"], "expectKeywords": ["fee", "payment"]},
-    {"id": "employment-gap", "form": "I-485", "input": "Employment history shows a gap from 2019 to 2021 with no explanation and overlapping job dates in 2022.", "expectStatus": ["needs-attention", "major-issues"], "expectKeywords": ["gap", "employment", "overlap"]}
+    {"id": "missing-fee", "form": "I-765", "input": "Form complete and signed but no filing fee or fee waiver request (I-912) included.", "expectStatus": ["needs-attention", "major-issues"], "expectKeywords": ["fee"]},
+    {"id": "employment-gap", "form": "I-485", "input": "Employment history shows a gap from 2019 to 2021 with no explanation and overlapping job dates in 2022.", "expectStatus": ["needs-attention", "major-issues"], "expectKeywords": ["gap"]},
+    {"id": "missing-translation", "form": "I-130", "input": "A birth certificate written in Spanish is attached with no certified English translation.", "expectStatus": ["needs-attention", "major-issues"], "expectKeywords": ["translation"]},
+    {"id": "name-mismatch", "form": "I-485", "input": "The applicant's name on the form is 'Juan Carlos Reyes' but the passport copy reads 'Juan C. Reyes-Gomez'.", "expectStatus": ["needs-attention", "major-issues"], "expectKeywords": ["name"]},
+    {"id": "unsigned-undated-i765", "form": "I-765", "input": "The form is otherwise complete but the applicant signature and the date next to it are both missing.", "expectStatus": ["needs-attention", "major-issues"], "expectKeywords": ["sign"]}
   ]
 }

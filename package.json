@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "node evals/run.mjs",
+    "eval": "node evals/run.mjs"
   },
   "keywords": [],
   "author": "",

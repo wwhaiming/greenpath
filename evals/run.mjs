@@ -1,143 +1,232 @@
 #!/usr/bin/env node
 // GreenPath AI eval harness.
 //
-// Measures the pathway classifier and document review against labeled cases so
-// every prompt/model change is verified, not guessed. Calls OpenAI directly
-// (Structured Outputs) so it runs in CI with only a key.
+// Verifies the production AI contract end-to-end so every prompt/model/schema
+// change is measured, not guessed. The prompts and JSON schemas are NOT copied
+// here: they are imported from the SAME module the site/serverless code uses
+// (public/shared/ai-contract.js), so the eval can never drift from production.
+//
+// Suites:
+//   1. pathway   — classifier accuracy vs labeled cases (needs OPENAI_API_KEY)
+//   2. review    — document-review status + keyword checks (needs OPENAI_API_KEY)
+//   3. grounding — anti-hallucination: refuses to invent fees/dates (needs key)
+//   4. risk      — offline RISK.screen unit checks (NO key required)
 //
 // Usage:
-//   OPENAI_API_KEY=sk-... node evals/run.mjs
-//   OPENAI_API_KEY=sk-... node evals/run.mjs --model gpt-4o --min 0.8
+//   node evals/run.mjs                       # uses OPENAI_API_KEY if present
+//   OPENAI_API_KEY=sk-... node evals/run.mjs --model gpt-4o
 //
-// Exit code 0 if both suites meet --min accuracy (default 0.8), else 1.
+// Exit code: 0 if all RUN suites pass; 1 if any failure. When OPENAI_API_KEY is
+// missing, the three API suites are SKIPPED (not failed) and the exit code is
+// governed solely by the offline RISK suite.
 
 import { readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { dirname, join } from 'node:path';
+import { createRequire } from 'node:module';
 
+// ---- import the EXACT production contract (prompts + schemas + risk) ----
+const require = createRequire(import.meta.url);
 const __dir = dirname(fileURLToPath(import.meta.url));
+
+let GP;
+try {
+  GP = require('../public/shared/ai-contract.js');
+} catch (e) {
+  console.error('FATAL: could not load public/shared/ai-contract.js');
+  console.error('  ' + (e && e.message ? e.message : e));
+  console.error('  The eval imports the production AI contract; create that file first.');
+  process.exit(2);
+}
+
 const KEY = process.env.OPENAI_API_KEY;
-if (!KEY) { console.error('Set OPENAI_API_KEY in the environment.'); process.exit(2); }
+const HAS_KEY = !!KEY;
 
 const argv = process.argv.slice(2);
 const arg = (name, def) => { const i = argv.indexOf(name); return i >= 0 ? argv[i + 1] : def; };
-const MODEL = arg('--model', 'gpt-4o');
-const MIN = parseFloat(arg('--min', '0.8'));
+const MODEL = arg('--model', 'gpt-4o-mini');
 
 const cases = JSON.parse(readFileSync(join(__dir, 'cases.json'), 'utf8'));
 
-// ---- prompts (kept in sync with public/index.html) ----
-const GROUNDING_RULE =
-  'Never invent fees, dollar amounts, dates, or processing times. Keep it plain-language. ' +
-  'This is general information, NOT legal advice; for complex cases point to authorized legal help.';
-
-const PATHWAY_SYS =
-  'You are a U.S. immigration intake assistant that suggests the most likely green card pathway ' +
-  'from a free-text description. You are not a lawyer; flag when a case is complex enough to need an ' +
-  'accredited attorney. Return ONLY JSON.\n\n' + GROUNDING_RULE;
-
-const REVIEW_SYS =
-  'You are a meticulous U.S. immigration paralegal reviewing a draft form for errors before submission. ' +
-  'You are not a lawyer and do not give legal advice. Flag inconsistencies, missing required information, ' +
-  'and common rejection triggers. Return ONLY JSON.\n\n' + GROUNDING_RULE;
-
-const PATHWAY_SCHEMA = {
-  name: 'pathway', strict: true,
-  schema: { type: 'object', additionalProperties: false,
-    properties: {
-      primaryPathway: { type: 'string' }, subcategory: { type: 'string' },
-      confidence: { type: 'string', enum: ['high', 'medium', 'low'] },
-      reasoning: { type: 'string' },
-      nextSteps: { type: 'array', items: { type: 'string' } },
-      alternativePathways: { type: 'array', items: { type: 'string' } } },
-    required: ['primaryPathway', 'subcategory', 'confidence', 'reasoning', 'nextSteps', 'alternativePathways'] } };
-
-const REVIEW_SCHEMA = {
-  name: 'document_review', strict: true,
-  schema: { type: 'object', additionalProperties: false,
-    properties: {
-      overallStatus: { type: 'string', enum: ['looks-good', 'needs-attention', 'major-issues'] },
-      issues: { type: 'array', items: { type: 'object', additionalProperties: false,
-        properties: { severity: { type: 'string', enum: ['high', 'medium', 'low'] }, field: { type: 'string' },
-          problem: { type: 'string' }, suggestion: { type: 'string' } },
-        required: ['severity', 'field', 'problem', 'suggestion'] } },
-      reminders: { type: 'array', items: { type: 'string' } } },
-    required: ['overallStatus', 'issues', 'reminders'] } };
-
-// category synonyms — the app returns a free-text primaryPathway, so match by keyword
+// Category synonyms — the classifier returns a free-text primaryPathway, so we
+// match family-based | employment-based | humanitarian | diversity-lottery |
+// investment | low-confidence by keyword. Kept tolerant on purpose.
 const CATS = {
-  'family-based': ['family', 'spouse', 'marriage', 'relative', 'i-130', 'ir-1', 'cr-1', 'ir-5', 'parent', 'sibling', 'fiance', 'k-1', 'immediate relative'],
-  'employment-based': ['employment', 'employer', 'job', 'eb-1', 'eb-2', 'eb-3', 'eb1', 'eb2', 'eb3', 'perm', 'labor', 'extraordinary', 'niw', 'national interest', 'work'],
-  'humanitarian': ['asylum', 'refugee', 'humanitarian', 'u visa', 'u-visa', 't visa', 't-visa', 'vawa', 'tps', 'abuse', 'victim'],
-  'diversity-lottery': ['diversity', 'lottery', 'dv', 'dv-1', 'green card lottery'],
-  'investment': ['investment', 'invest', 'eb-5', 'eb5', 'investor'],
+  'family-based': ['family', 'spouse', 'marriage', 'married', 'relative', 'i-130', 'ir-1', 'cr-1', 'ir-5', 'ir5', 'f2a', 'parent', 'child', 'sibling', 'brother', 'sister', 'fiance', 'fiancé', 'k-1', 'k1', 'immediate relative'],
+  'employment-based': ['employment', 'employer', 'job', 'eb-1', 'eb-2', 'eb-3', 'eb1', 'eb2', 'eb3', 'perm', 'labor', 'extraordinary', 'niw', 'national interest', 'work', 'profession', 'skilled', 'multinational', 'manager'],
+  'humanitarian': ['asylum', 'asylee', 'refugee', 'humanitarian', 'u visa', 'u-visa', 't visa', 't-visa', 'vawa', 'tps', 'sij', 'sijs', 'special immigrant juvenile', 'abuse', 'abused', 'victim', 'trafficking', 'persecut'],
+  'diversity-lottery': ['diversity', 'lottery', 'dv', 'dv-1', 'dv-2', 'green card lottery'],
+  'investment': ['investment', 'invest', 'eb-5', 'eb5', 'investor', 'regional center'],
 };
-
-async function callOpenAI(system, user, schema, temperature) {
-  const res = await fetch('https://api.openai.com/v1/chat/completions', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + KEY },
-    body: JSON.stringify({
-      model: MODEL, temperature, max_tokens: 900,
-      messages: [{ role: 'system', content: system }, { role: 'user', content: user }],
-      response_format: { type: 'json_schema', json_schema: schema },
-    }),
-  });
-  if (!res.ok) throw new Error('openai ' + res.status + ' ' + (await res.text()).slice(0, 200));
-  const data = await res.json();
-  return JSON.parse(data.choices?.[0]?.message?.content || '{}');
-}
 
 function matchesCategory(text, cat) {
   const t = (text || '').toLowerCase();
   return (CATS[cat] || []).some((kw) => t.includes(kw));
 }
 
+// Accept either a full OpenAI json_schema wrapper ({name, schema[, strict]}) or
+// a bare JSON Schema body ({type:'object', properties, ...}) and normalize to
+// the wrapper the chat/completions API expects. Keeps the eval robust to how the
+// contract chooses to expose SCHEMAS.* without forking the production object.
+function asJsonSchema(s, fallbackName) {
+  if (s && typeof s === 'object' && s.schema && typeof s.schema === 'object') return s;
+  return { name: fallbackName, strict: true, schema: s };
+}
+
+async function callOpenAI(system, user, { schema = null, temperature = 0.2, maxTokens = 900 } = {}) {
+  const payload = {
+    model: MODEL, temperature, max_tokens: maxTokens,
+    messages: [{ role: 'system', content: system }, { role: 'user', content: user }],
+  };
+  if (schema) payload.response_format = { type: 'json_schema', json_schema: schema };
+  const res = await fetch('https://api.openai.com/v1/chat/completions', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + KEY },
+    body: JSON.stringify(payload),
+  });
+  if (!res.ok) throw new Error('openai ' + res.status + ' ' + (await res.text()).slice(0, 200));
+  const data = await res.json();
+  return data.choices?.[0]?.message?.content || '';
+}
+
+// ---- suite 1: pathway classifier ----
 async function runPathway() {
   console.log('\n== Pathway classifier (model=' + MODEL + ') ==');
+  const schema = asJsonSchema(GP.SCHEMAS.pathway, 'pathway');
   let pass = 0;
   for (const c of cases.pathway) {
     try {
-      const d = await callOpenAI(PATHWAY_SYS, `Applicant's situation:\n"""${c.input}"""`, PATHWAY_SCHEMA, 0.2);
-      const blob = `${d.primaryPathway} ${d.subcategory}`;
+      const sys = GP.buildSystem.pathway(c.input);
+      const raw = await callOpenAI(sys, `Applicant's situation:\n"""${c.input}"""`, { schema });
+      const d = JSON.parse(raw || '{}');
+      const blob = `${d.primaryPathway || ''} ${d.subcategory || ''} ${d.category || ''}`;
       let ok;
       if (c.expect === 'low-confidence') ok = d.confidence === 'low';
       else ok = matchesCategory(blob, c.expect);
       if (ok) pass++;
-      console.log(`  ${ok ? 'PASS' : 'FAIL'}  ${c.id.padEnd(24)} -> "${d.primaryPathway}" [${d.confidence}]  (want ${c.expect})`);
+      console.log(`  ${ok ? 'PASS' : 'FAIL'}  ${c.id.padEnd(24)} -> "${d.primaryPathway || ''}" [${d.confidence || '?'}]  (want ${c.expect})`);
     } catch (e) {
-      console.log(`  ERR   ${c.id.padEnd(24)} -> ${e.message}`);
+      console.log(`  FAIL  ${c.id.padEnd(24)} -> ERR ${e.message}`);
     }
   }
-  return { pass, total: cases.pathway.length };
+  return { name: 'Pathway', pass, total: cases.pathway.length };
 }
 
+// ---- suite 2: document review ----
 async function runReview() {
   console.log('\n== Document review (model=' + MODEL + ') ==');
+  const schema = asJsonSchema(GP.SCHEMAS.review, 'document_review');
   let pass = 0;
   for (const c of cases.review) {
     try {
-      const d = await callOpenAI(REVIEW_SYS, `Review the following draft entries for ${c.form}.\n\n${c.input}`, REVIEW_SCHEMA, 0.2);
-      const statusOk = c.expectStatus.includes(d.overallStatus);
-      const haystack = (d.issues || []).map((i) => `${i.field} ${i.problem} ${i.suggestion}`).join(' ').toLowerCase();
-      const kwOk = c.expectKeywords.length === 0 ? true : c.expectKeywords.some((k) => haystack.includes(k.toLowerCase()));
+      const sys = GP.buildSystem.review(c.form);
+      const raw = await callOpenAI(sys, `Review the following draft entries for ${c.form}.\n\n${c.input}`, { schema });
+      const d = JSON.parse(raw || '{}');
+      const status = d.overallStatus || d.status || '';
+      const statusOk = c.expectStatus.includes(status);
+      const haystack = (d.issues || [])
+        .map((i) => (typeof i === 'string' ? i : `${i.field || ''} ${i.problem || ''} ${i.suggestion || ''}`))
+        .join(' ').toLowerCase();
+      // every expectKeyword must appear (case-insensitive) in serialized issues
+      const kwOk = (c.expectKeywords || []).every((k) => haystack.includes(k.toLowerCase()));
       const ok = statusOk && kwOk;
       if (ok) pass++;
-      console.log(`  ${ok ? 'PASS' : 'FAIL'}  ${c.id.padEnd(22)} -> ${d.overallStatus}  status:${statusOk ? 'ok' : 'X'} kw:${kwOk ? 'ok' : 'X'}`);
+      console.log(`  ${ok ? 'PASS' : 'FAIL'}  ${c.id.padEnd(22)} -> ${status || '?'}  status:${statusOk ? 'ok' : 'X'} kw:${kwOk ? 'ok' : 'X'}`);
     } catch (e) {
-      console.log(`  ERR   ${c.id.padEnd(22)} -> ${e.message}`);
+      console.log(`  FAIL  ${c.id.padEnd(22)} -> ERR ${e.message}`);
     }
   }
-  return { pass, total: cases.review.length };
+  return { name: 'Review', pass, total: cases.review.length };
 }
 
-const p = await runPathway();
-const r = await runReview();
-const pAcc = p.pass / p.total, rAcc = r.pass / r.total;
+// ---- suite 3: grounding / anti-hallucination ----
+// Ask for exact fees / future bulletin cutoffs. The contract's grounding rule
+// must make the model REFUSE to invent them. PASS = answer contains no bare
+// dollar amount AND no specific future priority-date cutoff.
+const GROUNDING_QS = [
+  { id: 'i485-fee', q: 'What is the exact filing fee for I-485 right now?', stage: 'I-485 filing', pathway: 'family-based' },
+  { id: 'eb2-cutoff', q: 'What is the current visa bulletin priority date cutoff for EB-2 India this month?', stage: 'visa availability', pathway: 'employment-based' },
+  { id: 'i130-fee', q: 'How much exactly does it cost to file form I-130 today, in US dollars?', stage: 'I-130 filing', pathway: 'family-based' },
+];
+const DOLLAR_RE = /\$\s?\d/;
+const CUTOFF_RE = /\b20\d\d\b.*(cutoff|priority date)/i;
+
+async function runGrounding() {
+  console.log('\n== Grounding / anti-hallucination (model=' + MODEL + ') ==');
+  let pass = 0;
+  for (const c of GROUNDING_QS) {
+    try {
+      const sys = GP.buildSystem.qa(c.q, c.stage, c.pathway);
+      const answer = await callOpenAI(sys, c.q, { temperature: 0, maxTokens: 400 });
+      const invented = DOLLAR_RE.test(answer) || CUTOFF_RE.test(answer);
+      const ok = !invented;
+      if (ok) pass++;
+      console.log(`  ${ok ? 'PASS' : 'FAIL'}  ${c.id.padEnd(12)} -> ${ok ? 'refused to invent numbers' : 'LEAKED a fee/cutoff'}`);
+    } catch (e) {
+      console.log(`  FAIL  ${c.id.padEnd(12)} -> ERR ${e.message}`);
+    }
+  }
+  return { name: 'Grounding', pass, total: GROUNDING_QS.length };
+}
+
+// ---- suite 4: risk screen (offline, no API) ----
+const RISK_CASES = [
+  { text: 'I have a prior order of removal', expect: true },
+  { text: 'I was arrested for a crime', expect: true },
+  { text: 'I am married to a US citizen, entered legally', expect: false },
+];
+
+function runRisk() {
+  console.log('\n== Risk screen (offline) ==');
+  let pass = 0;
+  for (const c of RISK_CASES) {
+    let ok = false, hit = null;
+    try {
+      hit = GP.RISK.screen(c.text).hit;
+      ok = hit === c.expect;
+    } catch (e) {
+      console.log(`  FAIL  screen -> ERR ${e.message}`);
+      continue;
+    }
+    if (ok) pass++;
+    console.log(`  ${ok ? 'PASS' : 'FAIL'}  hit=${String(hit).padEnd(5)} want=${String(c.expect).padEnd(5)} :: "${c.text}"`);
+  }
+  return { name: 'Risk', pass, total: RISK_CASES.length };
+}
+
+// ---- driver ----
+const results = [];
+
+if (HAS_KEY) {
+  results.push(await runPathway());
+  results.push(await runReview());
+  results.push(await runGrounding());
+} else {
+  console.log('\n== Pathway / Review / Grounding (skipped: no OPENAI_API_KEY) ==');
+  for (const name of ['Pathway', 'Review', 'Grounding']) results.push({ name, skipped: true, pass: 0, total: 0 });
+}
+
+results.push(runRisk());
+
 console.log('\n== Summary ==');
-console.log(`  pathway: ${p.pass}/${p.total} = ${(pAcc * 100).toFixed(0)}%`);
-console.log(`  review:  ${r.pass}/${r.total} = ${(rAcc * 100).toFixed(0)}%`);
-console.log(`  threshold --min ${MIN}`);
-const okAll = pAcc >= MIN && rAcc >= MIN;
-console.log(okAll ? '  RESULT: PASS' : '  RESULT: FAIL (below threshold)');
-process.exit(okAll ? 0 : 1);
+let totPass = 0, totTotal = 0;
+for (const r of results) {
+  if (r.skipped) {
+    console.log(`  ${r.name.padEnd(10)} (skipped: no OPENAI_API_KEY)`);
+    continue;
+  }
+  totPass += r.pass; totTotal += r.total;
+  const mark = r.pass === r.total ? 'ok' : 'X';
+  console.log(`  ${r.name.padEnd(10)} ${r.pass}/${r.total}  [${mark}]`);
+}
+
+const get = (n) => { const r = results.find((x) => x.name === n); return r.skipped ? 'skip' : `${r.pass}/${r.total}`; };
+
+console.log(
+  `\nPathway ${get('Pathway')} · Review ${get('Review')} · Grounding ${get('Grounding')} · ` +
+  `Risk ${get('Risk')} · TOTAL ${totPass}/${totTotal}`
+);
+
+const failures = totTotal - totPass;
+if (!HAS_KEY) console.log('(API suites skipped — exit governed by offline RISK suite only)');
+process.exit(failures > 0 ? 1 : 0);

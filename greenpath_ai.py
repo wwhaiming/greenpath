@@ -1,3 +1,4 @@
+# NOTE: Alternate/reference Flask backend. The DEPLOYED site uses the static public/index.html + netlify/functions/chat.js (OpenAI). This file is NOT wired to production and exists as a reference implementation only.
 """
 GreenPath AI backend (Python / Flask).
 
