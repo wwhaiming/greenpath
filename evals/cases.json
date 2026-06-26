@@ -1,35 +1,306 @@
 {
   "_about": "Ground-truth labels for GreenPath's deterministic safety surfaces. Labels are the same ones pinned by the passing test suite (tests/test_handoff.py, tests/test_api.py), repackaged as a measurable accuracy metric. The eval calls NO LLM, so the score is identical on every run.",
   "handoff": [
-    {"text": "I have a removal proceeding and a notice to appear in immigration court.", "expect_handoff": true, "expect_category": "removal_proceedings"},
-    {"text": "I was deported five years ago and want to come back.", "expect_handoff": true, "expect_category": "removal_proceedings"},
-    {"text": "I was convicted of a felony, can I still apply for a green card?", "expect_handoff": true, "expect_category": "criminal_history"},
-    {"text": "I got a DUI last year, does that affect my case?", "expect_handoff": true, "expect_category": "criminal_history"},
-    {"text": "I used a fake passport to enter the country.", "expect_handoff": true, "expect_category": "fraud_misrepresentation"},
-    {"text": "I want to apply for asylum because I fear persecution back home.", "expect_handoff": true, "expect_category": "asylum_one_year_deadline"},
-    {"text": "My husband abused me and I heard about a U-visa.", "expect_handoff": true, "expect_category": "vawa_u_t_visa"},
-    {"text": "Do I need an i-601 waiver for the ten-year bar?", "expect_handoff": true, "expect_category": "inadmissibility_bars"},
-    {"text": "My visa was denied at the consulate and went to administrative processing.", "expect_handoff": true, "expect_category": "prior_visa_denial"},
-    {"text": "I worked without authorization for two years on a tourist visa.", "expect_handoff": true, "expect_category": "unauthorized_work"},
-    {"text": "I overstayed my visa and I am now out of status.", "expect_handoff": true, "expect_category": "overstay_unlawful_presence"},
-    {"text": "I am undocumented and entered without inspection.", "expect_handoff": true, "expect_category": "unclear_no_status"},
-
-    {"text": "How long does the I-485 take to process right now?", "expect_handoff": false},
-    {"text": "What documents do I need for a marriage-based green card?", "expect_handoff": false},
-    {"text": "I'm not sure which form to use, can you help me figure it out?", "expect_handoff": false},
-    {"text": "Is there a fee waiver available for the application fee?", "expect_handoff": false},
-    {"text": "Can I travel on advance parole while my case is pending?", "expect_handoff": false},
-    {"text": "My visa expires next year, when should I start the renewal?", "expect_handoff": false},
-    {"text": "What is the difference between EB-2 and EB-3?", "expect_handoff": false},
-    {"text": "How do I check my case status online with my receipt number?", "expect_handoff": false},
-    {"text": "What does my priority date mean on the visa bulletin?", "expect_handoff": false},
-    {"text": "Do I need a medical exam before my green card interview?", "expect_handoff": false},
-    {"text": "Can I include my children on my application?", "expect_handoff": false},
-    {"text": "How much does it cost to file Form I-130?", "expect_handoff": false}
+    {
+      "text": "I have a removal proceeding and a notice to appear in immigration court.",
+      "expect_handoff": true,
+      "expect_category": "removal_proceedings"
+    },
+    {
+      "text": "I was deported five years ago and want to come back.",
+      "expect_handoff": true,
+      "expect_category": "removal_proceedings"
+    },
+    {
+      "text": "I was convicted of a felony, can I still apply for a green card?",
+      "expect_handoff": true,
+      "expect_category": "criminal_history"
+    },
+    {
+      "text": "I got a DUI last year, does that affect my case?",
+      "expect_handoff": true,
+      "expect_category": "criminal_history"
+    },
+    {
+      "text": "I used a fake passport to enter the country.",
+      "expect_handoff": true,
+      "expect_category": "fraud_misrepresentation"
+    },
+    {
+      "text": "I want to apply for asylum because I fear persecution back home.",
+      "expect_handoff": true,
+      "expect_category": "asylum_one_year_deadline"
+    },
+    {
+      "text": "My husband abused me and I heard about a U-visa.",
+      "expect_handoff": true,
+      "expect_category": "vawa_u_t_visa"
+    },
+    {
+      "text": "Do I need an i-601 waiver for the ten-year bar?",
+      "expect_handoff": true,
+      "expect_category": "inadmissibility_bars"
+    },
+    {
+      "text": "My visa was denied at the consulate and went to administrative processing.",
+      "expect_handoff": true,
+      "expect_category": "prior_visa_denial"
+    },
+    {
+      "text": "I worked without authorization for two years on a tourist visa.",
+      "expect_handoff": true,
+      "expect_category": "unauthorized_work"
+    },
+    {
+      "text": "I overstayed my visa and I am now out of status.",
+      "expect_handoff": true,
+      "expect_category": "overstay_unlawful_presence"
+    },
+    {
+      "text": "I am undocumented and entered without inspection.",
+      "expect_handoff": true,
+      "expect_category": "unclear_no_status"
+    },
+    {
+      "text": "I got picked up by immigration last week.",
+      "expect_handoff": true,
+      "expect_category": "removal_proceedings"
+    },
+    {
+      "text": "They gave me papers to see a judge.",
+      "expect_handoff": true,
+      "expect_category": "removal_proceedings"
+    },
+    {
+      "text": "I got a letter to appear in court next month.",
+      "expect_handoff": true,
+      "expect_category": "removal_proceedings"
+    },
+    {
+      "text": "I used someone else's SSN to get hired.",
+      "expect_handoff": true,
+      "expect_category": "fraud_misrepresentation"
+    },
+    {
+      "text": "I worked cash jobs for a few years.",
+      "expect_handoff": true,
+      "expect_category": "unauthorized_work"
+    },
+    {
+      "text": "I crossed and never got inspected.",
+      "expect_handoff": true,
+      "expect_category": "unclear_no_status"
+    },
+    {
+      "text": "Me deportaron el año pasado y quiero volver.",
+      "expect_handoff": true,
+      "expect_category": "removal_proceedings"
+    },
+    {
+      "text": "Tengo una orden de deportación.",
+      "expect_handoff": true,
+      "expect_category": "removal_proceedings"
+    },
+    {
+      "text": "Tengo una orden de deportacion.",
+      "expect_handoff": true,
+      "expect_category": "removal_proceedings"
+    },
+    {
+      "text": "Tengo que ir a la corte de inmigración.",
+      "expect_handoff": true,
+      "expect_category": "removal_proceedings"
+    },
+    {
+      "text": "Me arrestaron la semana pasada.",
+      "expect_handoff": true,
+      "expect_category": "criminal_history"
+    },
+    {
+      "text": "Mi visa venció hace dos años.",
+      "expect_handoff": true,
+      "expect_category": "overstay_unlawful_presence"
+    },
+    {
+      "text": "Mi visa expiro el mes pasado.",
+      "expect_handoff": true,
+      "expect_category": "overstay_unlawful_presence"
+    },
+    {
+      "text": "Crucé la frontera sin papeles.",
+      "expect_handoff": true,
+      "expect_category": "unclear_no_status"
+    },
+    {
+      "text": "Soy indocumentado y no tengo estatus.",
+      "expect_handoff": true,
+      "expect_category": "unclear_no_status"
+    },
+    {
+      "text": "我被驱逐出境了。",
+      "expect_handoff": true,
+      "expect_category": "removal_proceedings"
+    },
+    {
+      "text": "我的签证逾期居留了。",
+      "expect_handoff": true,
+      "expect_category": "overstay_unlawful_presence"
+    },
+    {
+      "text": "我没有合法身份。",
+      "expect_handoff": true,
+      "expect_category": "unclear_no_status"
+    },
+    {
+      "text": "How long does the I-485 take to process right now?",
+      "expect_handoff": false
+    },
+    {
+      "text": "What documents do I need for a marriage-based green card?",
+      "expect_handoff": false
+    },
+    {
+      "text": "I'm not sure which form to use, can you help me figure it out?",
+      "expect_handoff": false
+    },
+    {
+      "text": "Is there a fee waiver available for the application fee?",
+      "expect_handoff": false
+    },
+    {
+      "text": "Can I travel on advance parole while my case is pending?",
+      "expect_handoff": false
+    },
+    {
+      "text": "My visa expires next year, when should I start the renewal?",
+      "expect_handoff": false
+    },
+    {
+      "text": "What is the difference between EB-2 and EB-3?",
+      "expect_handoff": false
+    },
+    {
+      "text": "How do I check my case status online with my receipt number?",
+      "expect_handoff": false
+    },
+    {
+      "text": "What does my priority date mean on the visa bulletin?",
+      "expect_handoff": false
+    },
+    {
+      "text": "Do I need a medical exam before my green card interview?",
+      "expect_handoff": false
+    },
+    {
+      "text": "Can I include my children on my application?",
+      "expect_handoff": false
+    },
+    {
+      "text": "How much does it cost to file Form I-130?",
+      "expect_handoff": false
+    },
+    {
+      "text": "¿Cuánto tarda el I-485 en procesarse?",
+      "expect_handoff": false
+    },
+    {
+      "text": "¿Necesito un examen médico antes de la entrevista?",
+      "expect_handoff": false
+    },
+    {
+      "text": "¿Cuánto cuesta presentar el formulario I-130?",
+      "expect_handoff": false
+    },
+    {
+      "text": "¿Qué documentos necesito para la green card por matrimonio?",
+      "expect_handoff": false
+    },
+    {
+      "text": "我做绿卡面试前需要做体检吗？",
+      "expect_handoff": false
+    },
+    {
+      "text": "I-485 大概需要多久才能批准？",
+      "expect_handoff": false
+    },
+    {
+      "text": "I picked up my green card from the mailbox yesterday.",
+      "expect_handoff": false
+    },
+    {
+      "text": "I got a letter from USCIS about my biometrics appointment.",
+      "expect_handoff": false
+    },
+    {
+      "text": "I worked a part-time job at a coffee shop with my work permit.",
+      "expect_handoff": false
+    },
+    {
+      "text": "Mi visa expira el próximo año, ¿cuándo debo renovarla?",
+      "expect_handoff": false
+    }
   ],
   "visa": [
-    {"country": "Mexico", "eb": "EB3", "priority_date": "2020-06-01", "expect_available": true, "expect_years": 0.0},
-    {"country": "India", "eb": "EB2", "priority_date": "2015-01-01", "expect_available": true, "expect_years": null},
-    {"country": "Atlantis", "eb": "EB2", "priority_date": "2015-01-01", "expect_available": false}
+    {
+      "country": "Mexico",
+      "eb": "EB3",
+      "priority_date": "2020-06-01",
+      "expect_available": true,
+      "expect_years": 0.0
+    },
+    {
+      "country": "India",
+      "eb": "EB2",
+      "priority_date": "2015-01-01",
+      "expect_available": true,
+      "expect_years": null
+    },
+    {
+      "country": "Atlantis",
+      "eb": "EB2",
+      "priority_date": "2015-01-01",
+      "expect_available": false
+    }
+  ],
+  "retrieval": [
+    {
+      "query": "How do I replace my green card?",
+      "expect_url_contains": "/i-90",
+      "expect_pathway": "renewal"
+    },
+    {
+      "query": "naturalization process to become a citizen",
+      "expect_url_contains": "/n-400",
+      "expect_pathway": "naturalization"
+    },
+    {
+      "query": "I-130 petition for my spouse",
+      "expect_url_contains": "/i-130",
+      "expect_pathway": "family"
+    },
+    {
+      "query": "adjust status with form I-485",
+      "expect_url_contains": "/i-485",
+      "expect_pathway": "employment"
+    },
+    {
+      "query": "renew my work permit EAD I-765",
+      "expect_url_contains": "/i-765",
+      "expect_pathway": "employment-authorization"
+    },
+    {
+      "query": "priority date visa bulletin when will I be current",
+      "expect_url_contains": "travel.state.gov",
+      "expect_pathway": "employment"
+    },
+    {
+      "query": "how to file for citizenship N-400 fee",
+      "expect_url_contains": "/n-400"
+    },
+    {
+      "query": "xyzzy quantum banana spaceship recipe",
+      "expect_url_contains": "",
+      "expect_insufficient": true
+    }
   ]
 }

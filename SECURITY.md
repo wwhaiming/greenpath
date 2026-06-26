@@ -45,9 +45,32 @@ handoff, static site) work without any key.
 ## Current state of the working tree (verified)
 - No API key is hardcoded in `server.py`, `public/index.html`, or any tracked
   source file. The server reads `OPENAI_API_KEY` via `os.environ`.
+- The local, gitignored `.env` no longer contains the exposed key: it was
+  replaced with an empty placeholder (the suite no longer depends on any key —
+  see `tests/conftest.py`).
 - `.env` is listed in `.gitignore` and is not tracked.
 - The browser never receives the key: all model calls go through the server-side
   proxy in `server.py`.
+
+## Remediation status (what is done here vs. owner-only)
+Done in this repo (no account/remote access required):
+- **Working-tree key removed** and replaced with a placeholder in `.env`.
+- **Secret-scanning CI added** (`.github/workflows/ci.yml` → `secret-scan` job,
+  gitleaks, full-history `fetch-depth: 0`). `.gitleaks.toml` allowlists only
+  non-secret placeholders plus the single known, already-revoked historical key
+  (explicitly tracked, not hidden) so the guard is green for NEW commits.
+- **Runnable purge procedure** committed at `scripts/purge_secret.sh`
+  (git-filter-repo replace-text + documented manual force-push/rotate steps).
+
+Owner-only (cannot be done from this repo, and is NOT faked):
+- **Rotate** the key in the OpenAI dashboard and set the new key only as a deploy
+  env var + local `.env`.
+- **Purge history** by running `scripts/purge_secret.sh` in a fresh clone, then
+  **force-push** all branches/tags and have collaborators re-clone.
+- **Invalidate** old deploy env vars; then remove the historical-key allowlist
+  line from `.gitleaks.toml`.
+Until those are done, treat the old key as exposed (it appears already revoked:
+observed HTTP 401). This file does not claim rotation or purge is complete.
 
 ## Backend protections
 - **Attorney-handoff hard stop** (`handoff.py`): deterministic, server-side

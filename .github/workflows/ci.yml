@@ -21,3 +21,51 @@ jobs:
         run: python -m pytest tests/ -q
       - name: Evaluation harness (deterministic accuracy gate)
         run: python evals/eval.py --threshold 0.95
+
+  # Secret scanning. Fails the build if a credential is committed (working tree
+  # OR git history). This is the standing guard against a repeat of the API key
+  # that was committed in the past (see SECURITY.md). gitleaks scans full history
+  # with fetch-depth: 0.
+  secret-scan:
+    name: Secret scanning (gitleaks)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Run gitleaks
+        uses: gitleaks/gitleaks-action@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  # OPTIONAL browser E2E. Kept OUT of the required `test` job because GitHub
+  # runners ship no browser binaries by default — this job installs them
+  # explicitly with `npx playwright install`. It is not a merge gate; treat a
+  # failure here as a signal, not a block. No OPENAI_API_KEY is needed: every
+  # spec targets a deterministic, server-side path (attorney-handoff stop, SPA
+  # navigation, the cross-origin 403 guard, /api/health).
+  e2e:
+    name: Browser E2E (optional)
+    runs-on: ubuntu-latest
+    # Do not fail the overall workflow if the optional browser job fails.
+    continue-on-error: true
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+      - name: Install Python dependencies
+        run: pip install -r requirements-dev.txt
+      - name: Install Node dependencies
+        run: npm ci || npm install
+      - name: Install Playwright browsers
+        run: npx playwright install --with-deps chromium
+      - name: Run E2E (boots server.py via Playwright webServer)
+        # E2E_SERVER_CMD overrides the local default (.venv/bin/python server.py)
+        # because CI installs deps into the system interpreter, not a venv.
+        env:
+          E2E_SERVER_CMD: "python server.py"
+        run: npm run e2e

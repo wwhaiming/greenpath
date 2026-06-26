@@ -1,0 +1,470 @@
+[
+  {
+    "id": "uscis-i130-purpose",
+    "title": "Petition for Alien Relative | USCIS",
+    "url": "https://www.uscis.gov/i-130",
+    "topic": "forms",
+    "retrieved_at": "2026-06-26",
+    "quote": "You must file a separate Form I-130 for each eligible relative unless they can be considered a derivative beneficiary. See the form instructions for more information.",
+    "canonical_url": "https://www.uscis.gov/i-130",
+    "topic_tags": [
+      "forms",
+      "i-130"
+    ]
+  },
+  {
+    "id": "uscis-i130-spouse",
+    "title": "Petition for Alien Relative | USCIS",
+    "url": "https://www.uscis.gov/i-130",
+    "topic": "forms",
+    "retrieved_at": "2026-06-26",
+    "quote": "If you submit a petition for your spouse, you must also submit Form I-130A, Supplemental Information for Spouse Beneficiary.",
+    "canonical_url": "https://www.uscis.gov/i-130",
+    "topic_tags": [
+      "forms",
+      "i-130"
+    ]
+  },
+  {
+    "id": "uscis-i130-fee",
+    "title": "Petition for Alien Relative | USCIS",
+    "url": "https://www.uscis.gov/i-130",
+    "topic": "fees",
+    "retrieved_at": "2026-06-26",
+    "quote": "You can find the filing fee for Form I-130 by visiting our Fee Schedule page.",
+    "canonical_url": "https://www.uscis.gov/i-130",
+    "topic_tags": [
+      "fees",
+      "i-130"
+    ]
+  },
+  {
+    "id": "uscis-i485-purpose",
+    "title": "Application to Register Permanent Residence or Adjust Status | USCIS",
+    "url": "https://www.uscis.gov/i-485",
+    "topic": "forms",
+    "retrieved_at": "2026-06-26",
+    "quote": "Use this form to apply for lawful permanent resident status if you are in the United States.",
+    "canonical_url": "https://www.uscis.gov/i-485",
+    "topic_tags": [
+      "forms",
+      "i-485"
+    ]
+  },
+  {
+    "id": "uscis-i485-visabulletin",
+    "title": "Application to Register Permanent Residence or Adjust Status | USCIS",
+    "url": "https://www.uscis.gov/i-485",
+    "topic": "visa-bulletin",
+    "retrieved_at": "2026-06-26",
+    "quote": "Before filing a Form I-485 based on a family-sponsored or employment-based preference category, check our Visa Bulletin page to see if your priority date makes you eligible to apply.",
+    "canonical_url": "https://www.uscis.gov/i-485",
+    "topic_tags": [
+      "i-485",
+      "visa-bulletin"
+    ]
+  },
+  {
+    "id": "uscis-i485-fee",
+    "title": "Application to Register Permanent Residence or Adjust Status | USCIS",
+    "url": "https://www.uscis.gov/i-485",
+    "topic": "fees",
+    "retrieved_at": "2026-06-26",
+    "quote": "You can find the filing fee for Form I-485 by visiting our Fee Schedule page.",
+    "canonical_url": "https://www.uscis.gov/i-485",
+    "topic_tags": [
+      "fees",
+      "i-485"
+    ]
+  },
+  {
+    "id": "uscis-n400-purpose",
+    "title": "Application for Naturalization | USCIS",
+    "url": "https://www.uscis.gov/n-400",
+    "topic": "forms",
+    "retrieved_at": "2026-06-26",
+    "quote": "Naturalization is the process of becoming a U.S. citizen if you were born outside of the United States.",
+    "canonical_url": "https://www.uscis.gov/n-400",
+    "topic_tags": [
+      "forms",
+      "n-400"
+    ]
+  },
+  {
+    "id": "uscis-n400-fee",
+    "title": "Application for Naturalization | USCIS",
+    "url": "https://www.uscis.gov/n-400",
+    "topic": "fees",
+    "retrieved_at": "2026-06-26",
+    "quote": "Submit $760 if filing by paper, or $710 if filing online",
+    "canonical_url": "https://www.uscis.gov/n-400",
+    "topic_tags": [
+      "fees",
+      "n-400"
+    ]
+  },
+  {
+    "id": "uscis-n400-reduced-fee",
+    "title": "Application for Naturalization | USCIS",
+    "url": "https://www.uscis.gov/n-400",
+    "topic": "fees",
+    "retrieved_at": "2026-06-26",
+    "quote": "Submit $380 and documentation to support the reduced fee",
+    "canonical_url": "https://www.uscis.gov/n-400",
+    "topic_tags": [
+      "fees",
+      "n-400"
+    ]
+  },
+  {
+    "id": "uscis-n400-3yr-spouse",
+    "title": "Application for Naturalization | USCIS",
+    "url": "https://www.uscis.gov/n-400",
+    "topic": "forms",
+    "retrieved_at": "2026-06-26",
+    "quote": "Permanent resident for at least 3 years if you are married to a US citizen.",
+    "canonical_url": "https://www.uscis.gov/n-400",
+    "topic_tags": [
+      "forms",
+      "n-400"
+    ]
+  },
+  {
+    "id": "uscis-i90-purpose",
+    "title": "Application to Replace Permanent Resident Card (Green Card) | USCIS",
+    "url": "https://www.uscis.gov/i-90",
+    "topic": "forms",
+    "retrieved_at": "2026-06-26",
+    "quote": "Use this form to replace your Green Card.",
+    "canonical_url": "https://www.uscis.gov/i-90",
+    "topic_tags": [
+      "forms",
+      "i-90"
+    ]
+  },
+  {
+    "id": "uscis-i90-carry-card",
+    "title": "Application to Replace Permanent Resident Card (Green Card) | USCIS",
+    "url": "https://www.uscis.gov/i-90",
+    "topic": "forms",
+    "retrieved_at": "2026-06-26",
+    "quote": "As a lawful permanent resident, you must have a valid, unexpired Green Card or equivalent documentation with you at all times. Applying for naturalization does not change this requirement.",
+    "canonical_url": "https://www.uscis.gov/i-90",
+    "topic_tags": [
+      "forms",
+      "i-90"
+    ]
+  },
+  {
+    "id": "uscis-i90-fee",
+    "title": "Application to Replace Permanent Resident Card (Green Card) | USCIS",
+    "url": "https://www.uscis.gov/i-90",
+    "topic": "fees",
+    "retrieved_at": "2026-06-26",
+    "quote": "You can find the filing fee for Form I-90 by visiting our Fee Schedule page.",
+    "canonical_url": "https://www.uscis.gov/i-90",
+    "topic_tags": [
+      "fees",
+      "i-90"
+    ]
+  },
+  {
+    "id": "uscis-i765-renew",
+    "title": "Application for Employment Authorization | USCIS",
+    "url": "https://www.uscis.gov/i-765",
+    "topic": "forms",
+    "retrieved_at": "2026-06-26",
+    "quote": "To renew your Employment Authorization Document, file Form I-765 at least 90 days before the expiration.",
+    "canonical_url": "https://www.uscis.gov/i-765",
+    "topic_tags": [
+      "forms",
+      "i-765"
+    ]
+  },
+  {
+    "id": "uscis-i765-with-i485",
+    "title": "Application for Employment Authorization | USCIS",
+    "url": "https://www.uscis.gov/i-765",
+    "topic": "forms",
+    "retrieved_at": "2026-06-26",
+    "quote": "File Form I-765 together with Form I-485, Application to Register Permanent Residence or Adjust Status, or if filing separately, submit a copy of your I-485 receipt notice or other evidence to show that your Form I-485 is pending.",
+    "canonical_url": "https://www.uscis.gov/i-765",
+    "topic_tags": [
+      "forms",
+      "i-765"
+    ]
+  },
+  {
+    "id": "uscis-i765-fee",
+    "title": "Application for Employment Authorization | USCIS",
+    "url": "https://www.uscis.gov/i-765",
+    "topic": "fees",
+    "retrieved_at": "2026-06-26",
+    "quote": "You can find the filing fee for Form I-765 by visiting our Fee Schedule page.",
+    "canonical_url": "https://www.uscis.gov/i-765",
+    "topic_tags": [
+      "fees",
+      "i-765"
+    ]
+  },
+  {
+    "id": "dos-visa-bulletin-current",
+    "title": "The Visa Bulletin",
+    "url": "https://travel.state.gov/content/travel/en/legal/visa-law0/visa-bulletin.html",
+    "topic": "visa-bulletin",
+    "retrieved_at": "2026-06-26",
+    "quote": "Current Visa Bulletin June 2026",
+    "canonical_url": "https://travel.state.gov/content/travel/en/legal/visa-law0/visa-bulletin.html",
+    "topic_tags": [
+      "visa-bulletin"
+    ]
+  },
+  {
+    "id": "dos-visa-bulletin-date-format",
+    "title": "The Visa Bulletin",
+    "url": "https://travel.state.gov/content/travel/en/legal/visa-law0/visa-bulletin.html",
+    "topic": "visa-bulletin",
+    "retrieved_at": "2026-06-26",
+    "quote": "NOTE: The Final Action Dates and Dates for Filing published within the Visa Bulletins on this site are listed in the DAY-MONTH-YEAR (dd-mmm-yy) format.",
+    "canonical_url": "https://travel.state.gov/content/travel/en/legal/visa-law0/visa-bulletin.html",
+    "topic_tags": [
+      "visa-bulletin"
+    ]
+  },
+  {
+    "id": "dos-visa-bulletin-informational",
+    "title": "The Visa Bulletin",
+    "url": "https://travel.state.gov/content/travel/en/legal/visa-law0/visa-bulletin.html",
+    "topic": "visa-bulletin",
+    "retrieved_at": "2026-06-26",
+    "quote": "Online versions of the Visa Bulletin are for informational purposes only and every effort has been made to ensure their accuracy.",
+    "canonical_url": "https://travel.state.gov/content/travel/en/legal/visa-law0/visa-bulletin.html",
+    "topic_tags": [
+      "visa-bulletin"
+    ]
+  },
+  {
+    "id": "dos-visa-bulletin-revising",
+    "title": "The Visa Bulletin",
+    "url": "https://travel.state.gov/content/travel/en/legal/visa-law0/visa-bulletin.html",
+    "topic": "visa-bulletin",
+    "retrieved_at": "2026-06-26",
+    "quote": "USCIS, in coordination with Department of State, is revising the procedures for determining visa availability for applicants waiting to file for employment-based or family-sponsored preference adjustment of status.",
+    "canonical_url": "https://travel.state.gov/content/travel/en/legal/visa-law0/visa-bulletin.html",
+    "topic_tags": [
+      "visa-bulletin"
+    ]
+  },
+  {
+    "id": "uscis-i130-overview",
+    "title": "Petition for Alien Relative | USCIS",
+    "url": "https://www.uscis.gov/i-130",
+    "canonical_url": "https://www.uscis.gov/i-130",
+    "topic": "forms",
+    "topic_tags": [
+      "i-130",
+      "family",
+      "petition",
+      "relative",
+      "sponsor"
+    ],
+    "quote": "Submitting Form I-130, Petition for Alien Relative , is the first step to help an eligible relative apply to immigrate to the United States and apply for a Green Card. The filing or approval of this petition does not give your relative any immigration status or benefit.",
+    "quote_span": {
+      "start": 4345,
+      "end": 4615
+    },
+    "retrieved_at": "2026-06-26",
+    "checksum": "1a3707b8fa954be3fdf31fb91e18150c624f08344300ee1bd1c5607fd728a5e4",
+    "source_text_len": 22517
+  },
+  {
+    "id": "uscis-i485-overview",
+    "title": "Application to Register Permanent Residence or Adjust Status | USCIS",
+    "url": "https://www.uscis.gov/i-485",
+    "canonical_url": "https://www.uscis.gov/i-485",
+    "topic": "forms",
+    "topic_tags": [
+      "i-485",
+      "adjustment",
+      "adjust-status",
+      "green-card"
+    ],
+    "quote": "Use this form to apply for lawful permanent resident status if you are in the United States. File Online Form Details Forms and Document Downloads Form I-485 (PDF, 1.15 MB) Instructions for Form I-485 (PDF, 672.74 KB) Edition Date 01/20/25 .",
+    "quote_span": {
+      "start": 5003,
+      "end": 5244
+    },
+    "retrieved_at": "2026-06-26",
+    "checksum": "2beca5acbe71b23d8fb401cb0924a10d9a591c7cd4bbd3a5913d9fd9641834ed",
+    "source_text_len": 18241
+  },
+  {
+    "id": "uscis-n400-overview",
+    "title": "Application for Naturalization | USCIS",
+    "url": "https://www.uscis.gov/n-400",
+    "canonical_url": "https://www.uscis.gov/n-400",
+    "topic": "forms",
+    "topic_tags": [
+      "n-400",
+      "naturalization",
+      "citizen",
+      "citizenship"
+    ],
+    "quote": "Naturalization is the process of becoming a U.S. citizen if you were born outside of the United States. Use this form to apply for naturalization if you meet the eligibility requirements .",
+    "quote_span": {
+      "start": 3698,
+      "end": 3886
+    },
+    "retrieved_at": "2026-06-26",
+    "checksum": "73865a9dda6383717f35ec5711eb8c4c4e75dc5abd8127c444ad961d46e635f9",
+    "source_text_len": 23557
+  },
+  {
+    "id": "uscis-i90-overview",
+    "title": "Application to Replace Permanent Resident Card (Green Card) | USCIS",
+    "url": "https://www.uscis.gov/i-90",
+    "canonical_url": "https://www.uscis.gov/i-90",
+    "topic": "forms",
+    "topic_tags": [
+      "i-90",
+      "replace",
+      "renew",
+      "green-card"
+    ],
+    "quote": "Use this form to replace your Green Card.",
+    "quote_span": {
+      "start": 4600,
+      "end": 4641
+    },
+    "retrieved_at": "2026-06-26",
+    "checksum": "e1e75a5bca027d7d4c0c18bf1563c37db613cd8dc08ad72628d60bb4204dc401",
+    "source_text_len": 10804
+  },
+  {
+    "id": "uscis-i765-overview",
+    "title": "Application for Employment Authorization | USCIS",
+    "url": "https://www.uscis.gov/i-765",
+    "canonical_url": "https://www.uscis.gov/i-765",
+    "topic": "forms",
+    "topic_tags": [
+      "i-765",
+      "ead",
+      "work-permit",
+      "employment-authorization"
+    ],
+    "quote": "Certain aliens who are in the United States may file Form I-765, Application for Employment Authorization, to request an Employment Authorization Document (EAD).",
+    "quote_span": {
+      "start": 6433,
+      "end": 6594
+    },
+    "retrieved_at": "2026-06-26",
+    "checksum": "f5393d54d008e75e8e35c8dffbfd66437abb8c78b8d01c39f0e277b3fa6722e8",
+    "source_text_len": 27306
+  },
+  {
+    "id": "uscis-i131-overview",
+    "title": "Application for Travel Documents, Parole Documents, and Arrival/Departure Records | USCIS",
+    "url": "https://www.uscis.gov/i-131",
+    "canonical_url": "https://www.uscis.gov/i-131",
+    "topic": "forms",
+    "topic_tags": [
+      "i-131",
+      "travel",
+      "advance-parole",
+      "reentry-permit"
+    ],
+    "quote": "You may use this form to apply for a reentry permit, refugee travel document, TPS travel authorization document, advance parole document, or advance permission to travel for Commonwealth of the Northern Mariana Islands (CNMI) long-term residents.",
+    "quote_span": {
+      "start": 7483,
+      "end": 7729
+    },
+    "retrieved_at": "2026-06-26",
+    "checksum": "5cf81224f863b1a857bd0ab76e244bc4731e1aae8b3f9107bc6a73999d2bb2f7",
+    "source_text_len": 19449
+  },
+  {
+    "id": "uscis-i864-overview",
+    "title": "Affidavit of Support Under Section 213A of the INA | USCIS",
+    "url": "https://www.uscis.gov/i-864",
+    "canonical_url": "https://www.uscis.gov/i-864",
+    "topic": "forms",
+    "topic_tags": [
+      "i-864",
+      "affidavit-of-support",
+      "sponsor",
+      "family"
+    ],
+    "quote": "Most family-based immigrants and some employment-based immigrants use this form to show they have adequate means of financial support and are not likely to rely on the U.S. government for financial support.",
+    "quote_span": {
+      "start": 4562,
+      "end": 4768
+    },
+    "retrieved_at": "2026-06-26",
+    "checksum": "af7e7d4101e20943fc07e5e10a9d891ca7364c754a00ab90dffed17d5d46aceb",
+    "source_text_len": 12879
+  },
+  {
+    "id": "uscis-i751-overview",
+    "title": "Petition to Remove Conditions on Residence | USCIS",
+    "url": "https://www.uscis.gov/i-751",
+    "canonical_url": "https://www.uscis.gov/i-751",
+    "topic": "forms",
+    "topic_tags": [
+      "i-751",
+      "remove-conditions",
+      "conditional-resident",
+      "family"
+    ],
+    "quote": "conditional permanent resident who obtained status through marriage and want to apply to remove the conditions on your permanent resident status. File Online Forms and Document Downloads Form I-751 (PDF, 612.32 KB) Instructions for Form I-751 (PDF, 290.32 KB) Form Details Edition Date 04/01/24 .",
+    "quote_span": {
+      "start": 3761,
+      "end": 4057
+    },
+    "retrieved_at": "2026-06-26",
+    "checksum": "93dbf72737693330564ecc8451b73d9e4962b28c48a43df832a2b35850b15f9c",
+    "source_text_len": 16653
+  },
+  {
+    "id": "uscis-fees-overview",
+    "title": "Fee Schedule (G-1055) | USCIS",
+    "url": "https://www.uscis.gov/g-1055",
+    "canonical_url": "https://www.uscis.gov/g-1055",
+    "topic": "fees",
+    "topic_tags": [
+      "fees",
+      "g-1055",
+      "fee-schedule",
+      "filing-fee"
+    ],
+    "quote": "Form G-1055, Fee Schedule. The new edition, 05/29/26, includes the $24 fee required by Public Law 119-21 when filing Form I-102, Application for Replacement/Initial Nonimmigrant Arrival-Departure Document , in addition to any other required fees. We will reject any Form I-102 postmarked on or after May 29, 2026, without the proper filing fee.",
+    "quote_span": {
+      "start": 6313,
+      "end": 6657
+    },
+    "retrieved_at": "2026-06-26",
+    "checksum": "38e4e8785172220132e0717469a40e06eb3ca94a8dd20eeeee6ad1548aadbb83",
+    "source_text_len": 20411
+  },
+  {
+    "id": "eoir-recognition-accreditation",
+    "title": "Recognition & Accreditation Program | DOJ EOIR",
+    "url": "https://www.justice.gov/eoir/recognition-and-accreditation-program",
+    "canonical_url": "https://www.justice.gov/eoir/recognition-and-accreditation-program",
+    "topic": "legal-help",
+    "topic_tags": [
+      "eoir",
+      "recognized-organization",
+      "accredited-representative",
+      "legal-help",
+      "doj"
+    ],
+    "quote": "Organizations must submit Form EOIR‑31 to request recognition, whether initial, renewal, or extension. The regulations also require organizations to submit Form EOIR‑31A when applying for or renewing accreditation of their representatives. Organizations should email these forms and corresponding application packets to EOIR at R‑A‑Info@usdoj.gov.",
+    "quote_span": {
+      "start": 6155,
+      "end": 6502
+    },
+    "retrieved_at": "2026-06-26",
+    "checksum": "492ee9f4eeef13be8647be6733c36c7c5306f34faab4844aefc7dd92e309321a",
+    "source_text_len": 8734
+  }
+]

@@ -48,15 +48,150 @@ HANDOFF_MESSAGE = (
 )
 
 
+# ── Crisis urgency per category ──────────────────────────────────────────────
+# "urgent" = a hard deadline or active proceeding where delay itself can cause
+# irreversible harm (removal hearings, detention, the asylum one-year filing
+# deadline). "high" = serious eligibility/bar issues that need counsel before
+# filing but are not clock-driven in the same way. Used to label the handoff so a
+# user in crisis sees location-aware next steps, not just "talk to a lawyer".
+_URGENCY = {
+    "removal_proceedings": "urgent",
+    "asylum_one_year_deadline": "urgent",
+    "vawa_u_t_visa": "urgent",
+    "criminal_history": "high",
+    "fraud_misrepresentation": "high",
+    "inadmissibility_bars": "high",
+    "prior_visa_denial": "high",
+    "unauthorized_work": "high",
+    "overstay_unlawful_presence": "high",
+    "unclear_no_status": "high",
+}
+
+# Official, government / bar-association resources only (no fabricated providers).
+OFFICIAL_RESOURCES = [
+    {"name": "ImmigrationLawHelp.org (nonprofit legal-aid directory, search by ZIP)",
+     "url": "https://www.immigrationlawhelp.org/"},
+    {"name": "DOJ EOIR list of recognized organizations & accredited representatives",
+     "url": "https://www.justice.gov/eoir/recognition-and-accreditation-program"},
+    {"name": "AILA Immigration Lawyer Referral Service",
+     "url": "https://www.ailalawyer.com/"},
+    {"name": "USCIS official site (forms, fees, current requirements)",
+     "url": "https://www.uscis.gov/"},
+]
+
+# Documents almost any applicant should gather before meeting an attorney. These
+# are organizational, NOT legal advice — they tell the user what to bring, not
+# what it means or what to do with it.
+_DOCS_GENERAL = [
+    "Government-issued photo ID and passport(s) (current and expired)",
+    "Any USCIS notices or letters you have received (with the receipt number)",
+    "I-94 arrival/departure record and copies of any prior visas",
+    "Copies of every immigration form you have already filed",
+    "A written timeline of your entries to and exits from the U.S.",
+]
+# Category-specific documents to ADD (still organizational, not advice).
+_DOCS_BY_CATEGORY = {
+    "removal_proceedings": [
+        "Your Notice to Appear (NTA) and any immigration-court hearing notices",
+        "Any bond paperwork or detention documents",
+    ],
+    "criminal_history": [
+        "Certified court dispositions for every arrest or charge (even if dismissed)",
+        "Any police reports or sentencing records you can obtain",
+    ],
+    "fraud_misrepresentation": [
+        "Copies of the application(s) or document(s) in question",
+    ],
+    "asylum_one_year_deadline": [
+        "Evidence of your date of last entry (the one-year clock is critical)",
+        "Any documents supporting your fear of return (keep originals safe)",
+    ],
+    "vawa_u_t_visa": [
+        "Any police reports, protective orders, or medical records (only if safe to carry)",
+        "Proof of your relationship to the abuser/petitioner, if applicable",
+    ],
+    "inadmissibility_bars": [
+        "Records of all prior U.S. entries, departures, and any prior removals",
+    ],
+    "prior_visa_denial": [
+        "Your visa refusal letter or 221(g) notice and the case number",
+    ],
+    "unauthorized_work": [
+        "A list of employers and approximate dates (do not bring anything you are unsure about)",
+    ],
+    "overstay_unlawful_presence": [
+        "Your I-94 and any documents showing your authorized stay dates",
+    ],
+    "unclear_no_status": [
+        "Anything showing how and when you entered the U.S., if you have it",
+    ],
+}
+
+# Questions a non-lawyer can safely bring to an attorney. Framing the visit, not
+# answering the legal question.
+QUESTIONS_FOR_ATTORNEY = [
+    "Given my specific history, am I eligible to apply, and is there any risk in filing?",
+    "Are there any deadlines or filing windows I need to protect right now?",
+    "Could anything in my past trigger a bar, denial, or referral to immigration court?",
+    "What documents and evidence will I need, and how should I gather them?",
+    "What are my realistic options, and what are the risks of each?",
+    "What are your fees, and do you offer a free or low-cost consultation?",
+]
+
+
+def urgency_for(category):
+    """Map a handoff category to a crisis-urgency label ('urgent'|'high')."""
+    return _URGENCY.get(category, "high")
+
+
+def documents_to_gather(reasons_keys):
+    """General + category-specific documents to bring to an attorney, de-duped in
+    a stable order. ``reasons_keys`` is the list of matched category keys."""
+    docs = list(_DOCS_GENERAL)
+    seen = set(docs)
+    for key in reasons_keys:
+        for d in _DOCS_BY_CATEGORY.get(key, []):
+            if d not in seen:
+                docs.append(d)
+                seen.add(d)
+    return docs
+
+
+def safe_prep(hand):
+    """Build the non-advice 'safe preparation' bundle attached to every handoff:
+    crisis urgency, what to ask an attorney, what documents to gather, and
+    official resource links. Deterministic; contains no legal advice."""
+    keys = hand.get("reason_keys") or ([hand["category"]] if hand.get("category") else [])
+    return {
+        "urgency": urgency_for(hand.get("category")),
+        "questions_for_attorney": list(QUESTIONS_FOR_ATTORNEY),
+        "documents_to_gather": documents_to_gather(keys),
+        "official_resources": list(OFFICIAL_RESOURCES),
+    }
+
+
 # Ordered: the first matching category becomes the reported ``category``.
 # Each entry: (key, human-readable label, compiled pattern).
 # Word boundaries (\b) guard short tokens (NTA, EWI, DUI, CAT) from matching
 # inside unrelated words.
 _PATTERNS = [
     ("removal_proceedings", "removal or deportation proceedings", _p(
-        r"removal proceeding", r"\bdeport(ed|ation|able)?\b", r"immigration court",
+        r"remov[ae]l proceeding", r"\bdeport(ed|ation|able)?\b",
+        # Misspelling-tolerant: deportaton / deportasion / deportacion / deportate.
+        r"\bdeporta\w*", r"immigration court",
         r"notice to appear", r"\bNTA\b", r"order of removal", r"final order of",
         r"ICE (detain|custody|hold|arrest)", r"\bdetained by\b", r"in proceedings",
+        # English paraphrase / euphemism
+        r"picked (?:me |us |him |her |them |someone )?up by (immigration|ice|border patrol|the immigration)",
+        r"papers to see (a |an |the )?(immigration )?judge",
+        r"to see (a |an |the )?immigration judge",
+        r"(letter|notice) to appear (in|before|at)",
+        r"appear in (immigration )?court",
+        # Spanish (accent / no-accent variants)
+        r"me deportaron", r"orden de deportaci[oó]n",
+        r"corte de inmigraci[oó]n", r"proceso de deportaci[oó]n",
+        # Simplified Chinese: deportation / removal
+        r"遣返", r"驱逐出境", r"递解出境",
     )),
     ("criminal_history", "a criminal record or arrest", _p(
         r"\barrest(ed)?\b", r"convict(ed|ion)", r"criminal (record|history|charge|case)",
@@ -64,11 +199,16 @@ _PATTERNS = [
         r"charged with", r"pled? guilty", r"on probation",
         r"crime of moral turpitude", r"aggravated felony", r"\bexpunge",
         r"\bin jail\b", r"\bin prison\b", r"served time",
+        # Spanish
+        r"me arrestaron", r"me detuvo la polic[ií]a", r"antecedentes penales",
     )),
     ("fraud_misrepresentation", "possible fraud or misrepresentation", _p(
         r"misrepresent", r"\bfraud", r"fake (document|passport|id|marriage)",
         r"false (information|statement|document|claim)", r"forg(ed|ery)",
         r"lied (on|to|about)", r"falsifi", r"\bsham marriage\b",
+        # English paraphrase / euphemism
+        r"used someone else'?s? (id|identification|papers|ssn|social)",
+        r"borrowed someone'?s? (id|papers|ssn|social)",
     )),
     ("asylum_one_year_deadline", "an asylum / persecution claim (time-sensitive)", _p(
         r"\basylum\b", r"persecut", r"credible fear", r"withholding of removal",
@@ -97,17 +237,33 @@ _PATTERNS = [
         r"work(ed|ing)? without (authorization|a permit|an? ead)",
         r"worked illegally", r"working illegally", r"under the table",
         r"no work permit",
+        # English paraphrase / euphemism
+        r"work(ed|ing|s)? cash jobs?", r"worked .{0,12}(paid|all) (in )?cash",
+        # Spanish
+        r"trabaj[eé] sin permiso", r"trabaj(o|aba) en efectivo",
     )),
     ("overstay_unlawful_presence", "an overstay or unlawful presence", _p(
         r"overstay", r"out of status", r"fell out of status", r"lost my status",
         r"unlawful(ly)? presen", r"unauthorized presence",
         r"stayed (past|beyond|longer than|after)",
         r"visa (has )?expired", r"expired visa", r"my (visa|i-?94) expired",
+        # Spanish (past-tense expiry only; "expira el próximo año" stays benign)
+        r"mi visa (venci[oó]|expir[oó]|ya venci[oó]|ya expir[oó])",
+        r"se me venci[oó] la visa", r"me qued[eé] m[aá]s tiempo",
+        # Simplified Chinese: overstay
+        r"逾期居留", r"逾期滞留", r"逾期逗留", r"签证过期", r"逾期停留",
     )),
     ("unclear_no_status", "unclear or no current legal status", _p(
         r"undocumented", r"no legal status", r"\bno papers\b", r"unclear (legal )?status",
         r"entered without inspection", r"\bEWI\b", r"crossed the border",
         r"here illegally", r"illegally in the", r"snuck (in|into|across)",
+        # English paraphrase / euphemism
+        r"crossed( the border)? and never (got |been )?inspected",
+        r"never (got |been )?inspected (at|when) (the border|i )",
+        # Spanish
+        r"cruc[eé] la frontera", r"sin papeles", r"indocumentad[oa]",
+        # Simplified Chinese: no / unclear legal status
+        r"没有身份", r"没有合法身份", r"无合法身份", r"非法居留", r"黑户",
     )),
 ]
 
@@ -124,19 +280,25 @@ def detect_handoff(*texts):
 
     Otherwise ``{"handoff": False, "category": None, "reasons": [], "message": ""}``.
     """
-    blob = "\n".join(t for t in texts if isinstance(t, str) and t)
+    # Collapse runs of whitespace to single spaces so OCR'd / multiline text
+    # ("removal\n\nproceeding", "removal   proceeding") still matches the
+    # single-space patterns below. Safe: cannot create a false positive.
+    blob = re.sub(r"\s+", " ", "\n".join(t for t in texts if isinstance(t, str) and t)).strip()
     if not blob:
-        return {"handoff": False, "category": None, "reasons": [], "message": ""}
+        return {"handoff": False, "category": None, "reasons": [],
+                "reason_keys": [], "message": ""}
     matched = []  # (key, label) in priority order
     for key, label, pattern in _PATTERNS:
         if pattern.search(blob):
             matched.append((key, label))
     if not matched:
-        return {"handoff": False, "category": None, "reasons": [], "message": ""}
+        return {"handoff": False, "category": None, "reasons": [],
+                "reason_keys": [], "message": ""}
     return {
         "handoff": True,
         "category": matched[0][0],
         "reasons": [label for _, label in matched],
+        "reason_keys": [key for key, _ in matched],
         "message": HANDOFF_MESSAGE,
     }
 
@@ -151,7 +313,13 @@ def build_handoff_response(kind, hand):
     interview.
     """
     msg = hand["message"]
-    base = {"handoff": True, "category": hand["category"], "reasons": hand["reasons"]}
+    prep = safe_prep(hand)
+    base = {"handoff": True, "category": hand["category"], "reasons": hand["reasons"],
+            # Safe, non-advice next steps so a conservative hard stop still leaves
+            # the user with something actionable (gaps: post-handoff help + avoid
+            # over-refusal). None of this is legal advice.
+            "urgency": prep["urgency"],
+            "safe_prep": prep}
     reason_text = "Your situation involves: " + "; ".join(hand["reasons"]) + "."
 
     if kind == "chat":

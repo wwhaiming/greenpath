@@ -7,13 +7,15 @@
     "build": "vite build",
     "preview": "vite preview",
     "test": "python3 -m pytest tests/ -q",
-    "eval": "python3 evals/eval.py"
+    "eval": "python3 evals/eval.py",
+    "e2e": "playwright test tests/e2e"
   },
   "dependencies": {
     "react": "^18.3.1",
     "react-dom": "^18.3.1"
   },
   "devDependencies": {
+    "@playwright/test": "^1.61.1",
     "@vitejs/plugin-react": "^6.0.3",
     "vite": "^8.1.0"
   }

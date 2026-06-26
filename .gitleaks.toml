@@ -1,0 +1,27 @@
+# gitleaks configuration for GreenPath secret scanning (see .github/workflows/ci.yml).
+#
+# Extends the default ruleset and adds an allowlist for:
+#   1. Non-secret PLACEHOLDER keys used in docs/tests/examples.
+#   2. The ONE real OpenAI key that was committed to history in the past. It is
+#      already revoked (returns HTTP 401, see SECURITY.md) and is explicitly
+#      tracked here so the guard can be green for NEW commits while the history
+#      purge remains an owner TODO. Do NOT add any new real secret here — rotate
+#      and purge instead.
+[extend]
+useDefault = true
+
+[allowlist]
+description = "Placeholders and the known, revoked, history-only key (pending purge)"
+regexes = [
+  '''sk-your-openai-key-here''',
+  '''sk-test-placeholder-not-a-real-key''',
+  '''sk-test-not-a-real-key''',
+  '''sk-not-configured''',
+  '''sk-test\b''',
+  # KNOWN exposed + REVOKED key (history-only), matched by a non-recoverable
+  # PREFIX regex so the full secret is NOT stored in this repo. This still
+  # allowlists the historical key wherever gitleaks finds it in past commits.
+  # Remove this line after running scripts/purge_secret.sh and force-pushing
+  # cleaned history.
+  '''sk-proj-jA6ykqMPwQIpJ[A-Za-z0-9_\-]{20,}''',
+]

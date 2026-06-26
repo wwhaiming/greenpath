@@ -6,3 +6,6 @@ __pycache__/
 node_modules/
 .venv/
 CLAUDE.md
+test-results/
+playwright-report/
+.playwright/

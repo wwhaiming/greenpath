@@ -1,0 +1,21 @@
+{
+  "_about": "Honest, tested internationalization matrix for GreenPath. It replaces the blanket 'any language / 100+ languages' marketing claim with per-language capability status. No accuracy numbers are claimed: each field reports whether a capability is wired and which dependency governs it. 'device-dependent' means it relies on a browser/OS API whose availability we cannot guarantee on every device.",
+  "tested_on": "2026-06-26",
+  "notes": {
+    "ocr": "Document scanning uses tesseract.js in the browser. A language is 'supported' when Tesseract ships official trained data for it (the named traineddata code). OCR quality still depends on image quality.",
+    "read_aloud": "Read-aloud uses the browser Web Speech API (SpeechSynthesis). Voice availability varies by operating system and browser, so it is reported as 'device-dependent' rather than guaranteed; common languages usually have a voice, rarer ones may not.",
+    "translation": "Translation routes through the AI proxy, so it works for languages the configured model supports and requires a valid OPENAI_API_KEY (or demo mode).",
+    "handoff_detection": "The deterministic attorney-handoff safety stop has EXPLICIT high-risk patterns only for English, Spanish, and Simplified Chinese (see handoff.py). Other languages fall back to English-trigger matching, so a non-English high-risk phrase may not be caught deterministically — this is a known, documented limitation, not a hidden one."
+  },
+  "languages": [
+    {"name": "English",         "code": "en",     "script": "Latin",      "tesseract": "eng",     "ocr": "supported", "read_aloud": "device-dependent", "translation": "supported", "handoff_detection": "supported"},
+    {"name": "Spanish",         "code": "es",     "script": "Latin",      "tesseract": "spa",     "ocr": "supported", "read_aloud": "device-dependent", "translation": "supported", "handoff_detection": "supported"},
+    {"name": "Chinese (Simplified)", "code": "zh-CN", "script": "Han",     "tesseract": "chi_sim", "ocr": "supported", "read_aloud": "device-dependent", "translation": "supported", "handoff_detection": "supported"},
+    {"name": "Arabic",          "code": "ar",     "script": "Arabic (RTL)", "tesseract": "ara",   "ocr": "supported", "read_aloud": "device-dependent", "translation": "supported", "handoff_detection": "english-fallback"},
+    {"name": "Hindi",           "code": "hi",     "script": "Devanagari", "tesseract": "hin",     "ocr": "supported", "read_aloud": "device-dependent", "translation": "supported", "handoff_detection": "english-fallback"},
+    {"name": "French",          "code": "fr",     "script": "Latin",      "tesseract": "fra",     "ocr": "supported", "read_aloud": "device-dependent", "translation": "supported", "handoff_detection": "english-fallback"},
+    {"name": "Haitian Creole",  "code": "ht",     "script": "Latin",      "tesseract": "hat",     "ocr": "supported", "read_aloud": "device-dependent (often unavailable)", "translation": "supported", "handoff_detection": "english-fallback"},
+    {"name": "Russian",         "code": "ru",     "script": "Cyrillic",   "tesseract": "rus",     "ocr": "supported", "read_aloud": "device-dependent", "translation": "supported", "handoff_detection": "english-fallback"},
+    {"name": "Vietnamese",      "code": "vi",     "script": "Latin (diacritics)", "tesseract": "vie", "ocr": "supported", "read_aloud": "device-dependent", "translation": "supported", "handoff_detection": "english-fallback"}
+  ]
+}

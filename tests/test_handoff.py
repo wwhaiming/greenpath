@@ -29,6 +29,27 @@ TRIGGERS = [
     ("unauthorized_work",          "I worked without authorization for two years on a tourist visa."),
     ("overstay_unlawful_presence", "I overstayed my visa and I'm now out of status."),
     ("unclear_no_status",          "I'm undocumented and entered without inspection."),
+    # ── paraphrase / euphemism English ──
+    ("removal_proceedings",        "I got picked up by immigration last week."),
+    ("removal_proceedings",        "They gave me papers to see a judge."),
+    ("removal_proceedings",        "I got a letter to appear in court next month."),
+    ("fraud_misrepresentation",    "I used someone else's SSN to get hired."),
+    ("unauthorized_work",          "I worked cash jobs for a few years."),
+    ("unclear_no_status",          "I crossed and never got inspected."),
+    # ── Spanish (accent + no-accent) ──
+    ("removal_proceedings",        "Me deportaron el año pasado y quiero volver."),
+    ("removal_proceedings",        "Tengo una orden de deportación."),
+    ("removal_proceedings",        "Tengo una orden de deportacion."),  # no accent
+    ("removal_proceedings",        "Tengo que ir a la corte de inmigración."),
+    ("criminal_history",           "Me arrestaron la semana pasada."),
+    ("overstay_unlawful_presence", "Mi visa venció hace dos años."),
+    ("overstay_unlawful_presence", "Mi visa expiro el mes pasado."),  # no accent
+    ("unclear_no_status",          "Crucé la frontera sin papeles."),
+    ("unclear_no_status",          "Soy indocumentado y no tengo estatus."),
+    # ── Simplified Chinese ──
+    ("removal_proceedings",        "我被驱逐出境了。"),
+    ("overstay_unlawful_presence", "我的签证逾期居留了。"),
+    ("unclear_no_status",          "我没有合法身份。"),
 ]
 
 
@@ -57,6 +78,17 @@ BENIGN = [
     "Do I need a medical exam before my green card interview?",
     "Can I include my children on my application?",
     "How much does it cost to file Form I-130?",
+    # ── multilingual / paraphrase benign (must NOT trigger) ──
+    "¿Cuánto tarda el I-485 en procesarse?",
+    "¿Necesito un examen médico antes de la entrevista?",
+    "¿Cuánto cuesta presentar el formulario I-130?",
+    "¿Qué documentos necesito para la green card por matrimonio?",
+    "我做绿卡面试前需要做体检吗？",
+    "I-485 大概需要多久才能批准？",
+    "I picked up my green card from the mailbox yesterday.",
+    "I got a letter from USCIS about my biometrics appointment.",
+    "I worked a part-time job at a coffee shop with my work permit.",
+    "Mi visa expira el próximo año, ¿cuándo debo renovarla?",
 ]
 
 
