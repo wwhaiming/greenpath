@@ -261,6 +261,10 @@ exports.handler = async (event) => {
     return jsonResponse(500, { error: 'Server missing OPENAI_API_KEY' }, null, allowedOrigin);
   }
 
+  if ((event.body || '').length > 24000) {
+    return jsonResponse(413, { error: 'Request too large' }, null, allowedOrigin);
+  }
+
   let body;
   try {
     body = JSON.parse(event.body || '{}');
