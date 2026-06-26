@@ -77,16 +77,10 @@
       radial-gradient(1100px 700px at 86% -8%,rgba(201,149,44,.13),transparent 60%),
       radial-gradient(1000px 800px at -6% 104%,rgba(35,154,100,.16),transparent 58%),
       linear-gradient(160deg,#eef6ec 0%,#f4f1e6 50%,#e7f2ea 100%)}
-  .bg-ambient::before{content:"";position:absolute;inset:0;opacity:.5;
-    background:
-      repeating-linear-gradient(0deg,transparent 0 31px,rgba(25,39,30,.045) 31px 32px);
-    mask-image:linear-gradient(180deg,transparent 0,#000 18%,#000 82%,transparent 100%);
-    -webkit-mask-image:linear-gradient(180deg,transparent 0,#000 18%,#000 82%,transparent 100%)}
-  .bg-ambient::after{content:"";position:absolute;left:50%;top:0;bottom:0;width:1px;
-    background:rgba(154,107,16,.14)}
+  /* Decorative grain lines and center seam removed for a calmer, more trustworthy backdrop. */
+  .bg-ambient::before,.bg-ambient::after{display:none}
   .bg-blob{display:none}
-  .bg-grain{position:fixed;inset:0;z-index:-1;pointer-events:none;opacity:.055;
-    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
+  .bg-grain{display:none}
   .page-band{height:6px;background:linear-gradient(90deg,var(--green-deep) 0 34%,var(--green) 34% 67%,var(--gold-leaf) 67%)}
   .shell{background:transparent}
 
@@ -133,6 +127,11 @@
   header nav.main a:hover{background:rgba(246,241,226,.1);color:#fff;padding-left:18px}
   header nav.main a.active{background:rgba(201,149,44,.18);color:#fff;font-weight:700}
   header nav.main a.active::before{content:"› ";color:var(--gold-leaf)}
+  /* task-group labels in the dropdown nav */
+  header nav.main .nav-group{display:block;font-family:var(--font-mono);font-size:10px;letter-spacing:.18em;
+    text-transform:uppercase;color:var(--gold-bright);padding:12px 14px 4px;margin-top:2px;
+    border-top:1px solid rgba(246,241,226,.12)}
+  header nav.main .nav-group:first-child{border-top:0;margin-top:0;padding-top:4px}
   select.lang{
     margin-left:auto;flex:none;max-width:220px;cursor:pointer;appearance:none;
     border:1px solid rgba(246,241,226,.3);border-radius:999px;
@@ -169,9 +168,8 @@
     gap:60px;align-items:center;padding:88px 0 64px;margin-bottom:8px}
   .home-hero-inner{position:relative;z-index:2;max-width:760px}
   .home-hero .lede{margin-top:20px}
-  .home-hero::before{content:"GP";position:absolute;right:-3%;top:-12%;z-index:0;pointer-events:none;
-    font-family:var(--font-display);font-style:italic;font-weight:300;font-size:clamp(280px,38vw,560px);
-    line-height:1;color:transparent;-webkit-text-stroke:1px rgba(30,122,82,.13)}
+  /* Giant "GP" watermark removed for a calmer hero. */
+  .home-hero::before{display:none}
   .home-hero::after{content:"";position:absolute;inset:-30px;border-radius:24px;pointer-events:none;opacity:0;
     transition:opacity .35s;background:radial-gradient(440px circle at var(--mx,50%) var(--my,50%),rgba(201,149,44,.12),transparent 62%)}
   .home-hero:hover::after{opacity:0}
@@ -199,8 +197,8 @@
   .hero-preview-top{display:flex;align-items:center;justify-content:space-between;
     border-bottom:1px solid rgba(246,241,226,.16);padding-bottom:14px;margin-bottom:14px}
   .hero-preview-top b{font-family:var(--font-mono);font-size:10.5px;color:#f1ecdc;letter-spacing:.2em;text-transform:uppercase}
-  .hero-preview-top span{font-family:var(--font-mono);font-size:10px;color:var(--green-deep);font-weight:700;
-    background:var(--gold-leaf);padding:6px 12px;border-radius:999px;letter-spacing:.08em;text-transform:uppercase}
+  .hero-preview-top span{font-family:var(--font-mono);font-size:10px;color:#102f20;font-weight:700;
+    background:#f0cf7a;padding:6px 12px;border-radius:999px;letter-spacing:.08em;text-transform:uppercase}
   .hero-step{display:grid;grid-template-columns:42px 1fr auto;gap:14px;align-items:center;
     padding:14px 0;border-bottom:1px solid rgba(246,241,226,.12)}
   .hero-step:last-child{border-bottom:none}
@@ -208,7 +206,7 @@
     color:#fdfbf4;font-style:normal;font-family:var(--font-display);font-size:20px;
     box-shadow:inset 0 0 0 1px rgba(246,241,226,.25)}
   .hero-step b{display:block;font-size:15px;color:#f3efe2;font-weight:600}
-  .hero-step small{display:block;color:#a8b6a6;font-size:13px;margin-top:1px}
+  .hero-step small{display:block;color:#e0e8dc;font-size:13px;margin-top:1px}
   .hero-step em{font-style:normal;font-family:var(--font-mono);color:var(--gold-bright);
     font-size:10.5px;letter-spacing:.16em;text-transform:uppercase}
 
@@ -217,6 +215,7 @@
   .rail-line{position:absolute;top:34px;left:34px;right:34px;height:1px;z-index:0;
     background:repeating-linear-gradient(90deg,var(--line-strong) 0 6px,transparent 6px 13px)}
   .nodes{display:grid;grid-template-columns:repeat(6,1fr);gap:18px;position:relative;z-index:1}
+  button.node{appearance:none;background:none;border:0;font:inherit;color:inherit;text-align:inherit;width:100%;display:block;padding:0;margin:0}
   .node .dot{width:68px;height:68px;border-radius:50%;display:flex;align-items:center;justify-content:center;
     color:#fdfbf4;font-size:24px;font-family:var(--font-display);font-style:italic;
     box-shadow:0 14px 26px -14px rgba(14,61,41,.55),inset 0 0 0 1px rgba(255,255,255,.22);
@@ -224,8 +223,8 @@
   .node:hover .dot{transform:scale(1.08) rotate(-4deg)}
   .node[data-go]{cursor:pointer;border-radius:14px;transition:transform .25s}
   .node[data-go]:hover{transform:translateY(-3px)}
-  .node .ntitle{font-family:var(--font-display);font-size:21px;font-weight:500;margin:18px 0 6px;line-height:1.12;letter-spacing:-.015em}
-  .node p{color:var(--muted);font-size:14px;line-height:1.45}
+  .node .ntitle{display:block;font-family:var(--font-display);font-size:21px;font-weight:500;margin:18px 0 6px;line-height:1.12;letter-spacing:-.015em}
+  .node .np{display:block;color:var(--muted);font-size:14px;line-height:1.45}
   .c-green{background:var(--green)} .c-slate{background:var(--slate)}
   .c-amber{background:#8a5e0c} .c-terra{background:var(--terra)}
   .pill{display:inline-flex;align-items:center;gap:10px;font-family:var(--font-mono);
@@ -318,7 +317,7 @@
     justify-content:center;font-family:var(--font-display);font-size:15px;transition:background .25s}
   .ic.done{background:var(--green);color:#fdfbf4}
   .ic.cur{background:var(--gold-leaf);color:var(--green-deep);box-shadow:0 0 0 5px rgba(201,149,44,.18)}
-  .ic.todo{background:#e8e1cf;color:#97907e}
+  .ic.todo{background:#efe8d8;color:#575f54}
   .istep span{font-size:16px;color:var(--muted);transition:color .25s}
   .istep.active span{color:var(--ink);font-weight:700}
   .qcard{padding:34px 38px}
@@ -410,7 +409,8 @@
   .d-slate{background:var(--slate-bg);color:#2e4f74} .d-green{background:var(--pill-green);color:var(--green-mid)}
   .tl-item .tt b{font-size:17px;color:var(--ink)} .tl-item .tt p{color:var(--muted);font-size:14.5px}
   .tl-item .tl-x{margin-left:auto;border:none;background:transparent;color:var(--terra);font-size:20px;
-    cursor:pointer;line-height:1;padding:4px 9px;border-radius:8px;opacity:.55;transition:.15s}
+    cursor:pointer;line-height:1;padding:4px 9px;border-radius:8px;opacity:.55;transition:.15s;
+    min-width:44px;min-height:44px;display:inline-flex;align-items:center;justify-content:center}
   .tl-item .tl-x:hover{opacity:1;background:var(--terra-bg)}
   .tl-empty{color:var(--muted);font-size:15px;padding:14px 0 24px}
   .settings-card{padding:36px 38px}
@@ -525,7 +525,8 @@
   .cite-item .cite-quote{margin:0 0 2px;font-size:13px;line-height:1.5;color:var(--green-mid);
     font-style:italic;padding-left:12px;border-left:2px solid var(--gold-leaf)}
   a.cite-inline{font-size:.72em;font-weight:700;color:var(--green-deep);text-decoration:none;
-    padding:0 1px;margin-left:1px;border-bottom:1px dotted var(--gold-leaf)}
+    padding:0 1px;margin-left:1px;border-bottom:1px dotted var(--gold-leaf);
+    min-width:44px;min-height:44px;display:inline-flex;align-items:center;justify-content:center;vertical-align:middle}
   a.cite-inline:hover{color:var(--green);border-bottom-color:var(--green)}
   .ai-error{display:flex;flex-direction:column;gap:4px;background:#f8e7e1;border:1px solid #e3b3a4;
     border-radius:12px;padding:14px 16px;color:#8c2f17}
@@ -659,6 +660,31 @@
     .scrolly-steps{gap:2px}
     .s-step{padding:8px 12px}
   }
+  @media (prefers-reduced-motion:reduce){
+    /* Collapse scroll-pacing: render the story as a plain static stack. */
+    .scrolly-track{height:auto}
+    .scrolly-stage{position:static;height:auto;min-height:auto;align-content:start}
+    .s-step{opacity:1;border-left-color:var(--gold-leaf)}
+    /* Hide purely-decorative animated card illustrations and the scroll meter. */
+    .scrolly-card-wrap,.scrolly-meter{display:none}
+  }
+
+  /* ---------- TRIMMED SCROLLY: only the kept story scrubs; all others render as compact static blocks ---------- */
+  .scrolly:not(.scrolly-keep) .scrolly-track{height:auto}
+  .scrolly:not(.scrolly-keep) .scrolly-stage{position:static;height:auto;min-height:auto;align-content:start;grid-template-columns:1fr;gap:14px}
+  .scrolly:not(.scrolly-keep) .s-step{opacity:1;border-left-color:var(--gold-leaf);background:rgba(253,251,244,.7)}
+  .scrolly:not(.scrolly-keep) .scrolly-card-wrap,.scrolly:not(.scrolly-keep) .scrolly-meter{display:none}
+
+  /* ---------- TRUST STRIP (shown beside every AI input) ---------- */
+  .trust-strip{display:flex;align-items:flex-start;gap:8px;margin:10px 0 4px;padding:8px 12px;
+    border:1px solid var(--line-strong);border-left:3px solid var(--gold-leaf);border-radius:10px;
+    background:rgba(253,251,244,.6);font-size:12.5px;line-height:1.45;color:var(--muted)}
+  .trust-strip b{color:var(--ink);font-weight:700}
+  .trust-strip .ts-dot{flex:0 0 auto;width:8px;height:8px;margin-top:4px;border-radius:50%;background:var(--gold-leaf)}
+
+  /* ---------- FIELD VALIDATION ---------- */
+  .field-error{margin:6px 0 0;color:#a8331f;font-size:13px;font-weight:600}
+  [aria-invalid="true"]{outline:2px solid #c0492f;outline-offset:2px;border-radius:10px}
 
   /* ---------- SECTION VISUALS (animated emblems) ---------- */
   section{position:relative}
@@ -780,7 +806,7 @@
     transition:background-color .18s,border-color .18s}
   .reading-btn:hover{background-color:rgba(246,241,226,.16);border-color:rgba(201,149,44,.6)}
   .reading-btn + select.lang{margin-left:10px}
-  .reading-btn[aria-pressed="true"]{background-color:var(--gold-leaf);border-color:var(--gold-leaf);color:var(--green-ink)}
+  .reading-btn[aria-pressed="true"]{background-color:#f0cf7a;border-color:#f0cf7a;color:#102f20}
   body.reading{
     font-family:"Atkinson Hyperlegible",system-ui,"Segoe UI",sans-serif;
     font-size:18.5px;line-height:1.8;letter-spacing:.02em;word-spacing:.06em}
@@ -1229,17 +1255,23 @@
     </div>
     <button class="menu-btn" id="menuBtn" aria-controls="mainnav" aria-expanded="false" aria-label="Menu"><span></span><span></span><span></span></button>
     <nav class="main" id="mainnav" aria-label="Primary">
-      <a href="#" data-go="home" class="active" aria-current="page">Home</a>
-      <a href="#" data-go="guided">Guided Walkthrough</a>
-      <a href="#" data-go="language">Understand Language</a>
-      <a href="#" data-go="interview">Interview Prep</a>
-      <a href="#" data-go="alerts">Deadline Alerts</a>
-      <a href="#" data-go="review">Evidence Review</a>
-      <a href="#" data-go="progress">Stage Tracking</a>
-      <a href="#" data-go="pathway">Pathway Finder</a>
-      <a href="#" data-go="qa">Stage Q&amp;A</a>
-      <a href="#" data-go="bulletin">Visa Bulletin</a>
-      <a href="#" data-go="legal">Legal</a>
+      <span class="nav-group" role="presentation">Start</span>
+      <a href="#home" data-go="home" class="active" aria-current="page">Home</a>
+      <a href="#guided" data-go="guided">Guided walkthrough</a>
+      <a href="#pathway" data-go="pathway">Find your pathway</a>
+      <span class="nav-group" role="presentation">Understand documents</span>
+      <a href="#language" data-go="language">Translate &amp; read aloud</a>
+      <a href="#review" data-go="review">Review a form for issues</a>
+      <span class="nav-group" role="presentation">Track deadlines</span>
+      <a href="#alerts" data-go="alerts">Deadline alerts</a>
+      <a href="#progress" data-go="progress">Stage tracking</a>
+      <a href="#bulletin" data-go="bulletin">Visa Bulletin</a>
+      <span class="nav-group" role="presentation">Prepare for interview</span>
+      <a href="#interview" data-go="interview">Interview practice</a>
+      <span class="nav-group" role="presentation">Ask questions</span>
+      <a href="#qa" data-go="qa">Stage Q&amp;A</a>
+      <span class="nav-group" role="presentation">Get legal help</span>
+      <a href="#legal" data-go="legal">Legal notice &amp; find help</a>
     </nav>
     <button type="button" class="reading-btn" id="readingBtn" aria-pressed="false" aria-label="Toggle easy-reading mode"><span class="no-i18n">Aa</span></button>
     <select class="lang" id="siteLang" aria-label="Site language">
@@ -1274,12 +1306,12 @@
   <div class="rail-wrap">
     <div class="rail-line"></div>
     <div class="nodes">
-      <div class="node" data-go="guided" role="button" tabindex="0" aria-label="Open Guided Walkthrough"><div class="dot c-green">G</div><div class="ntitle">Guided Walkthrough</div><p>Understand possible pathways</p></div>
-      <div class="node" data-go="language" role="button" tabindex="0" aria-label="Open Understand Language"><div class="dot c-slate">U</div><div class="ntitle">Understand Language</div><p>Translate, scan, and listen</p></div>
-      <div class="node" data-go="interview" role="button" tabindex="0" aria-label="Open Interview Prep"><div class="dot c-amber">I</div><div class="ntitle">Interview Prep</div><p>Practice with confidence</p></div>
-      <div class="node" data-go="alerts" role="button" tabindex="0" aria-label="Open Deadline Alerts"><div class="dot c-terra">D</div><div class="ntitle">Deadline Alerts</div><p>Keep important dates visible</p></div>
-      <div class="node" data-go="review" role="button" tabindex="0" aria-label="Open Evidence Review"><div class="dot c-green">E</div><div class="ntitle">Evidence Review</div><p>Check for possible issues</p></div>
-      <div class="node" data-go="progress" role="button" tabindex="0" aria-label="Open Stage Tracking"><div class="dot c-slate">S</div><div class="ntitle">Stage Tracking</div><p>See what comes next</p></div>
+      <button type="button" class="node" data-go="guided" aria-label="Open Guided Walkthrough"><span class="dot c-green" aria-hidden="true">G</span><span class="ntitle">Guided Walkthrough</span><span class="np">Understand possible pathways</span></button>
+      <button type="button" class="node" data-go="language" aria-label="Open Understand Language"><span class="dot c-slate" aria-hidden="true">U</span><span class="ntitle">Understand Language</span><span class="np">Translate, scan, and listen</span></button>
+      <button type="button" class="node" data-go="interview" aria-label="Open Interview Prep"><span class="dot c-amber" aria-hidden="true">I</span><span class="ntitle">Interview Prep</span><span class="np">Practice with confidence</span></button>
+      <button type="button" class="node" data-go="alerts" aria-label="Open Deadline Alerts"><span class="dot c-terra" aria-hidden="true">D</span><span class="ntitle">Deadline Alerts</span><span class="np">Keep important dates visible</span></button>
+      <button type="button" class="node" data-go="review" aria-label="Open Evidence Review"><span class="dot c-green" aria-hidden="true">E</span><span class="ntitle">Evidence Review</span><span class="np">Check for possible issues</span></button>
+      <button type="button" class="node" data-go="progress" aria-label="Open Stage Tracking"><span class="dot c-slate" aria-hidden="true">S</span><span class="ntitle">Stage Tracking</span><span class="np">See what comes next</span></button>
     </div>
   </div>
 
@@ -1604,6 +1636,7 @@
         <div class="ai-box-head"><span class="ai-badge">AI</span><b>Describe your situation</b></div>
         <label class="sr-only" for="aiDesc">Describe your situation</label>
         <textarea id="aiDesc" placeholder="e.g. My biometrics appointment is on June 12. I got my green-card medical exam (I-693) done on March 3. My priority date is in the June visa bulletin."></textarea>
+        <p class="trust-strip" role="note"><span class="ts-dot" aria-hidden="true"></span><span><b>General info, not legal advice.</b> This text is sent to GreenPath's server and OpenAI. Document scanning stays in your browser.</span></p>
         <div class="ai-box-foot">
           <button class="btn btn-primary" id="aiExtract">Extract Dates with AI</button>
           <button class="btn-scan" id="noticeScan" type="button">📄 Scan a USCIS notice</button>
@@ -1618,11 +1651,12 @@
       <!-- manual add -->
       <div class="add-row">
         <label class="sr-only" for="newDate">Reminder date</label>
-        <input type="date" id="newDate">
+        <input type="date" id="newDate" aria-describedby="reminderError">
         <label class="sr-only" for="newLabel">Reminder label</label>
-        <input type="text" id="newLabel" placeholder="Add your own reminder…">
+        <input type="text" id="newLabel" placeholder="Add your own reminder…" aria-describedby="reminderError">
         <button class="btn btn-ghost" id="addBtn" style="padding:16px 26px">Add</button>
       </div>
+      <p id="reminderError" class="field-error" role="alert" hidden></p>
     </div>
 
     <div class="settings-card">
@@ -1893,6 +1927,7 @@
       </select>
       <label class="field-label" for="drInput">Describe or paste your entries</label>
       <textarea id="drInput" class="lt-text" spellcheck="false" style="min-height:170px;font-size:16px">Address history: 2019-2021 (Chicago), 2022-present (Houston). Signature: left blank. Date of birth: 05/30/1996 on this form, 30/05/1996 on my passport. Employment: no end date listed for previous job.</textarea>
+      <p class="trust-strip" role="note"><span class="ts-dot" aria-hidden="true"></span><span><b>General info, not legal advice.</b> This text is sent to GreenPath's server and OpenAI.</span></p>
       <div class="dr-actions">
         <button class="btn btn-primary" id="drReview">Review with AI</button>
         <button class="btn btn-ghost" id="drSample">Load sample</button>
@@ -1904,7 +1939,7 @@
       <div id="drIssues" role="status" aria-live="polite">
         <p class="dr-placeholder">Enter your form details on the left and select <b>Review with AI</b>. GreenPath will flag fields that commonly trigger a Request for Evidence (RFE) so you can fix them before filing.</p>
       </div>
-      <div class="legal-row"><button class="btn-legal" data-go="interview">Find Authorized Legal Help</button><small>AI review can miss issues.</small></div>
+      <div class="legal-row"><button class="btn-legal" data-go="legal">Find Authorized Legal Help</button><small>AI review can miss issues.</small></div>
     </div>
   </div>
 
@@ -2039,6 +2074,7 @@
         <button class="btn btn-primary" id="ipStart">● Start Practice</button>
         <button class="btn-read" id="ipReadQ">▶ Read Question</button>
       </div>
+      <p class="trust-strip" role="note"><span class="ts-dot" aria-hidden="true"></span><span><b>General info, not legal advice.</b> Your answers are sent to GreenPath's server and OpenAI.</span></p>
       <p class="tiny" style="margin-top:14px">A calm simulation only. Real interviews vary : never treat this as legal advice.</p>
     </div>
 
@@ -2193,8 +2229,10 @@
     <div class="dr-left">
       <div class="kicker">Tell us about your situation</div>
       <label class="field-label" for="pwInput" style="margin-top:0">Describe your situation</label>
-      <textarea id="pwInput" class="lt-text" spellcheck="false" style="min-height:200px;font-size:16px">I am married to a U.S. citizen and we have lived together in the U.S. for 2 years. I entered on a tourist visa that has since expired. I have no criminal history. I do not have a U.S. job offer.</textarea>
+      <textarea id="pwInput" class="lt-text" spellcheck="false" aria-describedby="pwError" style="min-height:200px;font-size:16px">I am married to a U.S. citizen and we have lived together in the U.S. for 2 years. I entered on a tourist visa that has since expired. I have no criminal history. I do not have a U.S. job offer.</textarea>
       <p class="tiny">Include: relationship to a U.S. citizen or green-card holder, your job situation, current immigration status, time in the U.S., and any special circumstances (asylum, military, investment).</p>
+      <p class="trust-strip" role="note"><span class="ts-dot" aria-hidden="true"></span><span><b>General info, not legal advice.</b> This text is sent to GreenPath's server and OpenAI.</span></p>
+      <p id="pwError" class="field-error" role="alert" hidden></p>
       <div class="dr-actions">
         <button class="btn btn-primary" id="pwFind">Find my pathway</button>
       </div>
@@ -2207,7 +2245,7 @@
     </div>
   </div>
 
-  <div class="scrolly" aria-label="A tangle of options unifies into one route as you scroll">
+  <div class="scrolly scrolly-keep" aria-label="A tangle of options unifies into one route as you scroll">
     <div class="scrolly-track">
       <div class="scrolly-stage">
         <div class="scrolly-copy">
@@ -2335,7 +2373,9 @@
         <option value="Decision pending">Decision pending</option>
       </select>
       <label class="field-label" for="qaInput">Your question</label>
-      <textarea id="qaInput" class="lt-text" spellcheck="false" style="min-height:120px;font-size:16px">What does Form I-130 do, and what happens after it is approved?</textarea>
+      <textarea id="qaInput" class="lt-text" spellcheck="false" aria-describedby="qaError" style="min-height:120px;font-size:16px">What does Form I-130 do, and what happens after it is approved?</textarea>
+      <p class="trust-strip" role="note"><span class="ts-dot" aria-hidden="true"></span><span><b>General info, not legal advice.</b> This text is sent to GreenPath's server and OpenAI.</span></p>
+      <p id="qaError" class="field-error" role="alert" hidden></p>
       <div class="dr-actions">
         <button class="btn btn-primary" id="qaAsk">Ask GreenPath</button>
       </div>
@@ -2640,7 +2680,7 @@
     <div class="help-row">
       <div class="help-field">
         <label for="helpState">Your state or territory</label>
-        <select id="helpState"></select>
+        <select id="helpState" aria-describedby="helpError"></select>
       </div>
       <div class="help-field">
         <label for="helpZip">or ZIP code (optional)</label>
@@ -2648,6 +2688,7 @@
       </div>
       <button type="button" class="btn btn-primary" id="helpFind">Find help near me</button>
     </div>
+    <p id="helpError" class="field-error" role="alert" hidden></p>
     <div class="help-result" id="helpResult" role="status" aria-live="polite"></div>
     <div class="help-providers" id="helpProviders" role="status" aria-live="polite"></div>
   </div>
@@ -2688,13 +2729,22 @@
 
   const a11yAnnounce = document.getElementById('a11yAnnounce');
   function announce(msg){ if(a11yAnnounce){ a11yAnnounce.textContent=''; a11yAnnounce.textContent=msg; } }
+  // Field-level validation helper: toggles aria-invalid on the input and shows/hides
+  // an associated role="alert" message (linked via aria-describedby). Returns true when valid.
+  function setFieldError(input, errEl, msg){
+    if(!input || !errEl) return !msg;
+    if(msg){ input.setAttribute('aria-invalid','true'); errEl.textContent=msg; errEl.hidden=false; try{ input.focus(); }catch(_){} return false; }
+    input.removeAttribute('aria-invalid'); errEl.hidden=true; errEl.textContent=''; return true;
+  }
   // Readable label for a section id, derived from the matching nav link text.
   function labelFor(id){
     const target = (id==='hero2') ? 'home' : id;
     const link = document.querySelector('nav.main a[data-go="'+target+'"]');
     return (link && link.textContent.trim()) || target;
   }
-  function show(id){
+  function show(id, fromHash){
+    // Resolve empty/unknown ids (e.g. a stale or hand-typed hash) to a valid section.
+    if(!(document.getElementById(id) || id==='hero2')) id='home';
     sections.forEach(s=>s.classList.toggle('show', s.id===id));
     document.querySelectorAll('nav.main a').forEach(a=>{
       const active = a.dataset.go===id || (id==='hero2' && a.dataset.go==='home');
@@ -2704,6 +2754,11 @@
     });
     mainnav.classList.remove('open');
     menuBtn?.setAttribute('aria-expanded','false');
+    // Real hash routing: keep location.hash in sync. Skip when we were called from a
+    // hashchange/load so we don't fight the browser (which already set the hash).
+    if(!fromHash && location.hash.slice(1)!==id){ location.hash=id; }
+    // Smooth (not abrupt) scroll, and focus the heading with preventScroll so the
+    // viewport is never yanked to the top by the focus() call itself.
     window.scrollTo({top:0,behavior:'smooth'});
     // Announce the new view and move focus to its main heading for screen-reader / keyboard users.
     announce('Showing ' + labelFor(id));
@@ -2718,8 +2773,15 @@
   // Bind every static [data-go] element (nav links + hero buttons) to navigate.
   // (Dynamically-created result buttons bind themselves elsewhere.)
   document.querySelectorAll('[data-go]').forEach(el=>el.addEventListener('click',e=>{e.preventDefault();show(el.dataset.go)}));
-  // role=button divs (home step-rail nodes) — activate with Enter/Space too
-  document.querySelectorAll('.node[data-go]').forEach(el=>el.addEventListener('keydown',e=>{ if(e.key==='Enter'||e.key===' '){ e.preventDefault(); show(el.dataset.go); } }));
+  // Home step-rail nodes are now native <button> elements: Enter/Space activation
+  // is handled by the browser, which fires the click listener above. No extra keydown shim needed.
+
+  // ---- Hash routing ----
+  // On load and on every hashchange, show the section named by location.hash and move
+  // focus to its heading. show() keeps the hash in sync when navigation starts from a click.
+  function routeFromHash(){ show((location.hash||'').replace(/^#/,'') || 'home', true); }
+  addEventListener('hashchange', routeFromHash);
+  routeFromHash();
 
   /* ================= EASY-READING MODE (dyslexia / low-literacy friendly) ================= */
   (function(){
@@ -2852,15 +2914,16 @@
       const code=sel.value;
       const name=(STATES.find(s=>s[0]===code)||[])[1];
       const zip=(zipIn && zipIn.value || '').trim();
+      const helpError=document.getElementById('helpError');
       out.textContent=''; if(provOut) provOut.textContent='';
+      setFieldError(sel, helpError, '');
       if(zip && !/^\d{5}$/.test(zip)){
         const p=document.createElement('p'); p.className='dr-placeholder';
         p.textContent='Please enter a 5-digit ZIP code, or leave it blank.'; out.appendChild(p);
         return;
       }
       if(!code && !zip){
-        const p=document.createElement('p'); p.className='dr-placeholder';
-        p.textContent='Please choose your state or enter a ZIP code first.'; out.appendChild(p);
+        setFieldError(sel, helpError, 'Choose your state or enter a ZIP code.');
         return;
       }
       // Fetch the real provider list from the deterministic backend.
@@ -3045,7 +3108,7 @@
         <div class="tl-dot ${c}"></div>
         <div class="tl-date ${DATEPILL[c]}">${pill}</div>
         <div class="tt"><b>${esc(r.label)}</b><p>${esc(r.note||awayText(daysAway(r.date)))}</p></div>
-        <button class="tl-x" data-rid="${r.id}" title="Remove">×</button>
+        <button class="tl-x" data-rid="${r.id}" title="Remove" aria-label="Remove"><span aria-hidden="true">×</span></button>
       </div>`;
     }).join('');
     tlEl.querySelectorAll('.tl-x').forEach(b=>b.addEventListener('click',()=>{
@@ -3076,10 +3139,14 @@
     return true;
   }
   document.getElementById('addBtn').addEventListener('click',()=>{
-    const d=document.getElementById('newDate').value, l=document.getElementById('newLabel').value.trim();
-    if(!d||!l){ alert('Pick a date and type a reminder.'); return; }
+    const dateEl=document.getElementById('newDate'), labelEl=document.getElementById('newLabel'),
+          errEl=document.getElementById('reminderError');
+    const d=dateEl.value, l=labelEl.value.trim();
+    if(!d || !isValidISODate(d)){ labelEl.removeAttribute('aria-invalid'); setFieldError(dateEl,errEl,'Pick a valid reminder date.'); return; }
+    if(!l){ dateEl.removeAttribute('aria-invalid'); setFieldError(labelEl,errEl,'Add a short label for this reminder.'); return; }
+    dateEl.removeAttribute('aria-invalid'); setFieldError(labelEl,errEl,'');
     addReminder(d,l,'User-entered reminder');
-    document.getElementById('newDate').value=''; document.getElementById('newLabel').value='';
+    dateEl.value=''; labelEl.value='';
     renderTimeline();
   });
   [setTiming,setFilter,setChannel].forEach(s=>s.addEventListener('change',renderTimeline));
@@ -4098,7 +4165,7 @@ Rules: resolve relative dates against today. If a year is missing, choose the ne
     const CONF={high:'High confidence',medium:'Medium confidence',low:'Low confidence'};
     pwFind.addEventListener('click',async()=>{
       const text=pwInput.value.trim();
-      if(!text){ pwResult.innerHTML='<p class="dr-placeholder">Describe your situation first.</p>'; return; }
+      if(!setFieldError(pwInput, document.getElementById('pwError'), text ? '' : 'Describe your situation before finding a pathway.')){ return; }
       pwResult.innerHTML='<div class="dr-loading"><div class="dr-spin"></div>Finding your most likely pathway…</div>';
       pwFind.disabled=true;
       try{
@@ -4199,7 +4266,7 @@ Rules: resolve relative dates against today. If a year is missing, choose the ne
     }
     qaAsk.addEventListener('click',async()=>{
       const q=qaInput.value.trim();
-      if(!q){ qaAnswer.innerHTML='<p class="dr-placeholder">Type a question first.</p>'; return; }
+      if(!setFieldError(qaInput, document.getElementById('qaError'), q ? '' : 'Type a question before asking.')){ return; }
       qaAnswer.innerHTML='<div class="dr-loading"><div class="dr-spin"></div>Finding a clear answer…</div>';
       qaAsk.disabled=true;
       try{
@@ -4455,14 +4522,7 @@ Rules: resolve relative dates against today. If a year is missing, choose the ne
       el.addEventListener('mouseleave',()=>{ el.style.transform=''; });
     });
 
-    // ---- global cursor glow: gold light follows the cursor on every section/page ----
-    const glow=document.createElement('div'); glow.className='cursor-glow'; document.body.appendChild(glow);
-    addEventListener('mousemove',ev=>{
-      glow.classList.add('on');
-      glow.style.setProperty('--gx',ev.clientX+'px');
-      glow.style.setProperty('--gy',ev.clientY+'px');
-    },{passive:true});
-    document.addEventListener('mouseleave',()=>glow.classList.remove('on'));
+    // Sitewide cursor-glow removed for a calmer, more trustworthy feel.
   })();
 
   /* ================= SCROLL-SCRUBBED STORIES ================= */
@@ -4506,7 +4566,7 @@ Rules: resolve relative dates against today. If a year is missing, choose the ne
      GreenPath and an official source differ, the official source controls. -->
 <style>
 #gp-fresh{position:fixed;left:14px;bottom:14px;z-index:9999;font:12px/1.4 system-ui,sans-serif;max-width:340px}
-#gp-fresh .gp-badge{display:inline-flex;align-items:center;gap:7px;background:#0f2417;color:#eaf5ee;border:1px solid #2f5d44;border-radius:999px;padding:6px 12px;cursor:pointer;box-shadow:0 2px 10px rgba(0,0,0,.18)}
+#gp-fresh .gp-badge{display:inline-flex;align-items:center;gap:7px;background:#0f2417;color:#eaf5ee;border:1px solid #2f5d44;border-radius:999px;padding:6px 12px;cursor:pointer;box-shadow:0 2px 10px rgba(0,0,0,.18);appearance:none;font:inherit}
 #gp-fresh .gp-dot{width:8px;height:8px;border-radius:50%;background:#36c46f}
 #gp-fresh .gp-dot.stale{background:#e6a417}
 #gp-fresh .gp-panel{display:none;margin-top:8px;background:#fff;color:#1a2b22;border:1px solid #d4e2d8;border-radius:12px;padding:12px 14px;box-shadow:0 6px 24px rgba(0,0,0,.16)}
@@ -4519,9 +4579,9 @@ Rules: resolve relative dates against today. If a year is missing, choose the ne
 #gp-fresh .gp-title{font-weight:700;margin-bottom:6px}
 </style>
 <div id="gp-fresh" aria-live="polite">
-  <span class="gp-badge" role="button" tabindex="0" aria-label="Show data freshness">
+  <button type="button" class="gp-badge" aria-label="Show data freshness" aria-expanded="false">
     <span class="gp-dot" id="gp-dot"></span><span id="gp-badge-txt">Data freshness</span>
-  </span>
+  </button>
   <div class="gp-panel" id="gp-panel"></div>
 </div>
 <script>
