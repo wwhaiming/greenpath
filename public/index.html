@@ -766,6 +766,17 @@
   .handoff-caution{background:var(--amber-bg);border-color:rgba(154,107,16,.5);border-left:5px solid var(--gold-leaf)}
   .handoff-caution .handoff-tag{color:#7c5408}
   .why-grid .why-card:first-child{grid-column:span 2}
+  .frontdoor{margin-top:10px}
+  .fd-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-top:6px}
+  .fd-card{text-align:left;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:18px;cursor:pointer;font:inherit;color:inherit;box-shadow:var(--shadow);transition:transform .2s,box-shadow .2s,border-color .2s}
+  .fd-card:hover{transform:translateY(-3px);box-shadow:var(--shadow-lift);border-color:var(--green)}
+  .fd-card b{display:block;font-size:16px;color:var(--ink);margin-bottom:5px}
+  .fd-card span{color:var(--muted);font-size:13.5px;line-height:1.45}
+  .cite-id{font-family:var(--font-mono);font-size:9px;color:var(--green-mid);opacity:.7}
+  .handoff-list{margin:8px 0 12px;padding-left:18px;font-size:14px;line-height:1.5}
+  .handoff-list li{margin-bottom:5px}
+  @media(max-width:1000px){.fd-grid{grid-template-columns:1fr 1fr}}
+  @media(max-width:640px){.fd-grid{grid-template-columns:1fr}}
 </style>
 <script src="vendor/tesseract.min.js" integrity="sha384-1zP4ZOtlk2FXAOiUArpMuWf7INJJKe/ROfYFAVSeUa11DEfXdKWGiPI3dVma2Gt0" crossorigin="anonymous"></script>
 <script src="vendor/pdf.min.js" integrity="sha384-/1qUCSGwTur9vjf/z9lmu/eCUYbpOTgSjmpbMQZ1/CtX2v/WcAIKqRv+U1DUCG6e" crossorigin="anonymous"></script>
@@ -824,6 +835,18 @@
       <div class="hero-step"><i class="c-slate">3</i><div><b>Prepare questions</b><small>Translate, rehearse, and verify</small></div><em>Later</em></div>
     </div>
     <div class="home-hero-glow"></div>
+  </div>
+
+  <div class="frontdoor">
+    <div class="kicker-rule"></div>
+    <div class="kicker">Start here</div>
+    <h2 class="why-h" style="margin:6px 0 16px">What do you need today?</h2>
+    <div class="fd-grid">
+      <button class="fd-card" data-go="pathway"><b>Find my pathway</b><span>Describe your situation; get a likely route and your next safe step.</span></button>
+      <button class="fd-card" data-go="alerts"><b>Understand a notice</b><span>Scan a USCIS letter; it pulls the dates onto your timeline.</span></button>
+      <button class="fd-card" data-go="review"><b>Review a document</b><span>Check form entries for common rejection triggers before filing.</span></button>
+      <button class="fd-card" data-go="interview"><b>Practice the interview</b><span>Rehearse questions with feedback, in your language.</span></button>
+    </div>
   </div>
 
   <div class="rail-wrap">
@@ -935,13 +958,13 @@
     <div class="kicker">Why GreenPath</div>
     <h2 class="why-h">Not just a chatbot.</h2>
     <div class="why-grid">
-      <div class="why-card"><div class="wc-ic" aria-hidden="true"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="#15714a" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 15l6-6"/><path d="M11 7l1-1a3.5 3.5 0 0 1 5 5l-1 1"/><path d="M13 17l-1 1a3.5 3.5 0 0 1-5-5l1-1"/></svg></div><h4>Grounded &amp; cited</h4><p>Every answer links to the official USCIS and State Department pages to verify against.</p></div>
+      <div class="why-card"><div class="wc-ic" aria-hidden="true"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="#15714a" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 15l6-6"/><path d="M11 7l1-1a3.5 3.5 0 0 1 5 5l-1 1"/><path d="M13 17l-1 1a3.5 3.5 0 0 1-5-5l1-1"/></svg></div><h4>Grounded in official sources</h4><p>Answers are grounded against curated official USCIS and State Department excerpts, each linked so you can verify it on the live page.</p></div>
       <div class="why-card"><div class="wc-ic" aria-hidden="true"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="#15714a" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M3 12h18"/><path d="M12 3c2.6 2.6 2.6 15.4 0 18M12 3c-2.6 2.6-2.6 15.4 0 18"/></svg></div><h4>Speaks your language</h4><p>Translate, scan, and hear each step read aloud in your own language.</p></div>
       <div class="why-card"><div class="wc-ic" aria-hidden="true"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="#15714a" stroke-width="1.8" stroke-linecap="round"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 9h18M8 3v4M16 3v4"/></svg></div><h4>Deadline-aware</h4><p>Scan a USCIS notice and it pulls the dates it can find onto your timeline.</p></div>
       <div class="why-card"><div class="wc-ic" aria-hidden="true"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="#15714a" stroke-width="1.8" stroke-linejoin="round"><path d="M12 3l7 3v6c0 4-3 7-7 9-4-2-7-5-7-9V6z"/><path d="M9 12l2 2 4-4"/></svg></div><h4>Knows its limits</h4><p>Never gives legal advice — complex cases route to authorized legal help.</p></div>
     </div>
     <div class="why-foot">🔒 No account required. AI features send only the text you submit to our secure server (not stored). The page-translation menu uses Google Translate. Please do not enter real personal documents in this demo. Your timeline is saved on this device.</div>
-    <div class="why-foot" style="margin-left:10px">✓ Checked by an automated eval harness — 29 labeled cases + an offline safety-screen suite (passes 3/3 here); the live-AI eval suites require an API key. Run with <code>npm test</code>.</div>
+    <div class="why-foot" style="margin-left:10px">✓ Checked by an automated eval harness — Tested with <code>npm test</code>: risk-screen 13/13, proxy-handler 7/7, plus 29 labeled AI cases (live-AI suites run with a key). See EVAL_RESULTS.md.</div>
   </div>
 
   <!-- ===== SCROLL-SCRUBBED STORY 2: scattered papers become one case ===== -->
@@ -1895,7 +1918,7 @@
   // ground claims in these sources, cite the [id], and send users to verify numbers.
   const {SCHEMAS,USCIS_SOURCES,pickSources,sourcesPrompt,GROUNDING_RULE,RISK,scrubVolatileNumbers,buildSystem,CITE_LABEL,SOURCES_CHECKED}=window.GP_AI;
   function citationsHTML(query){
-    const items=pickSources(query).map(s=>`<a class="cite" href="${s.url}" target="_blank" rel="noopener">${s.title}</a>`).join('');
+    const items=pickSources(query).map(s=>`<a class="cite" href="${s.url}" target="_blank" rel="noopener">${s.title} <span class="cite-id">[${s.id}]</span></a>`).join('');
     return `<div class="cite-row"><span class="cite-label">${CITE_LABEL}</span><div class="cite-list">${items}</div><small class="src-foot" style="margin-top:8px">Official .gov / .us pages to confirm the answer against — sources last checked ${SOURCES_CHECKED}. These links are not a verification of the answer itself.</small></div>`;
   }
 
@@ -2564,9 +2587,9 @@ Set "done":true and provide a short "summary" only when the interview should end
           : '';
         let safe='';
         if(stop){
-          safe=`<div class="handoff handoff-stop ai-pop" role="alert"><span class="handoff-tag">⚠ Stop — talk to an attorney first</span><p>Your description mentions <b>${esc(cats)}</b>. These situations can carry serious, sometimes permanent consequences, and filing the wrong thing can make them worse. GreenPath will not list filing steps for a case like this — please speak with an accredited immigration attorney before you file anything.</p><a class="btn-legal" href="${LEGAL}" target="_blank" rel="noopener">Find authorized legal help →</a></div>`;
+          safe=`<div class="handoff handoff-stop ai-pop" role="alert"><span class="handoff-tag">⚠ Stop — talk to an attorney first</span><p>Your description mentions <b>${esc(cats)}</b>. These situations can carry serious, sometimes permanent consequences, and filing the wrong thing can make them worse. GreenPath will not list filing steps for a case like this — please speak with an accredited immigration attorney before you file anything.</p><ul class="handoff-list"><li><b>Why it&#39;s risky:</b> a wrong filing here can trigger bars, denials, or removal.</li><li><b>Bring to your attorney:</b> any notices or court papers, your full entry/exit history, and any police or immigration records.</li><li><b>Before you get help:</b> do not file anything, do not leave the U.S., and do not sign documents you do not understand.</li></ul><a class="btn-legal" href="${LEGAL}" target="_blank" rel="noopener">Find authorized legal help →</a></div>`;
         } else if(risk.tier==='caution'){
-          safe=`<div class="handoff handoff-caution ai-pop" role="alert"><span class="handoff-tag">Caution — confirm before you file</span><p>Your description may involve <b>${esc(cats)}</b>, which can change whether you can file the usual way (for example, how you entered the U.S. or time out of status). Treat the steps below as general information and confirm your eligibility with an accredited attorney before filing.</p><a class="btn-legal" href="${LEGAL}" target="_blank" rel="noopener">Find authorized legal help →</a></div>`;
+          safe=`<div class="handoff handoff-caution ai-pop" role="alert"><span class="handoff-tag">Caution — confirm before you file</span><p>Your description may involve <b>${esc(cats)}</b>, which can change whether you can file the usual way (for example, how you entered the U.S. or time out of status). Treat the steps below as general information and confirm your eligibility with an accredited attorney before filing.</p><ul class="handoff-list"><li><b>Why it matters:</b> how you entered and your time in status can change which path is even allowed.</li><li><b>Bring to your attorney:</b> proof of how you entered, dates in/out of status, and any prior filings.</li></ul><a class="btn-legal" href="${LEGAL}" target="_blank" rel="noopener">Find authorized legal help →</a></div>`;
         } else if((d.nextSteps||[]).length){
           safe=`<div class="safe-step ai-pop"><span class="safe-tag">Your next safe step</span><p>${esc(d.nextSteps[0])}</p><small>Confidence: ${esc(CONF[d.confidence]||d.confidence||'—')} · grounded in the official sources below</small></div>`;
         }
@@ -2876,6 +2899,8 @@ Set "done":true and provide a short "summary" only when the interview should end
     }
     const rv=e.target.closest('[data-reveal]');
     if(rv){ e.preventDefault(); const t=document.getElementById(rv.getAttribute('data-reveal')); if(t){ t.hidden=false; rv.remove(); } }
+    const g=e.target.closest('.fd-card[data-go]');
+    if(g){ e.preventDefault(); if(typeof show==='function') show(g.getAttribute('data-go')); window.scrollTo({top:0,behavior:'smooth'}); }
   });
 
 </script>
