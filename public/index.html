@@ -77,10 +77,16 @@
       radial-gradient(1100px 700px at 86% -8%,rgba(201,149,44,.13),transparent 60%),
       radial-gradient(1000px 800px at -6% 104%,rgba(35,154,100,.16),transparent 58%),
       linear-gradient(160deg,#eef6ec 0%,#f4f1e6 50%,#e7f2ea 100%)}
-  /* Decorative grain lines and center seam removed for a calmer, more trustworthy backdrop. */
-  .bg-ambient::before,.bg-ambient::after{display:none}
+  .bg-ambient::before{content:"";position:absolute;inset:0;opacity:.5;
+    background:
+      repeating-linear-gradient(0deg,transparent 0 31px,rgba(25,39,30,.045) 31px 32px);
+    mask-image:linear-gradient(180deg,transparent 0,#000 18%,#000 82%,transparent 100%);
+    -webkit-mask-image:linear-gradient(180deg,transparent 0,#000 18%,#000 82%,transparent 100%)}
+  .bg-ambient::after{content:"";position:absolute;left:50%;top:0;bottom:0;width:1px;
+    background:rgba(154,107,16,.14)}
   .bg-blob{display:none}
-  .bg-grain{display:none}
+  .bg-grain{position:fixed;inset:0;z-index:-1;pointer-events:none;opacity:.055;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
   .page-band{height:6px;background:linear-gradient(90deg,var(--green-deep) 0 34%,var(--green) 34% 67%,var(--gold-leaf) 67%)}
   .shell{background:transparent}
 
@@ -168,8 +174,9 @@
     gap:60px;align-items:center;padding:88px 0 64px;margin-bottom:8px}
   .home-hero-inner{position:relative;z-index:2;max-width:760px}
   .home-hero .lede{margin-top:20px}
-  /* Giant "GP" watermark removed for a calmer hero. */
-  .home-hero::before{display:none}
+  .home-hero::before{content:"GP";position:absolute;right:-3%;top:-12%;z-index:0;pointer-events:none;
+    font-family:var(--font-display);font-style:italic;font-weight:300;font-size:clamp(280px,38vw,560px);
+    line-height:1;color:transparent;-webkit-text-stroke:1px rgba(30,122,82,.13)}
   .home-hero::after{content:"";position:absolute;inset:-30px;border-radius:24px;pointer-events:none;opacity:0;
     transition:opacity .35s;background:radial-gradient(440px circle at var(--mx,50%) var(--my,50%),rgba(201,149,44,.12),transparent 62%)}
   .home-hero:hover::after{opacity:0}
@@ -668,12 +675,6 @@
     /* Hide purely-decorative animated card illustrations and the scroll meter. */
     .scrolly-card-wrap,.scrolly-meter{display:none}
   }
-
-  /* ---------- TRIMMED SCROLLY: only the kept story scrubs; all others render as compact static blocks ---------- */
-  .scrolly:not(.scrolly-keep) .scrolly-track{height:auto}
-  .scrolly:not(.scrolly-keep) .scrolly-stage{position:static;height:auto;min-height:auto;align-content:start;grid-template-columns:1fr;gap:14px}
-  .scrolly:not(.scrolly-keep) .s-step{opacity:1;border-left-color:var(--gold-leaf);background:rgba(253,251,244,.7)}
-  .scrolly:not(.scrolly-keep) .scrolly-card-wrap,.scrolly:not(.scrolly-keep) .scrolly-meter{display:none}
 
   /* ---------- TRUST STRIP (shown beside every AI input) ---------- */
   .trust-strip{display:flex;align-items:flex-start;gap:8px;margin:10px 0 4px;padding:8px 12px;
@@ -2245,7 +2246,7 @@
     </div>
   </div>
 
-  <div class="scrolly scrolly-keep" aria-label="A tangle of options unifies into one route as you scroll">
+  <div class="scrolly" aria-label="A tangle of options unifies into one route as you scroll">
     <div class="scrolly-track">
       <div class="scrolly-stage">
         <div class="scrolly-copy">
@@ -4522,7 +4523,14 @@ Rules: resolve relative dates against today. If a year is missing, choose the ne
       el.addEventListener('mouseleave',()=>{ el.style.transform=''; });
     });
 
-    // Sitewide cursor-glow removed for a calmer, more trustworthy feel.
+    // ---- global cursor glow: gold light follows the cursor on every section/page ----
+    const glow=document.createElement('div'); glow.className='cursor-glow'; document.body.appendChild(glow);
+    addEventListener('mousemove',ev=>{
+      glow.classList.add('on');
+      glow.style.setProperty('--gx',ev.clientX+'px');
+      glow.style.setProperty('--gy',ev.clientY+'px');
+    },{passive:true});
+    document.addEventListener('mouseleave',()=>glow.classList.remove('on'));
   })();
 
   /* ================= SCROLL-SCRUBBED STORIES ================= */
