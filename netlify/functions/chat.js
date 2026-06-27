@@ -174,7 +174,7 @@ async function checkRateLimitDurable(ip) {
 // Canonical, SERVER-OWNED response schemas. The browser may REQUEST one by name,
 // but the server defines the body — a client cannot inject an arbitrary schema.
 // Mirrors public/shared/ai-contract.js SCHEMAS (the eval harness pins that file).
-const SERVER_SCHEMAS = {
+const EMBEDDED_SCHEMAS = {
   pathway: { name: 'pathway', strict: true, schema: { type:'object', additionalProperties:false,
     properties:{ primaryPathway:{type:'string'}, subcategory:{type:'string'},
       confidence:{type:'string', enum:['high','medium','low']}, reasoning:{type:'string'},
@@ -199,6 +199,16 @@ const SERVER_SCHEMAS = {
     required:['documentType','caseType','receiptNumber','dates','nextStep'] } },
 };
 
+
+// Prefer the single-source contract (no drift); fall back to the embedded copy
+// if the bundler cannot resolve it, so the function stays self-contained.
+let SERVER_SCHEMAS;
+try {
+  const GP = require('../../public/shared/ai-contract.js');
+  SERVER_SCHEMAS = Object.fromEntries(Object.values(GP.SCHEMAS).map(s => [s.name, { name: s.name, strict: true, schema: s.schema }]));
+} catch {
+  SERVER_SCHEMAS = EMBEDDED_SCHEMAS;
+}
 
 exports.handler = async (event) => {
   const headers = event.headers || {};
