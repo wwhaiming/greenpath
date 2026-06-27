@@ -5,7 +5,7 @@ services:
     # Flask backend (server.py exposes `app`): serves public/ as static root AND all /api/* routes.
     # OPENAI_API_KEY is read from the env var below; it can also be loaded from the committed
     # .env via load_dotenv() in server.py.
-    buildCommand: pip install -r requirements.txt
+    buildCommand: pip install -r requirements.txt && npm install && npm run build
     startCommand: gunicorn server:app --bind 0.0.0.0:$PORT --timeout 60 --workers 2
     pullRequestPreviewsEnabled: true
     envVars:

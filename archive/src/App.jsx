@@ -1,4 +1,6 @@
-import { useState, useEffect } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
+import { initApp } from './appLogic.js'
+
 import Header from './components/Header.jsx'
 import Home from './pages/Home.jsx'
 import HowItWorks from './pages/HowItWorks.jsx'
@@ -11,72 +13,54 @@ import InterviewPrep from './pages/InterviewPrep.jsx'
 import PathwayFinder from './pages/PathwayFinder.jsx'
 import StageQA from './pages/StageQA.jsx'
 import VisaBulletin from './pages/VisaBulletin.jsx'
-import { setSiteLanguage } from './utils/translate.js'
-import { saveLanguage, loadLanguage } from './utils/storage.js'
-
-const PAGES = {
-  home: Home,
-  hero2: HowItWorks,
-  guided: GuidedWalkthrough,
-  progress: Progress,
-  alerts: DeadlineAlerts,
-  language: LanguageTools,
-  review: DocumentReview,
-  interview: InterviewPrep,
-  pathway: PathwayFinder,
-  qa: StageQA,
-  bulletin: VisaBulletin,
-}
+import Legal from './pages/Legal.jsx'
 
 export default function App() {
-  const [page, setPage] = useState('home')
-  const [siteLang, setSiteLang] = useState(() => loadLanguage())
+  // currentPage mirrors the active section. The imperative show() in appLogic
+  // owns the actual DOM class-toggling (identical to the original single-page
+  // app); it calls back here so React state stays in sync for anything that
+  // wants to read it. We do NOT re-render section markup off this state — the
+  // sections are static and mutated in place by the original feature code.
+  const [currentPage, setCurrentPage] = useState('home')
+  const booted = useRef(false)
 
-  const navigate = (to) => {
-    setPage(to)
-    window.scrollTo({ top: 0, behavior: 'smooth' })
-  }
-
-  const handleSetSiteLang = (lang) => {
-    setSiteLang(lang)
-    saveLanguage(lang)
-  }
-
-  // Re-apply translation whenever the page or language changes. English is a
-  // no-op. For non-English we translate on the next frame and then watch the
-  // <main> container so async AI-rendered content gets translated as it appears
-  // (a fixed timeout raced slow renders and left late content in English).
   useEffect(() => {
-    if (siteLang === 'English') return
-    let raf = 0, debounce = 0
-    const run = () => setSiteLanguage(siteLang)
-    raf = requestAnimationFrame(run)
-    const main = document.querySelector('main')
-    let observer
-    if (main && 'MutationObserver' in window) {
-      observer = new MutationObserver(() => {
-        clearTimeout(debounce)
-        debounce = setTimeout(run, 150)
-      })
-      observer.observe(main, { childList: true, subtree: true, characterData: true })
-    }
-    return () => {
-      cancelAnimationFrame(raf)
-      clearTimeout(debounce)
-      if (observer) observer.disconnect()
-    }
-  }, [page, siteLang])
-
-  const PageComponent = PAGES[page] ?? Home
+    if (booted.current) return
+    booted.current = true
+    // Run after the DOM (identical structure) is mounted, exactly like the
+    // original inline <script> at the end of <body>.
+    initApp((id) => setCurrentPage(id))
+  }, [])
 
   return (
     <>
-      <div className="page-band" />
-      <Header currentPage={page} navigate={navigate} siteLang={siteLang} setSiteLang={handleSetSiteLang} />
+      <div id="a11yAnnounce" className="sr-only" aria-live="polite" aria-atomic="true"></div>
+      <div className="bg-ambient">
+        <div className="bg-blob blob-1"></div>
+        <div className="bg-blob blob-2"></div>
+        <div className="bg-blob blob-3"></div>
+      </div>
+      <div className="bg-grain"></div>
+      <div className="page-band"></div>
+
+      <Header />
+
       <main>
-        <PageComponent navigate={navigate} />
+        <Home />
+        <HowItWorks />
+        <GuidedWalkthrough />
+        <Progress />
+        <DeadlineAlerts />
+        <LanguageTools />
+        <DocumentReview />
+        <InterviewPrep />
+        <PathwayFinder />
+        <StageQA />
+        <VisaBulletin />
+        <Legal />
       </main>
-      <div className="page-band" />
+
+      <div className="page-band"></div>
     </>
   )
 }
