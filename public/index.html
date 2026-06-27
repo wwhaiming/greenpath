@@ -777,6 +777,8 @@
   .handoff-list li{margin-bottom:5px}
   @media(max-width:1000px){.fd-grid{grid-template-columns:1fr 1fr}}
   @media(max-width:640px){.fd-grid{grid-template-columns:1fr}}
+  .node{cursor:pointer}
+  .node:focus-visible{outline:2px solid var(--green-deep);outline-offset:4px;border-radius:14px}
 </style>
 <script src="vendor/tesseract.min.js" integrity="sha384-1zP4ZOtlk2FXAOiUArpMuWf7INJJKe/ROfYFAVSeUa11DEfXdKWGiPI3dVma2Gt0" crossorigin="anonymous"></script>
 <script src="vendor/pdf.min.js" integrity="sha384-/1qUCSGwTur9vjf/z9lmu/eCUYbpOTgSjmpbMQZ1/CtX2v/WcAIKqRv+U1DUCG6e" crossorigin="anonymous"></script>
@@ -852,12 +854,12 @@
   <div class="rail-wrap">
     <div class="rail-line"></div>
     <div class="nodes">
-      <div class="node"><div class="dot c-green">G</div><div class="ntitle">Guided Walkthrough</div><p>Understand possible pathways</p></div>
-      <div class="node"><div class="dot c-slate">U</div><div class="ntitle">Understand Language</div><p>Translate, scan, and listen</p></div>
-      <div class="node"><div class="dot c-amber">I</div><div class="ntitle">Interview Prep</div><p>Practice with confidence</p></div>
-      <div class="node"><div class="dot c-terra">D</div><div class="ntitle">Deadline Alerts</div><p>Keep important dates visible</p></div>
-      <div class="node"><div class="dot c-green">E</div><div class="ntitle">Evidence Review</div><p>Check for possible issues</p></div>
-      <div class="node"><div class="dot c-slate">S</div><div class="ntitle">Stage Tracking</div><p>See what comes next</p></div>
+      <div class="node" data-go="guided" role="button" tabindex="0" aria-label="Open Guided Walkthrough"><div class="dot c-green">G</div><div class="ntitle">Guided Walkthrough</div><p>Understand possible pathways</p></div>
+      <div class="node" data-go="language" role="button" tabindex="0" aria-label="Open Understand Language"><div class="dot c-slate">U</div><div class="ntitle">Understand Language</div><p>Translate, scan, and listen</p></div>
+      <div class="node" data-go="interview" role="button" tabindex="0" aria-label="Open Interview Prep"><div class="dot c-amber">I</div><div class="ntitle">Interview Prep</div><p>Practice with confidence</p></div>
+      <div class="node" data-go="alerts" role="button" tabindex="0" aria-label="Open Deadline Alerts"><div class="dot c-terra">D</div><div class="ntitle">Deadline Alerts</div><p>Keep important dates visible</p></div>
+      <div class="node" data-go="review" role="button" tabindex="0" aria-label="Open Evidence Review"><div class="dot c-green">E</div><div class="ntitle">Evidence Review</div><p>Check for possible issues</p></div>
+      <div class="node" data-go="progress" role="button" tabindex="0" aria-label="Open Stage Tracking"><div class="dot c-slate">S</div><div class="ntitle">Stage Tracking</div><p>See what comes next</p></div>
     </div>
   </div>
 
@@ -2884,8 +2886,13 @@ Set "done":true and provide a short "summary" only when the interview should end
     }
     const rv=e.target.closest('[data-reveal]');
     if(rv){ e.preventDefault(); const t=document.getElementById(rv.getAttribute('data-reveal')); if(t){ t.hidden=false; rv.remove(); } }
-    const g=e.target.closest('.fd-card[data-go]');
+    const g=e.target.closest('.fd-card[data-go], .node[data-go]');
     if(g){ e.preventDefault(); if(typeof show==='function') show(g.getAttribute('data-go')); window.scrollTo({top:0,behavior:'smooth'}); }
+  });
+  document.addEventListener('keydown',function(e){
+    if(e.key!=='Enter' && e.key!==' ') return;
+    const k=e.target.closest && e.target.closest('.fd-card[data-go], .node[data-go]');
+    if(k){ e.preventDefault(); if(typeof show==='function') show(k.getAttribute('data-go')); window.scrollTo({top:0,behavior:'smooth'}); }
   });
 
 </script>
