@@ -158,7 +158,7 @@ client = OpenAI(api_key=OPENAI_API_KEY or 'sk-not-configured', timeout=30.0)
 
 # Visa Bulletin data freshness. These are deliberately module CONSTANTS (not
 # datetime.now()) so the staleness signal is deterministic and unit-testable:
-# the data covers through the December 2025 bulletin, and TODAY is a fixed
+# the data covers through the July 2026 bulletin, and TODAY is a fixed
 # reference date. Recompute/refresh both when a newer bulletin is ingested.
 VISA_DATA_THROUGH = "2026-07"   # latest Visa Bulletin month in datasets/ (July 2026 Final Action Dates)
 TODAY = "2026-06-26"            # fixed reference date for the staleness check

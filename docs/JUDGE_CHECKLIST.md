@@ -26,7 +26,7 @@ echo "OPENAI_API_KEY=sk-...your-real-key..." >> .env   # gitignored
 ## Pre-demo verification (30 seconds)
 
 ```bash
-.venv/bin/python -m pytest tests/ -q --ignore=tests/e2e   # 175 passed
+.venv/bin/python -m pytest tests/ -q                       # 278 passed
 .venv/bin/python evals/eval.py                            # 72/72 = 100.0%
 curl -s localhost:5000/api/health        | python -m json.tool
 curl -s localhost:5000/api/freshness     | python -m json.tool
@@ -49,9 +49,10 @@ curl -s localhost:5000/api/freshness     | python -m json.tool
 
 ## Talking points
 
-- **Honest data freshness:** the panel shows the Visa Bulletin is from Dec 2025
-  and flags it stale; where GreenPath and an official source differ, the official
-  source controls. A CI tripwire fails if the curated corpus ages past 90 days.
+- **Honest data freshness:** the panel shows exactly which bundled datasets are
+  current or stale, including Visa Bulletin coverage through July 2026; where
+  GreenPath and an official source differ, the official source controls. A CI
+  tripwire fails if the curated corpus ages past 90 days.
 - **Safety first:** high-risk situations (removal, criminal history, fraud,
   asylum deadlines, abuse) hard-stop to an attorney with crisis urgency + nearby
   legal aid + what to bring — never an AI guess.

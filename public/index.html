@@ -86,8 +86,7 @@
   .bg-ambient::after{content:"";position:absolute;left:50%;top:0;bottom:0;width:1px;
     background:rgba(154,107,16,.14)}
   .bg-blob{display:none}
-  .bg-grain{position:fixed;inset:0;z-index:-1;pointer-events:none;opacity:.055;
-    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
+  .bg-grain{display:none}
   .page-band{height:6px;background:linear-gradient(90deg,var(--green-deep) 0 34%,var(--green) 34% 67%,var(--gold-leaf) 67%)}
   .shell{background:transparent}
 
@@ -95,14 +94,14 @@
   header{
     position:sticky;top:0;z-index:50;color:#f1ecdc;
     background:linear-gradient(165deg,#1c6e4a,#134f36);
-    backdrop-filter:blur(14px) saturate(1.2);-webkit-backdrop-filter:blur(14px) saturate(1.2);
     border-bottom:1px solid rgba(201,149,44,.35);
     box-shadow:0 14px 40px -22px rgba(12,43,29,.65);
+    transform:translateZ(0);
   }
-  .nav-inner{max-width:1320px;margin:0 auto;display:flex;align-items:center;gap:18px;
+  .nav-inner{max-width:1320px;margin:0 auto;display:grid;align-items:center;
+    grid-template-columns:auto minmax(0,1fr) auto auto;gap:16px;
     padding:14px 40px;position:relative}
-  .brand{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);
-    display:flex;align-items:baseline;gap:10px;line-height:1;white-space:nowrap}
+  .brand{display:flex;align-items:baseline;gap:10px;line-height:1;white-space:nowrap;min-width:0}
   .brand::before{content:"";width:9px;height:9px;border-radius:50%;align-self:center;flex:none;
     background:var(--gold-leaf);box-shadow:0 0 0 3px rgba(201,149,44,.25)}
   .brand .logo{font-family:var(--font-display);font-weight:520;font-size:25px;color:#f6f1e2;letter-spacing:-.01em}
@@ -119,37 +118,30 @@
   .menu-btn[aria-expanded="true"] span:nth-child(3){transform:translateY(-7px) rotate(-45deg)}
   header nav.main{display:none}
   header nav.main.open{
-    display:flex;flex-direction:column;gap:3px;
+    display:flex;flex-direction:column;gap:2px;
     position:absolute;top:calc(100% + 12px);left:40px;z-index:60;
-    min-width:260px;padding:10px;
+    min-width:260px;max-height:min(62vh,520px);overflow-y:auto;overscroll-behavior:contain;
+    padding:8px;scrollbar-width:thin;scrollbar-color:rgba(246,241,226,.42) transparent;
     background:linear-gradient(180deg,#1c6e4a,#114b33);
     border:1px solid rgba(201,149,44,.4);border-radius:14px;
     box-shadow:0 30px 70px -24px rgba(8,28,19,.8);
-    backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);
     animation:menuDrop .2s cubic-bezier(.22,.61,.36,1)}
+  header nav.main.open::-webkit-scrollbar{width:8px}
+  header nav.main.open::-webkit-scrollbar-thumb{background:rgba(246,241,226,.34);border-radius:999px}
   @keyframes menuDrop{from{opacity:0;transform:translateY(-8px)}to{opacity:1;transform:none}}
   header nav.main a{
-    color:#d9e2d6;text-decoration:none;font-size:14.5px;font-weight:500;
-    padding:11px 14px;border-radius:9px;transition:background .15s,color .15s,padding-left .15s}
-  header nav.main a:hover{background:rgba(246,241,226,.1);color:#fff;padding-left:18px}
+    color:#d9e2d6;text-decoration:none;font-size:13.5px;font-weight:500;
+    padding:8px 12px;border-radius:8px;transition:background .15s,color .15s,padding-left .15s}
+  header nav.main a:hover{background:rgba(246,241,226,.1);color:#fff;padding-left:15px}
   header nav.main a.active{background:rgba(201,149,44,.18);color:#fff;font-weight:700}
   header nav.main a.active::before{content:"› ";color:var(--gold-leaf)}
   /* task-group labels in the dropdown nav */
   header nav.main .nav-group{display:block;font-family:var(--font-mono);font-size:10px;letter-spacing:.18em;
-    text-transform:uppercase;color:var(--gold-bright);padding:12px 14px 4px;margin-top:2px;
+    text-transform:uppercase;color:var(--gold-bright);padding:10px 12px 3px;margin-top:2px;
     border-top:1px solid rgba(246,241,226,.12)}
-  header nav.main .nav-group:first-child{border-top:0;margin-top:0;padding-top:4px}
-  /* Desktop: a short horizontal top nav of primary tasks; hamburger keeps grouped overflow. */
-  nav.topnav{display:none}
-  @media(min-width:1000px){
-    nav.topnav{display:flex;gap:2px;align-items:center;margin-left:10px}
-    nav.topnav a{color:#d9e2d6;text-decoration:none;font-size:13.5px;font-weight:600;white-space:nowrap;
-      padding:8px 12px;border-radius:8px;transition:background .15s,color .15s}
-    nav.topnav a:hover{background:rgba(246,241,226,.12);color:#fff}
-    nav.topnav a.active{background:rgba(201,149,44,.2);color:#fff}
-  }
+  header nav.main .nav-group:first-child{border-top:0;margin-top:0;padding-top:3px}
   select.lang{
-    margin-left:auto;flex:none;max-width:220px;cursor:pointer;appearance:none;
+    margin-left:0;flex:none;max-width:220px;cursor:pointer;appearance:none;
     border:1px solid rgba(246,241,226,.3);border-radius:999px;
     padding:10px 36px 10px 16px;color:#f1ecdc;font-weight:600;font-size:13px;
     font-family:var(--font-body);background-color:rgba(246,241,226,.08);
@@ -158,6 +150,14 @@
     transition:background-color .18s,border-color .18s}
   select.lang:hover{background-color:rgba(246,241,226,.16);border-color:rgba(201,149,44,.6)}
   select.lang option{color:var(--green-deep);background:#fff}
+  @media(min-width:641px){
+    .nav-inner{min-height:74px}
+    .brand{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);
+      justify-content:center;text-align:center;z-index:1}
+    .menu-btn{grid-column:1}
+    .reading-btn{grid-column:3}
+    select.lang{grid-column:4}
+  }
   .lang-loading{position:fixed;top:0;left:0;right:0;height:3px;z-index:200;
     background:linear-gradient(90deg,var(--green),var(--gold-leaf),var(--green));
     transform-origin:left;animation:langbar 1.2s ease-in-out infinite}
@@ -180,10 +180,10 @@
 
   /* ---------- HOME HERO ---------- */
   .h1{font-size:clamp(3.3rem,8.4vw,8.2rem);line-height:.95;letter-spacing:-.03em;margin-top:8px;max-width:980px}
-  .home-hero{position:relative;display:grid;grid-template-columns:minmax(0,1.05fr) minmax(330px,.72fr);
-    gap:60px;align-items:center;padding:88px 0 64px;margin-bottom:8px}
+  .home-hero{position:relative;display:grid;grid-template-columns:minmax(0,1.02fr) minmax(360px,.78fr);
+    gap:62px;align-items:center;padding:76px 0 54px;margin-bottom:8px}
   .home-hero-inner{position:relative;z-index:2;max-width:760px}
-  .home-hero .lede{margin-top:20px}
+  .home-hero .lede{margin-top:18px;max-width:700px}
   .home-hero::before{content:"GP";position:absolute;right:-3%;top:-12%;z-index:0;pointer-events:none;
     font-family:var(--font-display);font-style:italic;font-weight:300;font-size:clamp(280px,38vw,560px);
     line-height:1;color:transparent;-webkit-text-stroke:1px rgba(30,122,82,.13)}
@@ -191,17 +191,14 @@
     transition:opacity .35s;background:radial-gradient(440px circle at var(--mx,50%) var(--my,50%),rgba(201,149,44,.12),transparent 62%)}
   .home-hero:hover::after{opacity:0}
   .home-hero-glow{display:none}
-  /* global cursor glow — gold light follows the cursor on every section/page */
-  .cursor-glow{position:fixed;inset:0;z-index:0;pointer-events:none;opacity:0;transition:opacity .35s;
-    background:radial-gradient(460px circle at var(--gx,50%) var(--gy,50%),rgba(201,149,44,.13),transparent 60%)}
-  .cursor-glow.on{opacity:1}
-  @media (prefers-reduced-motion:reduce){.cursor-glow{display:none}}
+  .cursor-glow{display:none}
   /* staggered page-load entrance */
-  .home-hero .kicker-rule,.home-hero .h1,.home-hero .lede,.home-hero .btn-row{
+  .home-hero .kicker-rule,.home-hero .h1,.home-hero .lede,.home-hero .btn-row,.hero-proof{
     animation:heroUp .8s cubic-bezier(.22,.61,.36,1) both}
   .home-hero .h1{animation-delay:.08s}
   .home-hero .lede{animation-delay:.18s}
   .home-hero .btn-row{animation-delay:.28s}
+  .hero-proof{animation-delay:.36s}
   .hero-preview{animation:heroUp .9s cubic-bezier(.22,.61,.36,1) .34s both}
   @keyframes heroUp{from{opacity:0;transform:translateY(26px)}to{opacity:1;transform:none}}
   /* the dark "passport" card */
@@ -226,22 +223,33 @@
   .hero-step small{display:block;color:#e0e8dc;font-size:13px;margin-top:1px}
   .hero-step em{font-style:normal;font-family:var(--font-mono);color:var(--gold-bright);
     font-size:10.5px;letter-spacing:.16em;text-transform:uppercase}
+  .hero-proof{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin-top:22px;max-width:720px}
+  .proof-chip{min-height:76px;border:1px solid var(--line);border-radius:14px;padding:12px 14px;
+    background:rgba(255,253,247,.72);box-shadow:0 16px 36px -30px rgba(14,61,41,.45)}
+  .proof-chip b{display:block;font-family:var(--font-mono);font-size:11px;letter-spacing:.14em;
+    text-transform:uppercase;color:var(--green-mid);line-height:1.25}
+  .proof-chip span{display:block;margin-top:7px;color:var(--ink-soft);font-size:13.5px;line-height:1.35}
 
   /* step rail */
-  .rail-wrap{margin:56px 0 36px;position:relative}
+  .rail-wrap{margin:38px 0 38px;position:relative;padding:24px;border:1px solid var(--line);
+    border-radius:20px;background:rgba(255,253,247,.58);box-shadow:var(--shadow)}
+  .rail-head{display:flex;align-items:flex-end;justify-content:space-between;gap:18px;margin-bottom:22px}
+  .rail-head h2{font-size:clamp(28px,3vw,40px);line-height:1;margin:0;color:var(--ink)}
+  .rail-head p{max-width:460px;color:var(--muted);font-size:14.5px;line-height:1.45;margin:0}
   .rail-line{position:absolute;top:34px;left:34px;right:34px;height:1px;z-index:0;
-    background:repeating-linear-gradient(90deg,var(--line-strong) 0 6px,transparent 6px 13px)}
-  .nodes{display:grid;grid-template-columns:repeat(6,1fr);gap:18px;position:relative;z-index:1}
-  button.node{appearance:none;background:none;border:0;font:inherit;color:inherit;text-align:inherit;width:100%;display:block;padding:0;margin:0}
-  .node .dot{width:68px;height:68px;border-radius:50%;display:flex;align-items:center;justify-content:center;
-    color:#fdfbf4;font-size:24px;font-family:var(--font-display);font-style:italic;
-    box-shadow:0 14px 26px -14px rgba(14,61,41,.55),inset 0 0 0 1px rgba(255,255,255,.22);
+    background:transparent}
+  .nodes{display:grid;grid-template-columns:repeat(6,1fr);gap:12px;position:relative;z-index:1}
+  button.node{appearance:none;background:var(--card);border:1px solid var(--line);font:inherit;color:inherit;text-align:inherit;width:100%;display:block;padding:16px;margin:0;border-radius:15px;
+    box-shadow:0 16px 38px -34px rgba(14,61,41,.55);min-height:172px}
+  .node .dot{width:46px;height:46px;border-radius:13px;display:flex;align-items:center;justify-content:center;
+    color:#fdfbf4;font-size:19px;font-family:var(--font-mono);font-style:normal;font-weight:700;
+    box-shadow:0 12px 22px -14px rgba(14,61,41,.55),inset 0 0 0 1px rgba(255,255,255,.22);
     transition:transform .35s cubic-bezier(.22,.61,.36,1)}
-  .node:hover .dot{transform:scale(1.08) rotate(-4deg)}
-  .node[data-go]{cursor:pointer;border-radius:14px;transition:transform .25s}
-  .node[data-go]:hover{transform:translateY(-3px)}
-  .node .ntitle{display:block;font-family:var(--font-display);font-size:21px;font-weight:500;margin:18px 0 6px;line-height:1.12;letter-spacing:-.015em}
-  .node .np{display:block;color:var(--muted);font-size:14px;line-height:1.45}
+  .node:hover .dot{transform:scale(1.06) rotate(-3deg)}
+  .node[data-go]{cursor:pointer;transition:transform .25s,box-shadow .25s,border-color .25s,background .25s}
+  .node[data-go]:hover{transform:translateY(-4px);border-color:rgba(30,122,82,.35);box-shadow:var(--shadow-lift);background:#fffef9}
+  .node .ntitle{display:block;font-family:var(--font-body);font-size:15.5px;font-weight:800;margin:18px 0 6px;line-height:1.15;letter-spacing:0;color:var(--ink)}
+  .node .np{display:block;color:var(--muted);font-size:13.2px;line-height:1.45}
   .c-green{background:var(--green-aa)} .c-slate{background:var(--slate)}
   .c-amber{background:#8a5e0c} .c-terra{background:var(--terra)}
   .pill{display:inline-flex;align-items:center;gap:10px;font-family:var(--font-mono);
@@ -315,8 +323,9 @@
   .why-card::after{content:"";position:absolute;left:22px;right:22px;bottom:0;height:2px;
     background:linear-gradient(90deg,var(--gold-leaf),transparent);opacity:0;transition:opacity .3s}
   .why-card:hover::after{opacity:1}
-  .why-card .wc-ic{width:38px;height:38px;border-radius:10px;display:grid;place-items:center;
-    font-size:18px;background:var(--soft-green);border:1px solid rgba(30,122,82,.25);margin-bottom:12px}
+  .why-card .wc-ic{width:42px;height:34px;border-radius:10px;display:grid;place-items:center;
+    font-family:var(--font-mono);font-size:10.5px;letter-spacing:.12em;font-weight:700;color:var(--green-mid);
+    background:var(--soft-green);border:1px solid rgba(30,122,82,.25);margin-bottom:12px}
   .why-card h4{font-family:var(--font-body);font-size:15.5px;font-weight:700;margin:0 0 5px}
   .why-card p{color:var(--muted);font-size:13.5px;line-height:1.5;margin:0}
   .why-foot{margin-top:18px;display:flex;align-items:flex-start;gap:10px;font-size:13.5px;font-weight:600;
@@ -592,7 +601,7 @@
     font-size:12px;letter-spacing:.1em;text-transform:uppercase;padding:8px 0}
   .ip-art{border-radius:18px;overflow:hidden;border:1px solid var(--line);position:relative;
     background:linear-gradient(160deg,#f1ead9,#e6efe5);min-height:430px}
-  .coach{position:absolute;right:26px;bottom:26px;background:rgba(255,255,255,.92);backdrop-filter:blur(4px);
+  .coach{position:absolute;right:26px;bottom:26px;background:rgba(255,255,255,.96);
     border:1px solid var(--line);border-radius:14px;padding:18px 24px;max-width:330px}
   .coach small{color:var(--green-mid);font-weight:700;font-size:11.5px}
   .coach b{display:block;color:var(--ink);font-size:15px;margin-top:6px}
@@ -601,7 +610,7 @@
   .scrolly-track{position:relative;height:340vh;
     --p1:0;--p2:0;--p3:0;--p4:0}
   .scrolly-stage{position:sticky;top:96px;height:calc(100vh - 130px);min-height:540px;
-    display:grid;grid-template-columns:.8fr 1fr;gap:56px;align-items:center}
+    display:grid;grid-template-columns:.8fr 1fr;gap:56px;align-items:center;contain:layout paint}
   .scrolly-h{font-size:clamp(30px,3.8vw,46px);margin-top:10px;line-height:1.05}
   .scrolly-steps{margin-top:30px;display:flex;flex-direction:column;gap:6px}
   .s-step{display:flex;gap:16px;align-items:flex-start;padding:12px 16px;border-radius:12px;
@@ -616,10 +625,10 @@
     color:var(--green-mid);font-variant-numeric:tabular-nums;min-width:120px}
   .scrolly-meter small{font-family:var(--font-mono);color:var(--muted);font-size:11px;
     letter-spacing:.12em;text-transform:uppercase}
-  .scrolly-card-wrap{perspective:1100px}
+  .scrolly-card-wrap{perspective:1100px;contain:layout paint}
   .gc{width:100%;max-width:560px;display:block;margin:0 auto;overflow:visible;
     transform:rotateY(calc((1 - var(--p1)) * -22deg)) translateY(calc((1 - var(--p1)) * 30px));
-    filter:drop-shadow(0 40px 50px rgba(14,61,41,.3))}
+    will-change:transform}
   .gc-face{fill:#fdfbf4;opacity:var(--p1)}
   .gc-holo{opacity:calc(var(--p3) * .9)}
   .gc-border{fill:none;stroke:var(--green-deep);stroke-width:2.5;
@@ -766,6 +775,8 @@
   /* ---------- A11Y + CHROME ---------- */
   a:focus-visible,button:focus-visible,select:focus-visible,textarea:focus-visible,input:focus-visible{
     outline:2px solid var(--gold-leaf);outline-offset:2px;border-radius:10px}
+  h1[tabindex="-1"]:focus,h2[tabindex="-1"]:focus{
+    outline:2px solid rgba(190,137,35,.48);outline-offset:6px;border-radius:14px}
   .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;
     clip:rect(0,0,0,0);white-space:nowrap;border:0}
   .skip-link{position:absolute;left:12px;top:-60px;z-index:200;
@@ -782,6 +793,8 @@
 
   /* ---------- RESPONSIVE ---------- */
   @media(max-width:1000px){
+    .nav-inner{grid-template-columns:auto minmax(0,1fr) auto auto}
+    .brand{margin-right:auto}
     .split,.gw-grid,.da-grid,.lt-cols,.dr-grid,.ip-grid,.q-row,.cp-grid{grid-template-columns:1fr}
     .nodes,.stagerow{grid-template-columns:repeat(3,1fr);gap:30px 18px}
     .rail-line{display:none}
@@ -789,17 +802,24 @@
     .home-hero::before{display:none}
   }
   @media(max-width:640px){
-    .nav-inner{padding:12px 18px;gap:12px}
-    header nav.main.open{left:18px;right:18px;min-width:0}
+    .nav-inner{grid-template-columns:44px minmax(0,1fr) 44px minmax(86px,104px);
+      padding:12px 14px;gap:8px;overflow:visible}
+    header nav.main.open{left:18px;right:18px;min-width:0;max-height:min(56vh,440px)}
     .brand .tag{display:none}
-    .brand{position:static;transform:none;margin-right:auto}
+    .brand{margin-right:0;overflow:hidden}
     .brand .logo{font-size:20px}
-    select.lang{max-width:128px;padding:9px 30px 9px 12px;font-size:12px}
+    .reading-btn{width:44px;height:44px;min-width:44px;padding:0}
+    select.lang{width:100%;max-width:104px;min-width:0;padding:9px 26px 9px 10px;font-size:12px}
     section{padding:42px 20px 52px}
     .h1{font-size:clamp(34px,10.5vw,44px);line-height:1.02}
     .hero-h{line-height:1.04}
+    .home-hero{overflow:hidden}
+    .home-hero::after{display:none}
     .home-hero .lede{font-size:16.5px}
     .home-hero .btn-row .btn{width:100%;max-width:320px}
+    .hero-proof{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-top:20px}
+    .proof-chip{min-height:0;padding:12px}
+    .proof-chip span{font-size:12.8px}
     .hero-preview{width:100%;padding:18px}
     .nodes,.stagerow{grid-template-columns:1fr 1fr}
     .footer-rule{align-items:flex-start;gap:14px;flex-direction:column}
@@ -819,14 +839,16 @@
     .nav-inner{gap:8px;padding:10px 12px}
     .brand{min-width:0}
     .brand .logo{font-size:18px;max-width:92px;display:inline-block;overflow:hidden;text-overflow:ellipsis}
-    .reading-btn{width:44px;height:44px;min-width:44px;padding:0}
     select.lang{width:96px;max-width:96px;font-size:11px}
+    .hero-proof{gap:8px}
+    .proof-chip{padding:10px}
+    .proof-chip b{font-size:10px}
   }
   @media (prefers-reduced-motion: reduce){*{animation:none!important;transition:none!important}}
 
   /* ---------- READING / EASY-READING MODE ---------- */
   .reading-btn{
-    flex:none;margin-left:auto;cursor:pointer;appearance:none;
+    flex:none;margin-left:0;cursor:pointer;appearance:none;
     border:1px solid rgba(246,241,226,.3);border-radius:999px;
     min-width:44px;min-height:44px;height:42px;padding:0 16px;color:#f1ecdc;font-weight:700;font-size:16px;
     font-family:var(--font-body);background-color:rgba(246,241,226,.08);letter-spacing:.01em;
@@ -1301,14 +1323,6 @@
       <span class="nav-group" role="presentation">Get legal help</span>
       <a href="#legal" data-go="legal">Legal notice &amp; find help</a>
     </nav>
-    <nav class="topnav" aria-label="Quick links">
-      <a href="#home" data-go="home">Start</a>
-      <a href="#language" data-go="language">Understand documents</a>
-      <a href="#alerts" data-go="alerts">Track deadlines</a>
-      <a href="#interview" data-go="interview">Prepare interview</a>
-      <a href="#qa" data-go="qa">Ask</a>
-      <a href="#legal" data-go="legal">Get legal help</a>
-    </nav>
     <button type="button" class="reading-btn" id="readingBtn" aria-pressed="false" aria-label="Toggle easy-reading mode"><span class="no-i18n">Aa</span></button>
     <select class="lang" id="siteLang" aria-label="Site language">
       <option value="English">English ⌄</option>
@@ -1322,34 +1336,43 @@
 <section id="home" class="show">
   <div class="home-hero">
     <div class="home-hero-inner">
-      <div class="kicker-rule"></div>
-  <h1 class="h1">One clear place to <em class="it">begin.</em></h1>
-      <p class="lede">GreenPath organizes the green-card journey into visible, human-sized steps, in your language, at your pace.</p>
-      <div class="btn-row" style="margin-top:30px">
-        <button class="btn btn-primary" data-go="guided">Start My Walkthrough</button>
-        <button class="btn btn-ghost" data-go="hero2">See How It Works</button>
-      </div>
-    </div>
-    <div class="hero-preview" aria-label="GreenPath roadmap preview">
-      <div class="hero-preview-top"><b>Roadmap preview</b><span>General info</span></div>
-      <div class="hero-step"><i class="c-green">1</i><div><b>Answer intake</b><small>Six plain-language prompts</small></div><em>Now</em></div>
-      <div class="hero-step"><i class="c-amber">2</i><div><b>Track documents</b><small>Forms, dates, possible issues</small></div><em>Next</em></div>
-      <div class="hero-step"><i class="c-slate">3</i><div><b>Prepare questions</b><small>Translate, rehearse, and verify</small></div><em>Later</em></div>
-    </div>
+	      <div class="kicker-rule"></div>
+	  <h1 class="h1">Green card prep, <em class="it">grounded.</em></h1>
+	      <p class="lede">Understand pathways, notices, deadlines, and attorney handoffs in one source-backed workspace.</p>
+	      <div class="btn-row" style="margin-top:30px">
+	        <button class="btn btn-primary" data-go="pathway">Find My Pathway</button>
+	        <button class="btn btn-ghost" data-go="qa">Ask With Sources</button>
+	      </div>
+	      <div class="hero-proof" aria-label="GreenPath proof points">
+	        <div class="proof-chip"><b>72/72 eval</b><span>Deterministic safety, retrieval, and freshness checks.</span></div>
+	        <div class="proof-chip"><b>278 tests</b><span>Backend, safety, privacy, and API behavior covered.</span></div>
+	        <div class="proof-chip"><b>No account</b><span>Progress stays in your browser unless you use AI text tools.</span></div>
+	        <div class="proof-chip"><b>Hard stop</b><span>High-risk cases route to authorized legal help.</span></div>
+	      </div>
+	    </div>
+	    <div class="hero-preview" aria-label="GreenPath demo route preview">
+	      <div class="hero-preview-top"><b>Judge demo route</b><span>Safe prep</span></div>
+	      <div class="hero-step"><i class="c-green">1</i><div><b>Pathway finder</b><small>Plain-language intake, likely route, confidence.</small></div><em>Start</em></div>
+	      <div class="hero-step"><i class="c-amber">2</i><div><b>Source-backed Q&amp;A</b><small>Official-source citations and insufficiency flags.</small></div><em>Verify</em></div>
+	      <div class="hero-step"><i class="c-terra">3</i><div><b>Attorney handoff</b><small>High-risk situations get no AI guess.</small></div><em>Protect</em></div>
+	    </div>
     <div class="home-hero-glow"></div>
   </div>
 
-  <div class="rail-wrap">
-    <div class="rail-line"></div>
-    <div class="nodes">
-      <button type="button" class="node" data-go="guided" aria-label="Open Guided Walkthrough"><span class="dot c-green" aria-hidden="true">G</span><span class="ntitle">Guided Walkthrough</span><span class="np">Understand possible pathways</span></button>
-      <button type="button" class="node" data-go="language" aria-label="Open Understand Language"><span class="dot c-slate" aria-hidden="true">U</span><span class="ntitle">Understand Language</span><span class="np">Translate, scan, and listen</span></button>
-      <button type="button" class="node" data-go="interview" aria-label="Open Interview Prep"><span class="dot c-amber" aria-hidden="true">I</span><span class="ntitle">Interview Prep</span><span class="np">Practice with confidence</span></button>
-      <button type="button" class="node" data-go="alerts" aria-label="Open Deadline Alerts"><span class="dot c-terra" aria-hidden="true">D</span><span class="ntitle">Deadline Alerts</span><span class="np">Keep important dates visible</span></button>
-      <button type="button" class="node" data-go="review" aria-label="Open Evidence Review"><span class="dot c-green" aria-hidden="true">E</span><span class="ntitle">Evidence Review</span><span class="np">Check for possible issues</span></button>
-      <button type="button" class="node" data-go="progress" aria-label="Open Stage Tracking"><span class="dot c-slate" aria-hidden="true">S</span><span class="ntitle">Stage Tracking</span><span class="np">See what comes next</span></button>
-    </div>
-  </div>
+	  <div class="rail-wrap">
+	    <div class="rail-head">
+	      <h2>Open the right tool fast.</h2>
+	      <p>The first row is the laptop command dock: six high-signal actions, arranged for a judge demo and for real repeated use.</p>
+	    </div>
+	    <div class="nodes">
+	      <button type="button" class="node" data-go="pathway" aria-label="Open Pathway Finder"><span class="dot c-green" aria-hidden="true">01</span><span class="ntitle">Find Pathway</span><span class="np">Turn a messy situation into a likely route.</span></button>
+	      <button type="button" class="node" data-go="qa" aria-label="Open Source Backed Q and A"><span class="dot c-slate" aria-hidden="true">02</span><span class="ntitle">Ask With Sources</span><span class="np">Get plain answers with official-source checks.</span></button>
+	      <button type="button" class="node" data-go="legal" aria-label="Open Legal Help"><span class="dot c-terra" aria-hidden="true">03</span><span class="ntitle">Know Limits</span><span class="np">See when the app refuses and hands off.</span></button>
+	      <button type="button" class="node" data-go="language" aria-label="Open Language Tools"><span class="dot c-amber" aria-hidden="true">04</span><span class="ntitle">Read Notices</span><span class="np">Translate, scan, and listen in-browser.</span></button>
+	      <button type="button" class="node" data-go="alerts" aria-label="Open Deadline Alerts"><span class="dot c-green" aria-hidden="true">05</span><span class="ntitle">Track Dates</span><span class="np">Extract and organize deadlines visibly.</span></button>
+	      <button type="button" class="node" data-go="interview" aria-label="Open Interview Prep"><span class="dot c-slate" aria-hidden="true">06</span><span class="ntitle">Practice Interview</span><span class="np">Rehearse questions without intimidation.</span></button>
+	    </div>
+	  </div>
 
   <!-- ===== SCROLL-SCRUBBED STORY: a case becomes a card ===== -->
   <div class="scrolly" aria-label="A green card assembles as you scroll">
@@ -1447,10 +1470,10 @@
     <div class="kicker">Why GreenPath</div>
     <h2 class="why-h">Not just a chatbot.</h2>
     <div class="why-grid">
-      <div class="why-card"><div class="wc-ic" aria-hidden="true">🔗</div><h4>Grounded &amp; cited</h4><p>Every answer links to official USCIS and State Department sources : not guesses.</p></div>
-      <div class="why-card"><div class="wc-ic" aria-hidden="true">🌐</div><h4>Speaks your language</h4><p>Translate, scan, and hear each step read aloud in your own language.</p></div>
-      <div class="why-card"><div class="wc-ic" aria-hidden="true">📅</div><h4>Deadline-aware</h4><p>Scan a real USCIS notice : it auto-fills every date on your timeline.</p></div>
-      <div class="why-card"><div class="wc-ic" aria-hidden="true">🛟</div><h4>Knows its limits</h4><p>Never gives legal advice : complex cases route to authorized legal help.</p></div>
+	      <div class="why-card"><div class="wc-ic" aria-hidden="true">SRC</div><h4>Grounded &amp; cited</h4><p>Every answer links to official USCIS and State Department sources : not guesses.</p></div>
+	      <div class="why-card"><div class="wc-ic" aria-hidden="true">LANG</div><h4>Speaks your language</h4><p>Translate, scan, and hear each step read aloud in your own language.</p></div>
+	      <div class="why-card"><div class="wc-ic" aria-hidden="true">DATE</div><h4>Deadline-aware</h4><p>Scan a real USCIS notice : it auto-fills every date on your timeline.</p></div>
+	      <div class="why-card"><div class="wc-ic" aria-hidden="true">SAFE</div><h4>Knows its limits</h4><p>Never gives legal advice : complex cases route to authorized legal help.</p></div>
     </div>
     <div class="why-foot"><span class="no-i18n" aria-hidden="true">🔒</span> No account required. Document scanning runs in your browser, so image and PDF files never leave your device. But when you use an AI feature : pathway, Q&amp;A, document review, or interview : the text is sent to GreenPath's server and to OpenAI to generate the response. Please don't enter anything you aren't comfortable sharing.</div>
   </div>
@@ -2277,6 +2300,7 @@
       <div class="kicker">Suggested pathway</div>
       <div id="pwResult" role="status" aria-live="polite">
         <p class="dr-placeholder">Describe your situation on the left and select <b>Find my pathway</b>. GreenPath will suggest the most likely category and next steps. For complex cases, talk with an accredited immigration attorney.</p>
+        <div class="legal-row lr-actions"><button class="btn btn-primary" id="pwFindInline" type="button">Get pathway</button><small>Uses the text on the left.</small></div>
       </div>
     </div>
   </div>
@@ -2560,7 +2584,7 @@
         <button class="btn btn-primary" id="vbCheck">Check my priority date</button>
         <a class="btn btn-ghost" href="https://travel.state.gov/content/travel/en/legal/visa-law0/visa-bulletin.html" target="_blank" rel="noopener">Open official Visa Bulletin</a>
       </div>
-      <p class="tiny" style="margin-top:10px;color:var(--muted,#6b7280)">📅 Visa Bulletin data through <b>December 2025</b>. Cutoffs change monthly : always confirm the current official bulletin.</p>
+      <p class="tiny" style="margin-top:10px;color:var(--muted,#6b7280)">Visa Bulletin data through <b>July 2026</b>. Cutoffs change monthly : always confirm the current official bulletin.</p>
     </div>
     <div class="dr-right">
       <div class="kicker">What this means</div>
@@ -2778,11 +2802,11 @@
     const link = document.querySelector('nav.main a[data-go="'+target+'"]');
     return (link && link.textContent.trim()) || target;
   }
-  function show(id, fromHash){
+  function show(id, fromHash, focusHeading=true){
     // Resolve empty/unknown ids (e.g. a stale or hand-typed hash) to a valid section.
     if(!(document.getElementById(id) || id==='hero2')) id='home';
     sections.forEach(s=>s.classList.toggle('show', s.id===id));
-    document.querySelectorAll('nav.main a, nav.topnav a').forEach(a=>{
+    document.querySelectorAll('nav.main a').forEach(a=>{
       const active = a.dataset.go===id || (id==='hero2' && a.dataset.go==='home');
       a.classList.toggle('active', active);
       if(active) a.setAttribute('aria-current','page');
@@ -2800,7 +2824,7 @@
     announce('Showing ' + labelFor(id));
     const sec = document.getElementById(id) || document.getElementById(id==='hero2'?'home':id);
     const heading = sec && sec.querySelector('h1,h2');
-    if(heading){ heading.setAttribute('tabindex','-1'); heading.focus({preventScroll:true}); }
+    if(focusHeading && heading){ heading.setAttribute('tabindex','-1'); heading.focus({preventScroll:true}); }
   }
   menuBtn?.addEventListener('click',()=>{
     const open = mainnav.classList.toggle('open');
@@ -2815,9 +2839,9 @@
   // ---- Hash routing ----
   // On load and on every hashchange, show the section named by location.hash and move
   // focus to its heading. show() keeps the hash in sync when navigation starts from a click.
-  function routeFromHash(){ show((location.hash||'').replace(/^#/,'') || 'home', true); }
-  addEventListener('hashchange', routeFromHash);
-  routeFromHash();
+  function routeFromHash(focusHeading=true){ show((location.hash||'').replace(/^#/,'') || 'home', true, focusHeading); }
+  addEventListener('hashchange', ()=>routeFromHash(true));
+  routeFromHash(false);
 
   /* ================= EASY-READING MODE (dyslexia / low-literacy friendly) ================= */
   (function(){
@@ -4197,14 +4221,16 @@ Rules: resolve relative dates against today. If a year is missing, choose the ne
   (function(){
     const pwInput=document.getElementById('pwInput'),
           pwFind=document.getElementById('pwFind'),
+          pwFindInline=document.getElementById('pwFindInline'),
           pwResult=document.getElementById('pwResult');
     if(!pwFind) return;
     const CONF={high:'High confidence',medium:'Medium confidence',low:'Low confidence'};
-    pwFind.addEventListener('click',async()=>{
+    async function findPathway(){
       const text=pwInput.value.trim();
       if(!setFieldError(pwInput, document.getElementById('pwError'), text ? '' : 'Describe your situation before finding a pathway.')){ return; }
       pwResult.innerHTML='<div class="dr-loading"><div class="dr-spin"></div>Finding your most likely pathway…</div>';
       pwFind.disabled=true;
+      if(pwFindInline) pwFindInline.disabled=true;
       try{
         // Specialized server route owns the intake prompt, grounding, and JSON
         // contract; we only pass the free-text intake and render the structured reply.
@@ -4249,8 +4275,13 @@ Rules: resolve relative dates against today. If a year is missing, choose the ne
         // Server safety stop already showed the attorney modal — render no AI answer.
         if(e instanceof HandoffStop){ pwResult.replaceChildren(); return; }
         pwResult.replaceChildren(); pwResult.insertAdjacentHTML('beforeend', aiErrorHTML(e));
-      }finally{ pwFind.disabled=false; }
-    });
+      }finally{
+        pwFind.disabled=false;
+        if(pwFindInline) pwFindInline.disabled=false;
+      }
+    }
+    pwFind.addEventListener('click',findPathway);
+    pwFindInline?.addEventListener('click',findPathway);
   })();
 
   /* ================= STAGE Q&A (AI) ================= */
@@ -4341,7 +4372,7 @@ Rules: resolve relative dates against today. If a year is missing, choose the ne
       result.replaceChildren();
       result.insertAdjacentHTML('beforeend','<p class="dr-placeholder">'+esc(msg)+'</p>');
     }
-    const SOURCE_NOTE='Computed from real DOS Visa Bulletin history (through the Dec 2025 bulletin). Cutoffs change monthly — always confirm the current official bulletin.';
+    const SOURCE_NOTE='Computed from real DOS Visa Bulletin history (through the July 2026 bulletin). Cutoffs change monthly — always confirm the current official bulletin.';
     // Build a deterministic estimate card with safe DOM (textContent, never innerHTML).
     // Mirrors the renderParas idiom above so no untrusted data is ever parsed as markup.
     function buildEstimateCard(d){
@@ -4502,30 +4533,36 @@ Rules: resolve relative dates against today. If a year is missing, choose the ne
   (function(){
     const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-    // ---- scroll reveal (position-based; survives section show/hide) ----
+    // ---- scroll reveal (observer-based so scrolling does not poll every reveal) ----
     const revealSel='.home-hero,.rail-wrap,.clarity-row,.node,.roadmap-card,.badge-row,.intake,.qcard,'+
       '.checkpoint,.prog-top,.pbar,.stagerow,.timeline-card,.settings-card,.lt-toolbar,.lt-body,'+
       '.dr-left,.dr-right,.ip-left,.ip-chat-wrap,.footer-rule,.ai-box';
-    document.querySelectorAll(revealSel).forEach(el=>el.classList.add('reveal'));
+    const revealEls=[...document.querySelectorAll(revealSel)];
+    revealEls.forEach(el=>el.classList.add('reveal'));
     document.querySelectorAll('.nodes .node').forEach((el,i)=>el.style.transitionDelay=(i*70)+'ms');
-    function scanReveal(){
-      document.querySelectorAll('.reveal:not(.in)').forEach(el=>{
-        if(el.offsetParent===null) return;            // element in a hidden section
+    function revealVisible(){
+      revealEls.forEach(el=>{
+        if(el.classList.contains('in') || el.offsetParent===null) return;
         const r=el.getBoundingClientRect();
         if(r.top<innerHeight*0.92 && r.bottom>40) el.classList.add('in');
       });
     }
-    // Coalesce layout reads to one per frame so raw scroll events don't thrash reflow.
-    let revealTicking=false;
-    function scheduleReveal(){
-      if(revealTicking) return;
-      revealTicking=true;
-      requestAnimationFrame(()=>{ scanReveal(); revealTicking=false; });
+    if('IntersectionObserver' in window){
+      const io=new IntersectionObserver(entries=>{
+        entries.forEach(entry=>{
+          if(entry.isIntersecting){
+            entry.target.classList.add('in');
+            io.unobserve(entry.target);
+          }
+        });
+      },{rootMargin:'0px 0px -8% 0px',threshold:0.01});
+      revealEls.forEach(el=>io.observe(el));
+    }else{
+      addEventListener('scroll',()=>requestAnimationFrame(revealVisible),{passive:true});
+      addEventListener('resize',()=>requestAnimationFrame(revealVisible));
     }
-    addEventListener('scroll',scheduleReveal,{passive:true});
-    addEventListener('resize',scheduleReveal);
-    document.addEventListener('click',e=>{ if(e.target.closest('[data-go]')) setTimeout(scanReveal,60); });
-    setTimeout(scanReveal,80);
+    document.addEventListener('click',e=>{ if(e.target.closest('[data-go]')) setTimeout(revealVisible,60); });
+    setTimeout(revealVisible,80);
 
     // ---- pinch / ctrl-scroll zoom on result + translation panels (works even with reduced motion) ----
     ['#ltOut','#qaAnswer','#pwResult','#drIssues'].forEach(sel=>{
@@ -4559,41 +4596,59 @@ Rules: resolve relative dates against today. If a year is missing, choose the ne
       el.addEventListener('mouseleave',()=>{ el.style.transform=''; });
     });
 
-    // ---- global cursor glow: gold light follows the cursor on every section/page ----
-    const glow=document.createElement('div'); glow.className='cursor-glow'; document.body.appendChild(glow);
-    addEventListener('mousemove',ev=>{
-      glow.classList.add('on');
-      glow.style.setProperty('--gx',ev.clientX+'px');
-      glow.style.setProperty('--gy',ev.clientY+'px');
-    },{passive:true});
-    document.addEventListener('mouseleave',()=>glow.classList.remove('on'));
   })();
 
   /* ================= SCROLL-SCRUBBED STORIES ================= */
   (function(){
-    const tracks=[...document.querySelectorAll('.scrolly-track')];
-    if(!tracks.length) return;
+    const trackState=[...document.querySelectorAll('.scrolly-track')].map(t=>({
+      el:t,
+      pct:t.querySelector('.scrolly-pct'),
+      steps:[...t.querySelectorAll('.s-step')],
+      active:false,
+      lastP:-1,
+      lastIdx:-1
+    }));
+    if(!trackState.length) return;
     const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
     const ramp=(p,a,b)=>Math.min(1,Math.max(0,(p-a)/(b-a)));
-    function apply(t,p){
-      t.style.setProperty('--p1',ramp(p,0,.30).toFixed(4));
-      t.style.setProperty('--p2',ramp(p,.24,.54).toFixed(4));
-      t.style.setProperty('--p3',ramp(p,.48,.78).toFixed(4));
-      t.style.setProperty('--p4',ramp(p,.74,.97).toFixed(4));
-      const pctEl=t.querySelector('.scrolly-pct');
-      if(pctEl) pctEl.textContent=Math.round(p*100)+'%';
+    function apply(state,p){
+      const rounded=Math.round(p*1000)/1000;
+      if(Math.abs(rounded-state.lastP)<0.003) return;
+      state.lastP=rounded;
+      const t=state.el;
+      t.style.setProperty('--p1',ramp(rounded,0,.30).toFixed(3));
+      t.style.setProperty('--p2',ramp(rounded,.24,.54).toFixed(3));
+      t.style.setProperty('--p3',ramp(rounded,.48,.78).toFixed(3));
+      t.style.setProperty('--p4',ramp(rounded,.74,.97).toFixed(3));
+      if(state.pct) state.pct.textContent=Math.round(rounded*100)+'%';
       const idx=p<.28?0:p<.52?1:p<.76?2:3;
-      t.querySelectorAll('.s-step').forEach((s,i)=>s.classList.toggle('on',i<=idx&&p>.02));
+      if(idx!==state.lastIdx){
+        state.lastIdx=idx;
+        state.steps.forEach((s,i)=>s.classList.toggle('on',i<=idx&&rounded>.02));
+      }
     }
-    if(reduce){ tracks.forEach(t=>apply(t,1)); return; }   // show finished art, no scrubbing
+    if(reduce){ trackState.forEach(state=>apply(state,1)); return; }   // show finished art, no scrubbing
+    if('IntersectionObserver' in window){
+      const io=new IntersectionObserver(entries=>{
+        entries.forEach(entry=>{
+          const state=trackState.find(item=>item.el===entry.target);
+          if(state) state.active=entry.isIntersecting;
+        });
+        onScroll();
+      },{rootMargin:'160px 0px 160px 0px',threshold:0});
+      trackState.forEach(state=>io.observe(state.el));
+    }else{
+      trackState.forEach(state=>state.active=true);
+    }
     let ticking=false;
     function update(){
       ticking=false;
-      tracks.forEach(t=>{
-        if(t.offsetParent===null) return;            // section hidden
+      trackState.forEach(state=>{
+        if(!state.active || state.el.offsetParent===null) return;            // section hidden or offscreen
+        const t=state.el;
         const r=t.getBoundingClientRect();
         const total=r.height-innerHeight;
-        apply(t,total>0?Math.min(1,Math.max(0,-r.top/total)):1);
+        apply(state,total>0?Math.min(1,Math.max(0,-r.top/total)):1);
       });
     }
     function onScroll(){ if(!ticking){ ticking=true; requestAnimationFrame(update); } }
@@ -4621,6 +4676,10 @@ Rules: resolve relative dates against today. If a year is missing, choose the ne
 #gp-fresh .gp-stale{color:#a86a00;font-weight:600}
 #gp-fresh .gp-note{margin-top:8px;color:#5a6b61;font-size:11px}
 #gp-fresh .gp-title{font-weight:700;margin-bottom:6px}
+@media(max-width:640px){
+  #gp-fresh{top:86px;bottom:auto;left:20px;font-size:11px;max-width:min(330px,calc(100vw - 40px))}
+  #gp-fresh .gp-badge{padding:5px 10px}
+}
 </style>
 <div id="gp-fresh" aria-live="polite">
   <button type="button" class="gp-badge" aria-label="Show data freshness" aria-expanded="false">

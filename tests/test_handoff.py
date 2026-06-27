@@ -96,6 +96,9 @@ BENIGN = [
     "I got a letter from USCIS about my biometrics appointment.",
     "I worked a part-time job at a coffee shop with my work permit.",
     "Mi visa expira el próximo año, ¿cuándo debo renovarla?",
+    "I have no criminal history.",
+    "I do not have a criminal record.",
+    "I am married to a U.S. citizen and entered on a tourist visa that has since expired. I have no criminal history.",
 ]
 
 

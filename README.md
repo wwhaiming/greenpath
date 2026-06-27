@@ -39,9 +39,9 @@ GreenPath turns the U.S. green card process from a maze of forms and legalese in
 
 | Layer | Tech |
 |---|---|
-| Frontend | React 18 + Vite 5, single-page app, no router dependency |
-| Backend | Flask (Python), serves `dist/` + 5 JSON API endpoints |
-| AI | OpenAI `gpt-4o-mini`, strict JSON contracts per feature |
+| Frontend | Canonical single-file app in `public/index.html`; Vite builds/validates static assets |
+| Backend | Flask (Python), serves `public/` + JSON API endpoints |
+| AI | OpenAI `gpt-4o-mini` / `gpt-4o`, strict JSON contracts per feature |
 | OCR / PDF | tesseract.js 5 + pdf.js 3 (CDN, in-browser) |
 | Speech | Web Speech API (read-aloud) |
 
@@ -89,8 +89,8 @@ answer.
 - **Abuse protection on the paid proxy**: same-origin guard (`403` on cross-site
   browser calls) + in-memory per-IP rate limit (`429` past the cap).
 - **Key handling**: the OpenAI key is read from `.env` via `os.environ` and never
-  reaches the browser. See [`SECURITY.md`](SECURITY.md) — a key was committed to
-  git history in the past and **must be rotated by the owner** (not yet done).
+  reaches the browser. See [`SECURITY.md`](SECURITY.md) — a historical key leak
+  is documented there, with remediation steps and a committed purge script.
 
 ## Tests & evaluation
 
@@ -138,10 +138,9 @@ command is `.venv/bin/python server.py`; override with `E2E_SERVER_CMD`.
 ## Data freshness
 
 The deterministic visa-wait estimate is computed from real U.S. Department of
-State Visa Bulletin history **through the December 2025 bulletin** (the latest
-available at build time). Cutoffs change monthly — the UI links the official
-bulletin and labels its source/date, and where GreenPath and an official source
-differ, the official source controls.
+State Visa Bulletin history **through the July 2026 bulletin**. Cutoffs change
+monthly — the UI links the official bulletin and labels its source/date, and
+where GreenPath and an official source differ, the official source controls.
 
 A **visible source-freshness panel** (bottom-left of every page, backed by
 `GET /api/freshness`) shows the age and staleness of each dataset. An automated

@@ -16,7 +16,7 @@ Recruit via a community org or campus international-student office.
 
 ## Tasks (think-aloud, ~20 min each)
 1. Describe your situation in the Pathway Finder; do you understand the result?
-2. Find the expected wait for your category; is the "data through Dec 2025" /
+2. Find the expected wait for your category; is the "data through July 2026" /
    "verify the official bulletin" disclosure clear?
 3. Trigger a high-risk case (e.g. "I overstayed and was arrested"); does the
    attorney-handoff message make the right next step obvious?

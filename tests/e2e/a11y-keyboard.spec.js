@@ -110,8 +110,8 @@ test.describe('GreenPath keyboard + accessibility', () => {
     // Baseline: NORMAL motion. The kept scrolly track is ~340vh on desktop.
     await page.emulateMedia({ reducedMotion: 'no-preference' });
     await page.goto('/#pathway');
-    const track = page.locator('.scrolly-keep .scrolly-track');
-    const stage = page.locator('.scrolly-keep .scrolly-stage');
+    const track = page.locator('#pathway .scrolly .scrolly-track').first();
+    const stage = page.locator('#pathway .scrolly .scrolly-stage').first();
     await expect(track).toBeAttached();
 
     const vh = await page.evaluate(() => window.innerHeight);

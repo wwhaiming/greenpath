@@ -275,7 +275,7 @@ _PATTERNS = [
         r"overstay", r"out of status", r"fell out of status", r"lost my status",
         r"unlawful(ly)? presen", r"unauthorized presence",
         r"stayed (past|beyond|longer than|after)",
-        r"visa (has )?expired", r"expired visa", r"my (visa|i-?94) expired",
+        r"expired visa", r"my (visa|i-?94) (has )?expired",
         # Spanish (past-tense expiry only; "expira el próximo año" stays benign)
         r"mi visa (venci[oó]|expir[oó]|ya venci[oó]|ya expir[oó])",
         r"se me venci[oó] la visa", r"me qued[eé] m[aá]s tiempo",
@@ -295,6 +295,26 @@ _PATTERNS = [
         r"没有身份", r"没有合法身份", r"无合法身份", r"非法居留", r"黑户",
     )),
 ]
+
+
+_CRIMINAL_NEGATION = re.compile(
+    r"\b(no|not any|without|do not have|don't have|never had|no prior|no past)\s+"
+    r"(?:a\s+)?(criminal\s+)?(record|history|charges?|cases?)\b",
+    re.IGNORECASE,
+)
+_CRIMINAL_DIRECT_RISK = _p(
+    r"\barrest(ed)?\b", r"convict(ed|ion)", r"\bfelony\b", r"\bmisdemeanor\b",
+    r"\bDUI\b", r"\bDWI\b", r"charged with", r"pled? guilty", r"on probation",
+    r"crime of moral turpitude", r"aggravated felony", r"\bexpunge",
+    r"\bin jail\b", r"\bin prison\b", r"served time",
+    r"me arrestaron", r"me detuvo la polic[ií]a", r"antecedentes penales",
+)
+
+
+def _negates_criminal_history(blob):
+    """Avoid false handoffs for disclosures like 'no criminal history' while
+    still catching concrete risks such as arrests, convictions, DUI, or charges."""
+    return bool(_CRIMINAL_NEGATION.search(blob)) and not _CRIMINAL_DIRECT_RISK.search(blob)
 
 
 def detect_handoff(*texts):
@@ -318,6 +338,8 @@ def detect_handoff(*texts):
                 "reason_keys": [], "message": ""}
     matched = []  # (key, label) in priority order
     for key, label, pattern in _PATTERNS:
+        if key == "criminal_history" and _negates_criminal_history(blob):
+            continue
         if pattern.search(blob):
             matched.append((key, label))
     if not matched:
