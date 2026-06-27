@@ -112,10 +112,56 @@ more than the camera.
 - Keep the final cut between `4:30` and `4:58`. Do not submit a video over
   `5:00`.
 
-## Exact Screen Recording Directions
+## Screen Studio Scene Breakdown
+
+Create the recording as **9 scenes** in Screen Studio. Record it in one take if
+that is easiest, but when editing, split the take at these exact scene cuts.
+Each scene should feel like one clear idea: problem, pathway, deadlines,
+language access, review, interview, safety, proof, close.
+
+| Scene | Time | Scene Name | Start Frame | End Frame | Main Action | Screen Studio Direction |
+|---|---|---|---|---|---|---|
+| 1 | 0:00-0:33 | Hero + Trust Setup | Top hero, full page visible | Cursor clicks/moves toward `Find your pathway` | Introduce GreenPath and show proof chips | Keep this calm. Use one small zoom on proof chips only. Do not scroll. |
+| 2 | 0:33-1:30 | Pathway Finder | Pathway section with input + `Suggested Pathway` panel | Trust strip under pathway input/result is visible | Paste Maria input, click `Find my pathway`, show result | Cut loading over 1 second. Hold result long enough to read category and next steps. |
+| 3 | 1:30-2:19 | Deadline Timeline | `Deadline alerts` section, `Upcoming timeline` visible | Extracted dates are visible in timeline cards | Paste deadlines and click `Extract Dates with AI` | Use a slight zoom on the timeline only after dates appear. |
+| 4 | 2:19-2:48 | Language Access | `Translate & read aloud` tools visible | Cursor rests near scanning/read-aloud/privacy text | Show translate, scan, read-aloud, and privacy framing | Do not run long audio. This is a quick capability scene, not a full demo. |
+| 5 | 2:48-3:40 | Document Review | `Review a form for issues` section visible | Issue list is visible and readable | Paste synthetic I-485 sample and click `Review with AI` | Zoom on the issue list after results appear. Cut loading over 1 second. |
+| 6 | 3:40-4:15 | Interview Practice | `Interview practice` section visible | Interview chat/coaching area is visible | Select marriage-based scenario, start practice, send short answer | Keep this fast. If response is slow, cut the wait and show the chat area. |
+| 7 | 4:15-4:48 | Safety Stop | `Stage Q&A` input visible | Attorney-handoff modal fills the screen | Paste high-risk input and click `Ask GreenPath` | This is the most important scene. Hold the modal for at least 8 seconds. |
+| 8 | 4:48-4:54 | Legal Help | Modal action or legal-help links visible | Licensed/accredited help language visible | Show that the refusal routes to real help | If short on time, stay on the modal instead of navigating. |
+| 9 | 4:54-4:58 | Closing Proof | Safety modal or hero visible | Cursor still; no movement | Say tests/eval closing line | End cleanly. Do not add another click. |
+
+### Scene Cut Rules
+
+- Cut **between scenes**, not during an important result.
+- If a scene has a loading spinner, keep only the first `0.5-1.0 seconds` of
+  loading, then cut to the completed result.
+- Do not cut away from the attorney-handoff modal too quickly. That scene is
+  the strongest proof that GreenPath knows when to stop.
+- If the final edit is over `5:00`, remove Scene 6 first. Do **not** remove
+  Scenes 2, 3, 5, or 7.
+- If Screen Studio auto-zoom feels too busy, disable auto-zoom and manually add
+  only the five zooms listed below.
+
+### Scene Names To Use In Screen Studio
+
+Use these exact names in the Screen Studio editor:
+
+1. `01 Hero - Trust Setup`
+2. `02 Pathway Finder`
+3. `03 Deadline Timeline`
+4. `04 Language Access`
+5. `05 Document Review`
+6. `06 Interview Practice`
+7. `07 Safety Stop`
+8. `08 Legal Help`
+9. `09 Closing Proof`
+
+## Exact Beat-by-Beat Recording Directions
 
 Follow this table while recording. The `Stay Here` column is the time you should
-hold the screen still before moving again.
+hold the screen still before moving again. These beats sit inside the scenes
+above.
 
 | Time | Where You Should Be | Exact Screen Studio / Browser Action | Stay Here | What Must Be Visible |
 |---|---|---|---|---|
