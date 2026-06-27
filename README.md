@@ -96,7 +96,7 @@ answer.
 
 ```bash
 pip install -r requirements-dev.txt
-npm test            # or: .venv/bin/python -m pytest tests/ -q   (278 tests)
+npm test            # or: .venv/bin/python -m pytest tests/ -q   (281 tests)
 npm run eval        # or: .venv/bin/python evals/eval.py
 ```
 

@@ -20,7 +20,7 @@ nervous and unsure where to start. We follow her down the single primary path:
   Visa Bulletin data (July 2026) — reproducible, no model guesswork.
 - **72/72 = 100%** on the deterministic eval (`npm run eval`): handoff
   precision/recall + estimator + no-legal-advice framing.
-- **278 passing tests**, including handoff trigger coverage and **zero false
+- **281 passing tests**, including handoff trigger coverage and **zero false
   positives** on benign questions.
 - High-risk inputs produce **0 LLM calls** — the safety stop is provable, not
   promised.

@@ -33,7 +33,7 @@ handoff safety stop.
 5. Have these demo inputs ready in a scratch note for fast paste:
 
    ```text
-   I am married to a U.S. citizen and we have lived together in the U.S. for 2 years. I entered on a tourist visa that has since expired. I have no criminal history. I do not have a U.S. job offer.
+   I am married to a U.S. citizen and we have lived together in the U.S. for 2 years. I entered the U.S. with inspection and currently live with my spouse. I have no criminal history. I do not have a U.S. job offer.
    ```
 
    ```text
@@ -146,10 +146,11 @@ hold the screen still before moving again.
 | 3:18-3:31 | Review result | Hold still while results appear. Cut any loading wait over 1 second. | 13 sec | issue list / severity / next steps |
 | 3:31-3:40 | Review detail | Slight zoom on the issue list. Move cursor to one or two flagged issues only. | 9 sec | issues are readable |
 | 3:40-3:47 | Navigation | Go to `Interview practice`. | 7 sec | transition to interview practice |
-| 3:47-3:55 | Interview top | Stop with `Practice session`, example question, and `Start Practice` visible. | 8 sec | `Start Practice` button |
-| 3:55-4:00 | Interview button | Click `Start Practice`. | 5 sec | first interview prompt |
-| 4:00-4:08 | Interview coaching | If an answer field appears, type or paste: `I have lived at my current address since 2024 with my spouse.` Click `Send`. | 8 sec | interview chat area |
-| 4:08-4:15 | Interview result | Hold on the coaching / next-question area. Cut if it loads slowly. | 7 sec | coaching or next question |
+| 3:47-3:55 | Interview top | Stop with `Practice session`, case type dropdown, example question, and `Start Practice` visible. | 8 sec | case type dropdown and `Start Practice` button |
+| 3:55-4:00 | Interview scenario | Open the case type dropdown and choose `Marriage-based green card (I-485)`. | 5 sec | selected marriage-based scenario |
+| 4:00-4:05 | Interview button | Click `Start Practice`. | 5 sec | first interview prompt or answer bar |
+| 4:05-4:10 | Interview answer | Type or paste: `I have lived at my current address since 2024 with my spouse.` Click `Send`. | 5 sec | answer text / `Send` button |
+| 4:10-4:15 | Interview result | Hold on the coaching / next-question area. Cut if it loads slowly. | 5 sec | coaching or next question |
 | 4:15-4:22 | Navigation | Go to `Stage Q&A`. | 7 sec | Q&A input |
 | 4:22-4:31 | High-risk input | Select the Q&A input. Paste: `I overstayed a visa and I was arrested once. Can I still apply without a lawyer?` | 9 sec | high-risk text visible |
 | 4:31-4:36 | Ask button | Click `Ask GreenPath`. | 5 sec | click before safety stop |
@@ -197,12 +198,12 @@ Do not zoom during every scroll. Too much zooming makes the demo feel frantic.
 |---|---|---|
 | 0:00-0:18 | Open on the GreenPath hero. Pause on the centered logo, headline, proof chips, and laptop-style layout. | "This is GreenPath: green card prep, grounded. The problem we are solving is that immigration information is scattered, high-stakes, and often written in language that is hard to understand. GreenPath turns that into a guided preparation workspace while staying clear that it is general information, not legal advice." |
 | 0:18-0:38 | Slowly move cursor over the proof chips: `72/72 eval`, `281 tests`, `No account`, `Hard stop`. | "The important part is not just that it uses AI. The important part is that it has boundaries. Progress can stay in the browser, document scanning runs locally, and high-risk situations are stopped before the model can answer." |
-| 0:38-1:18 | Go to `Find your pathway`. Paste the first demo input. Click `Find my pathway` or `Get pathway`. Let the result appear. | "First, an applicant describes their situation in plain English. In this example, Maria is married to a U.S. citizen, entered on a tourist visa, and does not know where to start. GreenPath suggests the likely category, explains why, and gives next steps in plain language. This is preparation guidance, not a case prediction." |
+| 0:38-1:18 | Go to `Find your pathway`. Paste the first demo input. Click `Find my pathway` or `Get pathway`. Let the result appear. | "First, an applicant describes their situation in plain English. In this example, Maria is married to a U.S. citizen, entered the U.S. with inspection, and does not know where to start. GreenPath suggests the likely category, explains why, and gives next steps in plain language. This is preparation guidance, not a case prediction." |
 | 1:18-1:42 | Point to the result panel and any warning/help language. | "A normal chatbot would try to sound confident. GreenPath is designed to be useful without pretending to be a lawyer. The user gets a pathway, action steps, and reminders to verify official requirements or get authorized legal help for complex facts." |
 | 1:42-2:18 | Go to `Deadline alerts`. Paste the deadline demo input. Click the deadline extraction/action button. Show the visual timeline. | "Next, GreenPath organizes deadlines. USCIS notices can hide important dates inside dense letters. Here, the app extracts biometrics, interview, and request-for-evidence dates into a timeline so the user knows what is coming next." |
 | 2:18-2:52 | Go to `Translate & read aloud`. Show text entry, language selection, scan/upload area, and read-aloud controls. Do not wait on a long audio playback. | "GreenPath also supports people who are helping family members across language barriers. The app can translate text, scan documents in the browser, and read instructions aloud. The key privacy detail is visible in the product: image and PDF scanning happens in the browser, while AI text features clearly say what is sent to the server." |
 | 2:52-3:25 | Go to `Review a form for issues`. Paste the form demo input. Click `Review with AI`. Show issue list and severity/next-step language. | "Before filing, users can paste form details and have GreenPath flag issues that commonly create confusion or requests for evidence, like missing address history, sponsor income evidence, or vaccination records. This does not replace legal review, but it helps people catch avoidable mistakes earlier." |
-| 3:25-3:48 | Go to `Interview practice`. Type a short answer to a sample interview question, then show coaching/next question. | "GreenPath also helps users practice for the interview. It asks one question at a time and coaches the answer, so preparation feels less intimidating and more concrete." |
+| 3:25-3:48 | Go to `Interview practice`. Select `Marriage-based green card (I-485)`, start the practice, type a short answer, then show coaching/next question. | "GreenPath also helps users practice for the interview. It asks one question at a time and coaches the answer, so preparation feels less intimidating and more concrete." |
 | 3:48-4:25 | Go to `Stage Q&A` or another AI input. Paste the high-risk input: `I overstayed a visa and I was arrested once...`. Submit it. Show the attorney-handoff modal. | "This is the most important part of the project. When the user mentions a high-risk situation, GreenPath does not generate an AI answer. The server runs a deterministic attorney-handoff check first. If that check fires, the model is never called. The user is routed to licensed or accredited help instead." |
 | 4:25-4:45 | Go to `Legal notice & find help`. Show official-source language and legal aid links. | "That safety stop is backed by real help links and official-source framing. GreenPath is not trying to be an immigration lawyer. It is trying to help people prepare, understand, organize, and know when they need a professional." |
 | 4:45-4:58 | End on hero or result panel. Keep cursor still. | "The current build has 281 passing tests and a deterministic evaluation score of 72 out of 72. Our goal is simple: make green card preparation more understandable, more accessible, and safer than asking an unrestricted chatbot." |

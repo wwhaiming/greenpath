@@ -26,7 +26,7 @@ echo "OPENAI_API_KEY=sk-...your-real-key..." >> .env   # gitignored
 ## Pre-demo verification (30 seconds)
 
 ```bash
-.venv/bin/python -m pytest tests/ -q                       # 278 passed
+.venv/bin/python -m pytest tests/ -q                       # 281 passed
 .venv/bin/python evals/eval.py                            # 72/72 = 100.0%
 curl -s localhost:5000/api/health        | python -m json.tool
 curl -s localhost:5000/api/freshness     | python -m json.tool
