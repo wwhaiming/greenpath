@@ -1,6 +1,6 @@
 # GreenPath
 AI-powered green card navigation platform \
-Created by Whaiming Wang and Gary Zhang for the USAII Global AI Hackathon 2026
+Created by Whaiming Wang and Gary Zhang for the Youth Code x AI Hackathon 2026
 
 ## To run in dev mode:
 npm install
