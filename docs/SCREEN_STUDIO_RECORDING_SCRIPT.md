@@ -54,20 +54,142 @@ handoff safety stop.
    I overstayed a visa and I was arrested once. Can I still apply without a lawyer?
    ```
 
-## Screen Studio Settings
+## Screen Studio Setup: Do This Exactly
 
-- Record the browser window, not the full desktop.
-- Use 16:9 export, preferably `1920 x 1080` or higher.
-- Put camera bubble in the top-right only if it does not cover the GreenPath
-  logo, results panel, or safety modal.
-- Turn on smooth cursor and click highlights.
-- Keep Screen Studio auto-zoom subtle: zoom into buttons and result panels, but
-  avoid constant zooming while scrolling.
-- Cut out loading waits longer than 1 second. Keep the final video fast.
-- Add captions only for the spoken narration. Do not add feature labels that are
-  not visible in the app.
-- If using text-to-speech read-aloud, keep system audio low under narration.
-- Export as MP4, 1080p, high quality.
+### Browser Setup
+
+1. Open only one browser window.
+2. Go to `http://127.0.0.1:5052`.
+3. Close every other tab.
+4. Hide the bookmarks bar.
+5. Set browser zoom to `100%`.
+6. Make the browser window 16:9. Recommended size: `1440 x 810` or
+   `1920 x 1080`.
+7. Put the browser on the left/center of your monitor, with no desktop icons,
+   terminal windows, notes, or private files visible behind it.
+8. Start at the top hero section. The first frame should show:
+   - centered `GreenPath` logo
+   - headline `Green card prep, grounded.`
+   - proof chips: `72/72 eval`, `281 tests`, `No account`, `Hard stop`
+   - laptop-style route preview
+
+### Screen Studio Capture Settings
+
+Use these settings before pressing record:
+
+| Setting | Exact Choice |
+|---|---|
+| Capture area | Browser window only |
+| Aspect ratio | 16:9 |
+| Export resolution | 1080p minimum |
+| Frame rate | 30 FPS is enough; use 60 FPS only if your computer stays smooth |
+| Cursor | Visible |
+| Click effects | On |
+| Cursor smoothing | On |
+| Camera bubble | Optional; top-right only |
+| Microphone | On |
+| System audio | Off, unless demonstrating read-aloud |
+| Auto zoom | On, but subtle |
+| Captions | On if clean; remove if they cover the UI |
+| Background blur | Off |
+
+Camera bubble rule: if your face bubble covers the logo, a button, the result
+panel, or the attorney-handoff modal, move it or turn it off. The app matters
+more than the camera.
+
+### Editing Rules
+
+- Cut any loading wait longer than `1 second`.
+- Keep scrolls slow and controlled. A scroll should last `1.0-1.5 seconds`,
+  then stop for `2 seconds` so the viewer can read.
+- Do not wiggle the cursor while speaking.
+- After every important click, keep the cursor still for `1 second`.
+- When a result appears, zoom in slightly and hold for `4-6 seconds`.
+- Do not show `.env`, terminal history, API keys, GitHub settings, or private
+  files.
+- Do not open DevTools during the submitted video.
+- Do not mention features you do not show on screen.
+- Keep the final cut between `4:30` and `4:58`. Do not submit a video over
+  `5:00`.
+
+## Exact Screen Recording Directions
+
+Follow this table while recording. The `Stay Here` column is the time you should
+hold the screen still before moving again.
+
+| Time | Where You Should Be | Exact Screen Studio / Browser Action | Stay Here | What Must Be Visible |
+|---|---|---|---|---|
+| Before 0:00 | Browser at top hero | Start recording. Wait silently for half a second before speaking. | 0.5 sec | Full hero, centered logo, headline, proof chips |
+| 0:00-0:08 | Hero top | Keep cursor still near the headline. Do not move yet. | 8 sec | `Green card prep, grounded.` |
+| 0:08-0:18 | Hero proof chips | Move cursor slowly across `72/72 eval`, `281 tests`, `No account`, `Hard stop`. Let Screen Studio auto-zoom once if it wants to. | 10 sec | All four proof chips |
+| 0:18-0:26 | Hero route preview | Move cursor to the laptop-style route preview on the right. Do not click yet. | 8 sec | route preview / command cards |
+| 0:26-0:33 | Navigation | Click the hero route card or menu item for `Find your pathway`. If clicking a nav menu, open the menu, click once, then stop moving. | 7 sec | transition into pathway section |
+| 0:33-0:42 | Pathway Finder section | Stop when both the left text box and the right `Suggested Pathway` result panel are visible. | 9 sec | section title, input box, result panel |
+| 0:42-0:50 | Pathway input | Click inside the text area. Select existing text if needed. Paste the prepared Maria input. | 8 sec | full or mostly visible pasted text |
+| 0:50-0:55 | Pathway button | Move cursor to `Find my pathway`. Click it once. | 5 sec | `Find my pathway` button click |
+| 0:55-1:08 | Pathway loading/result | Keep cursor still. If loading takes more than 1 second, cut the wait in editing. | 13 sec | result beginning to appear |
+| 1:08-1:22 | Pathway result | Slight zoom on the right result panel. Hold long enough for category/next steps to be readable. | 14 sec | suggested category, next steps, safety language |
+| 1:22-1:30 | Pathway trust note | Move cursor slowly to the `General info, not legal advice` strip. | 8 sec | trust strip |
+| 1:30-1:36 | Navigation | Click or scroll to `Deadline alerts`. Use one smooth scroll or one menu click. | 6 sec | movement to deadlines |
+| 1:36-1:44 | Deadline section | Stop with `Upcoming timeline`, the description box, and `Alert settings` visible. | 8 sec | `Extract Dates with AI` button |
+| 1:44-1:53 | Deadline input | Click the deadline text box. Paste the prepared biometrics/interview/RFE deadline input. | 9 sec | pasted dates |
+| 1:53-1:58 | Deadline button | Click `Extract Dates with AI`. | 5 sec | button click |
+| 1:58-2:10 | Timeline result | Hold still. If loading is slow, cut the loading wait. | 12 sec | timeline items added |
+| 2:10-2:19 | Timeline detail | Slight zoom on timeline cards. Move cursor slowly down the extracted dates. | 9 sec | multiple extracted dates |
+| 2:19-2:26 | Navigation | Go to `Translate & read aloud`. | 7 sec | transition to language tools |
+| 2:26-2:35 | Language tools top | Stop with translation input, language controls, scan/upload area, and read-aloud controls visible. | 9 sec | translation/read-aloud UI |
+| 2:35-2:48 | Language privacy point | Move cursor to the browser-side scanning / read-aloud area and then to the trust text. Do not run a long audio demo. | 13 sec | scan/read-aloud controls and privacy language |
+| 2:48-2:55 | Navigation | Go to `Review a form for issues`. | 7 sec | transition to document review |
+| 2:55-3:04 | Document review section | Stop when the form input and `Possible issues to review` panel are both visible. | 9 sec | left input, right issue panel |
+| 3:04-3:13 | Document input | Select the input text and paste the prepared I-485 sample. | 9 sec | pasted synthetic form details |
+| 3:13-3:18 | Review button | Click `Review with AI`. | 5 sec | button click |
+| 3:18-3:31 | Review result | Hold still while results appear. Cut any loading wait over 1 second. | 13 sec | issue list / severity / next steps |
+| 3:31-3:40 | Review detail | Slight zoom on the issue list. Move cursor to one or two flagged issues only. | 9 sec | issues are readable |
+| 3:40-3:47 | Navigation | Go to `Interview practice`. | 7 sec | transition to interview practice |
+| 3:47-3:55 | Interview top | Stop with `Practice session`, example question, and `Start Practice` visible. | 8 sec | `Start Practice` button |
+| 3:55-4:00 | Interview button | Click `Start Practice`. | 5 sec | first interview prompt |
+| 4:00-4:08 | Interview coaching | If an answer field appears, type or paste: `I have lived at my current address since 2024 with my spouse.` Click `Send`. | 8 sec | interview chat area |
+| 4:08-4:15 | Interview result | Hold on the coaching / next-question area. Cut if it loads slowly. | 7 sec | coaching or next question |
+| 4:15-4:22 | Navigation | Go to `Stage Q&A`. | 7 sec | Q&A input |
+| 4:22-4:31 | High-risk input | Select the Q&A input. Paste: `I overstayed a visa and I was arrested once. Can I still apply without a lawyer?` | 9 sec | high-risk text visible |
+| 4:31-4:36 | Ask button | Click `Ask GreenPath`. | 5 sec | click before safety stop |
+| 4:36-4:48 | Attorney handoff modal | Hold completely still. Slight zoom on the modal. Do not close it early. | 12 sec | attorney-handoff modal and reasons |
+| 4:48-4:54 | Legal help | If time allows, click the legal-help action or show the legal-help links. If not, stay on the modal. | 6 sec | licensed/accredited help language |
+| 4:54-4:58 | Closing frame | End on the modal or hero. Stop moving cursor. Finish narration. | 4 sec | safety stop or polished hero |
+
+## Screen Studio Zoom Plan
+
+Use only these zooms:
+
+1. **0:08**: small zoom on proof chips. Hold `3 seconds`.
+2. **1:08**: zoom on Pathway Finder result. Hold `6 seconds`.
+3. **2:10**: zoom on deadline timeline. Hold `5 seconds`.
+4. **3:31**: zoom on document-review issue list. Hold `5 seconds`.
+5. **4:36**: zoom on attorney-handoff modal. Hold `8 seconds`.
+
+Do not zoom during every scroll. Too much zooming makes the demo feel frantic.
+
+## Scroll Rules
+
+- Use the nav/menu for big jumps when possible.
+- If you scroll manually, use one smooth trackpad gesture, then stop.
+- Never scroll while reading a key result.
+- Never scroll past a feature before the judge can understand what it does.
+- If a section starts halfway down the screen, scroll back slightly until the
+  section title and the main controls are visible together.
+
+## If Something Goes Wrong During Recording
+
+- If AI takes too long: stay calm, stop speaking for a beat, and cut the wait in
+  Screen Studio.
+- If the live API errors: restart with `GREENPATH_DEMO=1 PORT=5052
+  .venv/bin/python server.py` and record again.
+- If the attorney-handoff modal does not appear: use the exact high-risk input
+  from this file and submit it in `Stage Q&A`.
+- If scrolling looks choppy: record the browser window only, close other apps,
+  disable camera bubble, and export at 30 FPS.
+- If the video is over 5 minutes: cut the interview segment and keep the
+  Pathway Finder, Deadline Alerts, Document Review, and Safety Stop.
 
 ## 5-Minute Script
 
