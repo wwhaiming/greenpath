@@ -11,3 +11,17 @@ services:
     envVars:
       - key: OPENAI_API_KEY
         sync: false
+      - key: FORCE_HTTPS
+        value: "true"
+      - key: PYTHON_VERSION
+        value: "3.11"
+      - key: REDIS_URL
+        fromService:
+          type: keyvalue
+          name: greenpath-redis
+          property: connectionString
+
+  - type: keyvalue
+    name: greenpath-redis
+    plan: free
+    ipAllowList: []
